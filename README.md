@@ -29,15 +29,37 @@ Este projeto é um trabalho da pós-graduação em Engenharia de Software e foi 
 
 ## Metodologia (Spec Driven Development)
 
-O desenvolvimento segue o fluxo do Kiro, aplicado com o [cc-sdd](https://github.com/gotalab/cc-sdd) no Claude Code:
+O desenvolvimento segue o fluxo do [Kiro](https://kiro.dev/), aplicado com o [cc-sdd](https://github.com/gotalab/cc-sdd) no Claude Code. Nenhuma funcionalidade é implementada antes de ter requisitos, design e tarefas aprovados.
 
-1. **Steering** (`.kiro/steering/`): contexto persistente do projeto (produto, tecnologia e estrutura).
-2. **Requirements**: requisitos no formato EARS.
-3. **Design**: arquitetura e decisões técnicas.
-4. **Tasks**: plano de implementação.
-5. **Implementação**: código e testes.
+```
+Steering → Discovery (roadmap) → Requirements → Design → Tasks → Implementação + testes → Release
+```
 
-As specs de cada funcionalidade ficam em `.kiro/specs/<funcionalidade>/`.
+### Documentos do projeto (steering)
+
+Contexto persistente que orienta todas as specs:
+
+| Documento | Conteúdo |
+|---|---|
+| [product.md](.kiro/steering/product.md) | Visão do produto, capacidades e casos de uso |
+| [tech.md](.kiro/steering/tech.md) | Stack, padrões de desenvolvimento, ambientes e decisões técnicas |
+| [structure.md](.kiro/steering/structure.md) | Organização do código e convenções de nomenclatura |
+| [roadmap.md](.kiro/steering/roadmap.md) | Abordagem escolhida, escopo e ordem das specs |
+
+### Specs das funcionalidades
+
+Cada spec fica em `.kiro/specs/<funcionalidade>/`, com os arquivos `brief.md`, `requirements.md` (formato EARS), `design.md` e `tasks.md`.
+
+| # | Spec | Descrição | Status |
+|---|---|---|---|
+| 1 | [fundacao-autenticacao](.kiro/specs/fundacao-autenticacao/) | Setup do projeto e login com os perfis coordenação e catequista | 📝 Brief |
+| 2 | [cadastro-catequistas](.kiro/specs/cadastro-catequistas/) | Cadastro de catequistas com conta de acesso | 📝 Brief |
+| 3 | [cadastro-catequizandos](.kiro/specs/cadastro-catequizandos/) | Cadastro de catequizandos e situação sacramental | 📝 Brief |
+| 4 | [gestao-turmas](.kiro/specs/gestao-turmas/) | Turmas, catequistas responsáveis e inscrições | 📝 Brief |
+| 5 | [programa-catequese](.kiro/specs/programa-catequese/) | Encontros e temas de cada turma | 📝 Brief |
+| 6 | [controle-presenca](.kiro/specs/controle-presenca/) | Chamada por encontro e frequência | 📝 Brief |
+
+Legenda: 📝 Brief · 📋 Requisitos · 📐 Design · ✅ Tarefas aprovadas · 🚧 Em implementação · 🚀 Entregue (release)
 
 ## Pré-requisitos
 
