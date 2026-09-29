@@ -17,14 +17,15 @@ Este projeto é um trabalho da pós-graduação em Engenharia de Software e foi 
 
 ## Tecnologias
 
-> Stack em definição. Esta seção será atualizada na fase de design.
-
 | Camada | Tecnologia |
 |---|---|
-| Frontend | A definir |
-| Backend | A definir |
-| Banco de dados | A definir |
-| Testes | A definir |
+| Framework (front + back) | [Next.js 16](https://nextjs.org/) (App Router, Server Actions) + TypeScript |
+| Banco de dados | [PostgreSQL](https://www.postgresql.org/) (Docker em dev, [Neon](https://neon.tech/) em produção) |
+| ORM | [Prisma 7](https://www.prisma.io/) |
+| Autenticação | [Better Auth](https://www.better-auth.com/) |
+| Validação | [Zod](https://zod.dev/) |
+| Testes | [Vitest](https://vitest.dev/) + [Playwright](https://playwright.dev/) |
+| Deploy | [Vercel](https://vercel.com/) |
 
 ## Metodologia (Spec Driven Development)
 
@@ -41,13 +42,16 @@ As specs de cada funcionalidade ficam em `.kiro/specs/<funcionalidade>/`.
 ## Pré-requisitos
 
 - Git
-- Node.js (versão a definir)
+- Node.js 22 LTS
+- Docker (para o PostgreSQL local)
 
 ## Instalação e execução
 
 ```bash
 git clone https://github.com/geraugu/acutis-catequese.git
 cd acutis-catequese
+cp .env.example .env
+docker compose up -d
 npm install
 npm run dev
 ```
