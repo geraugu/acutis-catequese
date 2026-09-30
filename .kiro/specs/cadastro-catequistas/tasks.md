@@ -22,7 +22,7 @@
 
 - [ ] 2. Domínio da equipe (regras puras, sem framework)
 
-- [ ] 2.1 (P) Implementar as regras de telefone
+- [x] 2.1 (P) Implementar as regras de telefone
   - Normalização para dígitos: aceita pontuação e um `+55` inicial e exige 10 ou 11 dígitos. Formatação no padrão brasileiro. Schema de validação com mensagem em pt-BR.
   - Geração dos links de ligação e de conversa no WhatsApp.
   - Pronto quando: os testes unitários cobrem as entradas com máscara, sem máscara e com +55, telefones de 9 e de 12 dígitos recusados, a formatação com 10 e com 11 dígitos e os dois links.
