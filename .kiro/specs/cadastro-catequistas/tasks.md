@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [ ] 1. Fundação da feature: dados do perfil do membro
+- [x] 1. Fundação da feature: dados do perfil do membro
 
 - [x] 1.1 Criar a tabela de perfil do membro e incluí-la na limpeza dos testes
   - Acrescentar ao schema o modelo de perfil do membro (telefone só com dígitos, observações opcionais, datas), com relação 1:1 com o usuário e exclusão em cascata. Adicionar no usuário o campo de relação opcional.
@@ -133,9 +133,9 @@
   - _Depends: 3.3, 3.4, 3.5, 4.2, 4.3, 4.4_
   - _Requirements: 6.6, 8.1, 8.2, 8.3, 8.4, 8.5_
 
-- [ ] 5. Validação ponta a ponta
+- [x] 5. Validação ponta a ponta
 
-- [ ] 5.1 Escrever os testes e2e da gestão da equipe
+- [x] 5.1 Escrever os testes e2e da gestão da equipe
   - Reutilizar o setup do e2e da fundação, que já salva a sessão de coordenação e a de catequista em `playwright/.auth/`. O preparo do banco já limpa `perfil_membro` (tarefa 1.1).
   - Cenários:
     - cadastrar um catequista pela interface, ver "Membro cadastrado" e o novo catequista conseguir entrar;
