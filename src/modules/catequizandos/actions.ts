@@ -9,13 +9,22 @@ import {
   campoDoFormulario,
   criarFichaSchema,
   lerFichaDoFormulario,
+  type FichaDados,
 } from "@/modules/catequizandos/domain/ficha";
-import { MSG_ERRO_INESPERADO } from "@/modules/catequizandos/mensagens";
+import { transicao, type Operacao } from "@/modules/catequizandos/domain/estado";
+import {
+  MSG_ERRO_INESPERADO,
+  MSG_FICHA_INVALIDA,
+  MSG_TRANSICAO_INVALIDA,
+  type CodigoAviso,
+} from "@/modules/catequizandos/mensagens";
 import {
   atualizarFicha,
   criarCatequizando,
   listarCatequizandos,
+  mudarEstado,
   obterCatequizando,
+  type CatequizandoDetalhe,
 } from "@/modules/catequizandos/repositorio";
 
 export type EstadoFicha = {
@@ -107,4 +116,85 @@ export async function editarCatequizandoAction(
     return { erro: MSG_ERRO_INESPERADO, valores };
   }
   redirect(`/coordenacao/catequizandos/${id}?aviso=alteracoes-salvas`);
+}
+
+const AVISO_DA_OPERACAO: Record<Operacao, CodigoAviso> = {
+  inativar: "inativado",
+  reativar: "reativado",
+  confirmar: "ficha-confirmada",
+  recusar: "ficha-recusada",
+};
+
+/** Ficha gravada no formato do schema (revalidação na confirmação, 8.2). */
+function fichaGravada(c: CatequizandoDetalhe): FichaDados {
+  return {
+    nome: c.nome,
+    dataNascimento: c.dataNascimento,
+    telefone: c.telefone,
+    email: c.email ?? undefined,
+    endereco: c.endereco ?? undefined,
+    observacoes: c.observacoes ?? undefined,
+    sacramentos: c.sacramentos,
+  };
+}
+
+/** Fluxo comum das transições (7.2, 7.4, 7.5, 8.1–8.3). */
+async function executarTransicao(id: string, op: Operacao): Promise<EstadoFicha> {
+  await requireRole(["coordenacao"]); // 1.3: antes de qualquer leitura
+
+  try {
+    const atual = await obterCatequizando(id);
+    if (!atual) return { erro: MSG_ERRO_INESPERADO };
+    const novo = transicao(atual.estado, op);
+    if (!novo) return { erro: MSG_TRANSICAO_INVALIDA };
+    if (
+      op === "confirmar" &&
+      !criarFichaSchema({ hoje: hojeCivil() }).safeParse(fichaGravada(atual)).success
+    ) {
+      return { erro: MSG_FICHA_INVALIDA };
+    }
+    if (!(await mudarEstado(id, atual.estado, novo))) return { erro: MSG_TRANSICAO_INVALIDA };
+  } catch (e) {
+    console.error(`[catequizandos] falha ao ${op}`, {
+      id,
+      erro: e instanceof Error ? e.name : "desconhecido",
+    });
+    return { erro: MSG_ERRO_INESPERADO };
+  }
+  // Fora do try/catch: redirect lança NEXT_REDIRECT.
+  redirect(`/coordenacao/catequizandos/${id}?aviso=${AVISO_DA_OPERACAO[op]}`);
+}
+
+export async function inativarCatequizandoAction(
+  id: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- assinatura do useActionState
+  _anterior: EstadoFicha,
+): Promise<EstadoFicha> {
+  return executarTransicao(id, "inativar");
+}
+
+export async function reativarCatequizandoAction(
+  id: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- assinatura do useActionState
+  _anterior: EstadoFicha,
+): Promise<EstadoFicha> {
+  return executarTransicao(id, "reativar");
+}
+
+/** Confirmação da ficha pendente: revalida a ficha gravada antes de ativar (8.1, 8.2). */
+export async function confirmarFichaAction(
+  id: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- assinatura do useActionState
+  _anterior: EstadoFicha,
+): Promise<EstadoFicha> {
+  return executarTransicao(id, "confirmar");
+}
+
+/** Recusa: a ficha fica inativa, a linha não é excluída (8.3, 7.5). */
+export async function recusarFichaAction(
+  id: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- assinatura do useActionState
+  _anterior: EstadoFicha,
+): Promise<EstadoFicha> {
+  return executarTransicao(id, "recusar");
 }

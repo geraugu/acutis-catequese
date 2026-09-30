@@ -62,7 +62,7 @@
   - _Boundary: catequizandos/mensagens_
   - _Requirements: 2.8, 4.1, 6.3, 7.2, 7.4, 8.1, 8.2, 8.3_
 
-- [ ] 3. Operações no servidor
+- [x] 3. Operações no servidor
 
 - [x] 3.1 Implementar o repositório dos catequizandos
   - Implementar `listarCatequizandos`, `obterCatequizando` (id que não é UUID trata como inexistente), `criarCatequizando`, `atualizarFicha` (em transação, substituindo os sacramentos), `mudarEstado` condicional e `contarPendentes`, convertendo `@db.Date` para `DataCivil`.
@@ -78,7 +78,7 @@
   - _Depends: 2.3, 2.4, 3.1_
   - _Requirements: 1.3, 2.1, 2.3, 2.8, 4.1, 4.2, 4.3, 6.3, 6.4, 8.4_
 
-- [ ] 3.3 Implementar as ações de estado
+- [x] 3.3 Implementar as ações de estado
   - Implementar `inativarCatequizandoAction`, `reativarCatequizandoAction`, `confirmarFichaAction` (que revalida a ficha gravada) e `recusarFichaAction`, com `transicao` e `mudarEstado`.
   - Pronto quando: os testes de integração mostram inativar e reativar; confirmar uma pendente válida; recusar a confirmação de uma pendente com idade abaixo do mínimo, sem mudar o estado; recusar uma ficha deixando-a inativa e mantendo a linha; reativar alguém já ativo devolvendo erro; e um catequista sendo rejeitado.
   - _Boundary: catequizandos/actions_
