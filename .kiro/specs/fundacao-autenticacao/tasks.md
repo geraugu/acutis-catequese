@@ -109,7 +109,7 @@
 
 - [ ] 4. Interface e rotas
 
-- [ ] 4.1 (P) Construir o layout base e a navegação por papel
+- [x] 4.1 (P) Construir o layout base e a navegação por papel
   - Layout raiz em pt-BR com estilos globais responsivos.
   - Estrutura interna: cabeçalho com nome do usuário, papel e botão "Sair", mais navegação principal com os itens do papel. Por enquanto, cada papel tem só o item "Início".
   - Usar marcação semântica (cabeçalho, navegação rotulada, conteúdo principal), operável por teclado e sem rolagem horizontal a partir de 360 px.
@@ -183,3 +183,4 @@
 - 3.3: `getSessao` usa `disableCookieCache: true` para sempre validar a sessão no banco. Um papel inválido leva a `/acesso-negado`, e não ao login, para evitar loop. Nos testes, mockar `next/headers` e `next/navigation` (o `redirect` lança erro). O pacote `server-only` não foi instalado por falta de disco; pendente.
 - 3.4: o destino pós-login fica em `domain/destino-login.ts`. Os testes de action verificam o login pela linha de sessão no banco, porque o `nextCookies` grava via internals do `next/headers` (os atributos do cookie já são cobertos pela 3.1). Pendência defensiva: `sanitizarCallbackUrl` não recusa segmentos `..`; a DAL barra o acesso no destino.
 - 3.5: a lógica do seed fica em `src/modules/auth/seed-coordenacao.ts` (`semearCoordenacao`, reusável no setup do e2e). O `tsx` resolve o alias `@/`, e `src/lib/auth.ts` funciona fora do Next.
+- 4.1: o `AppShell` recebe `sessao` e o `caminhoAtual?` opcional (para `aria-current`). O layout `(interno)` da 4.3 deve repassar o caminho atual. Nos testes de componente que importam `actions.ts`, mockar `@/modules/auth/actions`.
