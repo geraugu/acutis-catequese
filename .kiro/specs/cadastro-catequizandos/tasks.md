@@ -2,7 +2,7 @@
 
 - [ ] 1. Base compartilhada e dados
 
-- [ ] 1.1 Extrair busca e telefone para o módulo compartilhado
+- [x] 1.1 Extrair busca e telefone para o módulo compartilhado
   - Mover `normalizarBusca`, `filtrarPorTermo`, `paginar` e `Pagina` para `compartilhado/busca`, e o telefone inteiro para `compartilhado/telefone`. A equipe mantém `filtrarMembros` e os próprios tipos, e passa a importar o restante do compartilhado. Nenhuma mudança de comportamento.
   - Mover os testes unitários correspondentes para `tests/unit/compartilhado/` e ajustar os imports dos testes da equipe.
   - Pronto quando: nenhum arquivo importa `equipe/domain/telefone` e `npm run test:unit`, `npm run test:integration`, lint, typecheck e `format:check` passam sem mudança de resultado.

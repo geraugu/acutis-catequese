@@ -5,7 +5,7 @@ import {
   linkWhatsApp,
   normalizarTelefone,
   telefoneSchema,
-} from "@/modules/equipe/domain/telefone";
+} from "@/modules/compartilhado/telefone";
 
 describe("normalizarTelefone", () => {
   it("aceita celular com máscara", () => {

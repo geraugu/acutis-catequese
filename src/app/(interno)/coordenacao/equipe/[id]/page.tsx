@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { requireRole } from "@/modules/auth/dal";
 import { ROTULO_PAPEL } from "@/modules/auth/domain/papeis";
 import { obterMembro } from "@/modules/equipe/repositorio";
-import { formatarTelefone, linkLigacao, linkWhatsApp } from "@/modules/equipe/domain/telefone";
+import { formatarTelefone, linkLigacao, linkWhatsApp } from "@/modules/compartilhado/telefone";
 import { inativarMembroAction, reativarMembroAction } from "@/modules/equipe/actions";
 import { Aviso } from "@/components/equipe/aviso";
 import { AcoesSituacao } from "@/components/equipe/acoes-situacao";

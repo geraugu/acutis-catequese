@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { ROTULO_PAPEL } from "@/modules/auth/domain/papeis";
 import type { Situacao } from "@/modules/equipe/domain/membro";
-import { formatarTelefone } from "@/modules/equipe/domain/telefone";
+import { formatarTelefone } from "@/modules/compartilhado/telefone";
 import type { MembroResumo } from "@/modules/equipe/repositorio";
 
 const ROTULO_SITUACAO: Record<Situacao, string> = { ativo: "Ativo", inativo: "Inativo" };

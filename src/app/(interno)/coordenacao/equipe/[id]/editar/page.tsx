@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireRole } from "@/modules/auth/dal";
 import { obterMembro } from "@/modules/equipe/repositorio";
-import { formatarTelefone } from "@/modules/equipe/domain/telefone";
+import { formatarTelefone } from "@/modules/compartilhado/telefone";
 import { editarMembroAction } from "@/modules/equipe/actions";
 import { FormularioMembro } from "@/components/equipe/formulario-membro";
 

@@ -2,7 +2,7 @@ import { z } from "zod";
 import { normalizarEmail } from "@/modules/auth/domain/credenciais";
 import { PAPEIS, type Papel } from "@/modules/auth/domain/papeis";
 import { senhaSchema } from "@/modules/auth/domain/senha";
-import { telefoneSchema } from "./telefone";
+import { telefoneSchema } from "@/modules/compartilhado/telefone";
 
 /** Situação de um membro da equipe. */
 export type Situacao = "ativo" | "inativo";
