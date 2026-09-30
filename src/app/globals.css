@@ -449,3 +449,93 @@ main {
     flex: 1 1 auto;
   }
 }
+
+/* Equipe: cabeçalho da página e formulários (membro e senha) */
+.pagina-cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.pagina-cabecalho h1 {
+  margin: 0;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 36rem;
+  min-width: 0;
+}
+
+.formulario .botao {
+  align-self: flex-start;
+}
+
+.formulario fieldset.campo {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.formulario fieldset.campo legend {
+  padding: 0;
+  margin-bottom: 0.25rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.formulario fieldset.campo label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  font-weight: 400;
+}
+
+.formulario fieldset.campo input[type="radio"] {
+  width: 1.125rem;
+  min-height: 0;
+  height: 1.125rem;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--cor-primaria);
+}
+
+.campo textarea {
+  font: inherit;
+  width: 100%;
+  min-height: 6rem;
+  padding: 0.5rem 0.875rem;
+  border: 1px solid transparent;
+  border-radius: var(--raio-campo);
+  background: var(--cor-campo);
+  color: var(--cor-texto);
+  resize: vertical;
+}
+
+.campo textarea:hover {
+  border-color: var(--cor-borda);
+}
+
+.campo textarea:focus {
+  background: var(--cor-superficie);
+  border-color: var(--cor-primaria);
+}
+
+.campo textarea[aria-invalid="true"],
+.formulario fieldset.campo[aria-invalid="true"] legend {
+  color: var(--cor-perigo);
+}
+
+.campo-dica {
+  margin: 0;
+  color: var(--cor-texto-suave);
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}

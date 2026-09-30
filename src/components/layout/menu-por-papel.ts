@@ -5,7 +5,9 @@ export interface ItemMenu {
   href: string;
 }
 
-/** Itens da navegação principal de cada papel. Por enquanto, só "Início". */
+/** Itens da navegação principal de cada papel. A coordenação também gerencia a equipe. */
 export function menuPorPapel(papel: Papel): ItemMenu[] {
-  return [{ rotulo: "Início", href: homeDoPapel(papel) }];
+  const itens: ItemMenu[] = [{ rotulo: "Início", href: homeDoPapel(papel) }];
+  if (papel === "coordenacao") itens.push({ rotulo: "Equipe", href: "/coordenacao/equipe" });
+  return itens;
 }

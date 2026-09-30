@@ -116,7 +116,7 @@
   - _Depends: 3.5_
   - _Requirements: 6.2_
 
-- [ ] 4.4 Integração: item de menu e páginas de lista e cadastro
+- [x] 4.4 Integração: item de menu e páginas de lista e cadastro
   - Acrescentar o item "Equipe" ao menu da coordenação e atualizar o teste unitário do menu: o item aparece só para a coordenação.
   - Página da lista, que lê busca, situação e página da URL, e página de cadastro. As duas exigem o papel coordenação e têm títulos em pt-BR.
   - Estilos dos formulários (membro e senha) no CSS global.
