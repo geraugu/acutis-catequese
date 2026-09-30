@@ -88,11 +88,34 @@ O `db:seed` lê `SEED_COORDENACAO_EMAIL`, `SEED_COORDENACAO_SENHA` (mínimo 8 ca
 
 Para parar o banco: `npm run db:down`. Se faltar ou for inválida alguma variável do `.env`, a aplicação não inicia e a mensagem indica qual variável corrigir.
 
+### Variáveis de ambiente
+
+| Variável | Uso |
+|---|---|
+| `DATABASE_URL` | Banco da aplicação (dev: `acutis_dev` no Docker) |
+| `DATABASE_URL_TEST` | Banco dos testes de integração e e2e (`acutis_test`, criado pelo Docker Compose) |
+| `BETTER_AUTH_SECRET` | Segredo da autenticação, com no mínimo 32 caracteres (gere com `openssl rand -base64 32`) |
+| `BETTER_AUTH_URL` | URL pública da aplicação (dev: `http://localhost:3000`) |
+| `AUTH_RATE_LIMIT` | `on` ou `off`: limite de requisições por IP no login |
+| `SEED_COORDENACAO_EMAIL` / `_SENHA` / `_NOME` | Conta inicial de coordenação criada pelo `db:seed` |
+
 ## Testes
 
+Com o banco rodando (`npm run db:up`):
+
 ```bash
-npm test
+npm run lint              # análise estática
+npm run typecheck         # verificação de tipos
+npm run format:check      # formatação (Prettier)
+npm run test:unit         # testes unitários (Vitest; domínio e componentes)
+npm run test:integration  # testes de integração (Vitest + banco acutis_test)
+npm run test:e2e          # testes ponta a ponta (Playwright; faz build e sobe a aplicação)
+npm test                  # unitários + integração
 ```
+
+Na primeira execução do e2e, instale o navegador com `npx playwright install chromium`. Os testes de integração e e2e limpam as tabelas do `acutis_test`, então não os rode ao mesmo tempo.
+
+A cada push e pull request, o [GitHub Actions](.github/workflows/ci.yml) executa três jobs: **Qualidade** (lint, tipos, formatação), **Testes** (unitários e integração) e **E2E**.
 
 ## Exemplos de uso
 
