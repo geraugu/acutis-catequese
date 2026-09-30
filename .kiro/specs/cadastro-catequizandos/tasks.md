@@ -64,7 +64,7 @@
 
 - [ ] 3. Operações no servidor
 
-- [ ] 3.1 Implementar o repositório dos catequizandos
+- [x] 3.1 Implementar o repositório dos catequizandos
   - Implementar `listarCatequizandos`, `obterCatequizando` (id que não é UUID trata como inexistente), `criarCatequizando`, `atualizarFicha` (em transação, substituindo os sacramentos), `mudarEstado` condicional e `contarPendentes`, convertendo `@db.Date` para `DataCivil`.
   - Pronto quando: os testes de integração mostram criar e ler com sacramentos e datas preservadas, a atualização substituindo os sacramentos, `mudarEstado` devolvendo false quando o estado de origem já mudou, a contagem de pendentes e um id inválido resultando em null.
   - _Boundary: catequizandos/repositorio_
@@ -127,3 +127,4 @@
 ## Implementation Notes
 - 1.5: os modelos `Catequizando` e `SacramentoRecebido` foram criados e a migração é `*_catequizandos`. O global-setup da integração roda `prisma migrate deploy` no acutis_test. Nos testes, as datas `@db.Date` são gravadas como `new Date("AAAA-MM-DD")` (meia-noite UTC) e lidas com `toISOString().slice(0,10)`.
 - 2.1: `ficha.ts` exporta `campoDoFormulario(path)`, que mapeia `["sacramentos", s, "data"]` para `"{s}Data"`, e as actions devem usá-la para montar `errosCampos`. No Zod 4, `abort: true` torna a issue fatal e impede refinamentos com `when`. Mensagens condicionais devem usar a função `error`.
+- 3.1: `atualizarFicha` lança P2025 quando o id não existe, então as actions devem chamar `obterCatequizando` antes. Ao ler, `SacramentoFicha` omite `data` e `paroquia` quando são nulos.
