@@ -54,7 +54,7 @@
 
 - [ ] 3. Operações no servidor
 
-- [ ] 3.1 Implementar o repositório da equipe
+- [x] 3.1 Implementar o repositório da equipe
   - Listar todos os membros com papel, telefone e situação (a situação vem do bloqueio da conta), omitindo registros com papel inválido. Obter o detalhe de um membro com observações e data de cadastro.
   - Verificar se um e-mail está em uso, opcionalmente ignorando um id. Gravar o perfil criando ou atualizando. Contar as coordenações ativas.
   - Pronto quando: os testes de integração mostram que a conta do seed, sem perfil, aparece com telefone nulo; que um membro banido aparece como inativo; que a checagem de e-mail em uso respeita a exceção de id; e que a contagem ignora coordenações inativas.
