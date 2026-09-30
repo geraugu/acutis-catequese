@@ -1,0 +1,115 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# Variáveis exclusivamente de teste: nenhuma credencial real (requisito 1.6).
+env:
+  DATABASE_URL: postgresql://acutis:acutis@localhost:5432/acutis_test
+  DATABASE_URL_TEST: postgresql://acutis:acutis@localhost:5432/acutis_test
+  BETTER_AUTH_SECRET: ci-segredo-de-teste-nao-usar-em-producao-000
+  BETTER_AUTH_URL: http://localhost:3000
+  AUTH_RATE_LIMIT: "off"
+  SEED_COORDENACAO_EMAIL: coordenacao@exemplo.com
+  SEED_COORDENACAO_SENHA: senha-de-teste-ci-123
+  SEED_COORDENACAO_NOME: Coordenação
+
+jobs:
+  qualidade:
+    name: Qualidade
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Instalar dependências
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Formatação
+        run: npm run format:check
+
+  testes:
+    name: Testes
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: acutis
+          POSTGRES_PASSWORD: acutis
+          POSTGRES_DB: acutis_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U acutis -d acutis_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Instalar dependências
+        run: npm ci
+      - name: Testes unitários
+        run: npm run test:unit
+      - name: Testes de integração
+        run: npm run test:integration
+
+  e2e:
+    name: E2E
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: acutis
+          POSTGRES_PASSWORD: acutis
+          POSTGRES_DB: acutis_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U acutis -d acutis_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Instalar dependências
+        run: npm ci
+      - name: Instalar navegador do Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Aplicar migrações
+        run: npx prisma migrate deploy
+      # O Playwright faz o build e sobe a aplicação (webServer); o setup prepara o banco e o seed.
+      - name: Testes E2E
+        run: npm run test:e2e
+        env:
+          CI: "true"
+      - name: Publicar relatório do Playwright
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+          if-no-files-found: ignore
