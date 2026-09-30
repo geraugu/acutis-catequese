@@ -69,16 +69,20 @@ Legenda: 📝 Brief · 📋 Requisitos · 📐 Design · ✅ Tarefas aprovadas �
 
 ## Instalação e execução
 
+Pré-requisitos: Node.js 22+ e Docker (com Docker Compose).
+
 ```bash
 git clone https://github.com/geraugu/acutis-catequese.git
 cd acutis-catequese
 cp .env.example .env
-docker compose up -d
+# Gere um segredo de autenticação (32+ caracteres) e cole em BETTER_AUTH_SECRET no .env:
+openssl rand -base64 32
 npm install
+npm run db:up      # sobe o PostgreSQL 17 e aguarda ficar saudável
 npm run dev
 ```
 
-> Os comandos serão confirmados quando a stack for definida.
+Para parar o banco: `npm run db:down`. Se faltar ou for inválida alguma variável do `.env`, a aplicação não inicia e a mensagem indica qual variável corrigir.
 
 ## Testes
 

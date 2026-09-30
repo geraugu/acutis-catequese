@@ -11,7 +11,7 @@
   - Pronto quando: `npm run dev` exibe uma página inicial em `localhost:3000`, e `npm run lint` e `npm run typecheck` terminam sem erros.
   - _Requirements: 2.3_
 
-- [ ] 1.2 Configurar o PostgreSQL local e a validação de variáveis de ambiente
+- [x] 1.2 Configurar o PostgreSQL local e a validação de variáveis de ambiente
   - Subir o PostgreSQL 17 via Docker Compose, com volume nomeado e healthcheck.
   - Criar o `.env.example` com todas as variáveis do design (banco, segredo e URL de autenticação, conta inicial da coordenação, chave do rate limit), sem valores secretos reais.
   - Registrar os scripts `db:up`, `db:migrate` e `db:seed`, e documentar no README o passo de copiar `.env.example` para `.env` e gerar um segredo de autenticação de 32 caracteres ou mais.
@@ -173,3 +173,4 @@
 
 ## Implementation Notes
 - 1.1: Better Auth, Prisma e Vitest não foram instalados na 1.1 (ficam com 3.1, 1.3 e 1.4); fixar `better-auth@^1.7`, `prisma@^7.10` e `vitest@^4` nessas tarefas. O npm 11 retém os install scripts (ex.: unrs-resolver); até aqui não foi preciso aprová-los.
+- 1.2: o Docker (OrbStack) fica em `~/.orbstack/bin`, que não está no PATH padrão. O banco `acutis_test` só é criado pelo init script quando o volume é criado. Os scripts `db:migrate` e `db:seed` ficam com as tarefas 1.3 e 3.5. A validação de env roda em `next.config.ts`.

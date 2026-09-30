@@ -1,0 +1,22 @@
+# Somente para desenvolvimento local. Credenciais padrão não são segredos.
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-acutis}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-acutis}
+      POSTGRES_DB: ${POSTGRES_DB:-acutis_dev}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./docker/postgres-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres-data:
