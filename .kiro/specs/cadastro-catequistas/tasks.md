@@ -29,7 +29,7 @@
   - _Boundary: equipe/domain/telefone_
   - _Requirements: 2.8, 8.3_
 
-- [ ] 2.2 (P) Implementar a busca e a paginação da equipe
+- [x] 2.2 (P) Implementar a busca e a paginação da equipe
   - Normalização de texto: minúsculas, sem acentos e com espaços colapsados.
   - Exportar `normalizarBusca`, `filtrarPorTermo` (genérico, reutilizável pelas próximas listas), `filtrarMembros` (especialização para a equipe) e `paginar`, conforme o design.
   - Filtro por termo, que casa com o nome ou o e-mail normalizados ou com os dígitos do telefone. Filtro por situação (ativo, inativo, todos). Ordenação alfabética em pt-BR.
@@ -152,3 +152,4 @@
 
 ## Implementation Notes
 - 1.2: com a sessão de coordenação, todas as chamadas do plugin admin funcionam (createUser, adminUpdateUser, setRole, setUserPassword, revokeUserSessions, banUser/unbanUser, inclusive com alvo coordenação, e removeUser). Nenhuma permissão foi alterada, então não houve revalidação da fundação. Os helpers ficam em `tests/integration/equipe/helpers.ts` e `next-mocks.ts` (os `vi.mock` ficam em cada arquivo de teste). O e-mail é gravado em minúsculas.
+- 2.2: `Situacao` e `FiltroSituacao` foram declarados provisoriamente em `domain/busca.ts`. A tarefa 2.4 deve movê-los para `domain/membro.ts` e fazer `busca.ts` importá-los de lá.
