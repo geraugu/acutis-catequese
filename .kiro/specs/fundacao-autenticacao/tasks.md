@@ -92,7 +92,7 @@
   - _Depends: 3.1, 2.1_
   - _Requirements: 5.1, 5.4, 6.2, 6.3, 6.4, 6.5_
 
-- [ ] 3.4 Implementar as ações de entrar e sair
+- [x] 3.4 Implementar as ações de entrar e sair
   - Entrar: valida o formulário, faz login sem "lembrar-me", traduz os erros para as mensagens em pt-BR e redireciona para o endereço de retorno (se for interno e permitido ao papel) ou para a página inicial do papel.
   - Sair: encerra a sessão no servidor e redireciona para o login.
   - Pronto quando: os testes de integração mostram que um login válido redireciona para a página inicial do papel; que o endereço de retorno é respeitado quando permitido; que um endereço de retorno externo é ignorado; e que depois de sair o mesmo cookie não dá mais acesso.
@@ -181,3 +181,4 @@
 - 3.1: no Better Auth 1.7.6, `rememberMe:false` grava a sessão no banco com validade fixa de 24h. Um `databaseHooks.session.create.before` limita a 12h. O `createUser` do admin ignora `minPasswordLength`, então `hooks.before` valida `/admin/create-user` com `senhaSchema`. **Na 3.2, estender esse `hooks.before`, sem substituí-lo.** A tabela `rateLimit` foi adicionada. Depois de uma migração, rodar `npx prisma generate`.
 - 3.2: no Better Auth 1.7.6, o hook `after` roda mesmo quando o endpoint lança erro (o erro chega em `ctx.context.returned`). Um `APIError` lançado no `before` não passa pelo `after`. `auth.api.signInEmail({asResponse:true})` repassa ao chamador o `APIError` do `before` (429), então a action da 3.4 precisa capturá-lo. O hook `before` substitui `body.email` pelo e-mail normalizado.
 - 3.3: `getSessao` usa `disableCookieCache: true` para sempre validar a sessão no banco. Um papel inválido leva a `/acesso-negado`, e não ao login, para evitar loop. Nos testes, mockar `next/headers` e `next/navigation` (o `redirect` lança erro). O pacote `server-only` não foi instalado por falta de disco; pendente.
+- 3.4: o destino pós-login fica em `domain/destino-login.ts`. Os testes de action verificam o login pela linha de sessão no banco, porque o `nextCookies` grava via internals do `next/headers` (os atributos do cookie já são cobertos pela 3.1). Pendência defensiva: `sanitizarCallbackUrl` não recusa segmentos `..`; a DAL barra o acesso no destino.
