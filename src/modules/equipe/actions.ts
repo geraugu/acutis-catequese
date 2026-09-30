@@ -198,3 +198,58 @@ export async function redefinirSenhaAction(
   }
   redirect(`/coordenacao/equipe/${id}?aviso=senha-redefinida`);
 }
+
+/**
+ * Inativação (6.1, 6.5, 7.1, 7.3): aplica a proteção da coordenação e bloqueia a conta
+ * sem prazo via `banUser`, o que encerra as sessões. Nenhum dado é excluído.
+ */
+export async function inativarMembroAction(
+  id: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- assinatura do useActionState
+  _anterior: EstadoFormulario,
+): Promise<EstadoFormulario> {
+  const ator = await requireRole(["coordenacao"]); // 1.3
+
+  try {
+    const alvo = await obterMembro(id);
+    if (!alvo) return { erro: MSG_ERRO_INESPERADO };
+    const violacao = verificarProtecaoCoordenacao({
+      atorId: ator.userId,
+      alvo,
+      operacao: { tipo: "inativar" },
+      coordenacoesAtivas: await contarCoordenacoesAtivas(),
+    });
+    if (violacao) return { erro: MENSAGEM_VIOLACAO[violacao] };
+
+    await auth.api.banUser({ headers: await headers(), body: { userId: id } });
+  } catch (e) {
+    console.error("[equipe] falha ao inativar membro", {
+      userId: id,
+      erro: e instanceof Error ? e.message : String(e),
+    });
+    return { erro: MSG_ERRO_INESPERADO };
+  }
+  redirect(`/coordenacao/equipe/${id}?aviso=inativado`);
+}
+
+/** Reativação (6.4): remove o bloqueio; a senha anterior volta a valer. */
+export async function reativarMembroAction(
+  id: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- assinatura do useActionState
+  _anterior: EstadoFormulario,
+): Promise<EstadoFormulario> {
+  await requireRole(["coordenacao"]); // 1.3
+
+  try {
+    const alvo = await obterMembro(id);
+    if (!alvo) return { erro: MSG_ERRO_INESPERADO };
+    await auth.api.unbanUser({ headers: await headers(), body: { userId: id } });
+  } catch (e) {
+    console.error("[equipe] falha ao reativar membro", {
+      userId: id,
+      erro: e instanceof Error ? e.message : String(e),
+    });
+    return { erro: MSG_ERRO_INESPERADO };
+  }
+  redirect(`/coordenacao/equipe/${id}?aviso=reativado`);
+}

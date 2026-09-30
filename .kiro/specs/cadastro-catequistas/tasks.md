@@ -52,7 +52,7 @@
   - _Depends: 2.1_
   - _Requirements: 2.2, 2.3, 2.4, 2.6, 2.7, 2.9, 4.2, 5.3_
 
-- [ ] 3. Operações no servidor
+- [x] 3. Operações no servidor
 
 - [x] 3.1 Implementar o repositório da equipe
   - Listar todos os membros com papel, telefone e situação (a situação vem do bloqueio da conta), omitindo registros com papel inválido. Obter o detalhe de um membro com observações e data de cadastro.
@@ -81,7 +81,7 @@
   - _Depends: 3.2_
   - _Requirements: 1.3, 5.1, 5.2, 5.4_
 
-- [ ] 3.5 Implementar as ações de inativar e reativar
+- [x] 3.5 Implementar as ações de inativar e reativar
   - Autorizar e aplicar as regras de proteção antes de inativar. Inativar bloqueia a conta sem prazo pelo plugin admin, o que encerra as sessões. Reativar remove o bloqueio. Nenhuma das duas exclui dados.
   - Pronto quando: os testes de integração mostram que o membro inativado recebe a recusa de conta desabilitada no login e perde a sessão; que o reativado volta a logar com a senha anterior; que inativar a si mesmo e inativar a última coordenação são recusados sem mudanças; e que inativar uma coordenação, havendo duas, funciona.
   - _Depends: 1.2, 2.3, 3.2_
@@ -154,3 +154,4 @@
 - 1.2: com a sessão de coordenação, todas as chamadas do plugin admin funcionam (createUser, adminUpdateUser, setRole, setUserPassword, revokeUserSessions, banUser/unbanUser, inclusive com alvo coordenação, e removeUser). Nenhuma permissão foi alterada, então não houve revalidação da fundação. Os helpers ficam em `tests/integration/equipe/helpers.ts` e `next-mocks.ts` (os `vi.mock` ficam em cada arquivo de teste). O e-mail é gravado em minúsculas.
 - 2.2: `Situacao` e `FiltroSituacao` foram declarados provisoriamente em `domain/busca.ts`. A tarefa 2.4 deve movê-los para `domain/membro.ts` e fazer `busca.ts` importá-los de lá.
 - 3.2: as actions ficam em `src/modules/equipe/actions.ts`, que exporta `EstadoFormulario`. A equipe usa um `MSG_ERRO_INESPERADO` próprio, em `equipe/mensagens.ts`, porque o da fundação tem texto de login. O teste de falha simulada usa `vi.spyOn` no namespace do repositório.
+- 3.3/3.5: a regra "última coordenação" pura não pode ser montada na integração, porque quem age é sempre uma coordenação ativa e o único alvo possível é ela mesma, caso em que "a-si-mesmo" ou "próprio papel" tem precedência. Por isso ela fica coberta pelos testes unitários do domínio.
