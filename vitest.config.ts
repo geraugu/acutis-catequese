@@ -2,7 +2,11 @@ import { fileURLToPath } from "node:url";
 import { loadEnv } from "vite";
 import { defineConfig } from "vitest/config";
 
-const alias = { "@": fileURLToPath(new URL("./src", import.meta.url)) };
+const alias = {
+  "@": fileURLToPath(new URL("./src", import.meta.url)),
+  // "server-only" lança fora do bundler do Next; nos testes vira um módulo vazio.
+  "server-only": fileURLToPath(new URL("./tests/server-only-vazio.ts", import.meta.url)),
+};
 const variaveis = loadEnv("test", process.cwd(), "");
 
 export default defineConfig({

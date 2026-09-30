@@ -1,3 +1,4 @@
+import "server-only";
 import { cache } from "react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -6,6 +7,7 @@ import { sanitizarCallbackUrl } from "@/modules/auth/domain/callback-url";
 import { isPapel, podeAcessar, type Papel } from "@/modules/auth/domain/papeis";
 
 // Camada de sessão e autorização: usar apenas no servidor (páginas, layouts e Server Actions).
+// O import de "server-only" faz o build falhar se este módulo for parar num Client Component.
 
 export interface SessaoUsuario {
   userId: string;

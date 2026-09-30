@@ -59,6 +59,11 @@ describe("sanitizarCallbackUrl", () => {
     " /catequista",
     "/\tevil",
     "catequista",
+    "/catequista/../coordenacao",
+    "/..",
+    "/catequista/./x",
+    "/%2e%2e/coordenacao",
+    "/catequista/%2E%2E/coordenacao",
     null,
     undefined,
   ])("rejeita %j", (u) => {
