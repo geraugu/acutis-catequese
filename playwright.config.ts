@@ -13,7 +13,7 @@ export default defineConfig({
   reporter: process.env.CI ? "github" : "list",
   use: { baseURL, trace: "on-first-retry" },
   projects: [
-    { name: "setup", testMatch: /.*\.setup\.ts/ },
+    { name: "setup", testMatch: /.*\.setup\.ts/, use: { channel: "chromium" } },
     {
       name: "chromium",
       // channel "chromium" usa o navegador completo em modo headless novo.
@@ -27,6 +27,12 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
     // A aplicação sob e2e usa sempre o banco de teste.
-    env: { ...variaveis, DATABASE_URL: variaveis.DATABASE_URL_TEST ?? "", PORT: String(PORTA) },
+    env: {
+      ...variaveis,
+      DATABASE_URL: variaveis.DATABASE_URL_TEST ?? "",
+      PORT: String(PORTA),
+      // Sem limite de taxa no e2e: vários logins seguidos do mesmo IP.
+      AUTH_RATE_LIMIT: "off",
+    },
   },
 });

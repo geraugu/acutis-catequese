@@ -140,7 +140,7 @@
 
 - [ ] 5. Validação ponta a ponta e automação
 
-- [ ] 5.1 Escrever os testes e2e dos fluxos de acesso
+- [x] 5.1 Escrever os testes e2e dos fluxos de acesso
   - Setup: seed da coordenação e criação de um catequista de teste pelo servidor (a criação de catequistas não faz parte do seed de produção), com login e estado salvo para cada papel.
   - Cenários:
     - login da coordenação, página inicial com nome, papel e "Sair", e logout de volta ao login;
@@ -185,3 +185,4 @@
 - 3.5: a lógica do seed fica em `src/modules/auth/seed-coordenacao.ts` (`semearCoordenacao`, reusável no setup do e2e). O `tsx` resolve o alias `@/`, e `src/lib/auth.ts` funciona fora do Next.
 - 4.1: o `AppShell` recebe `sessao` e o `caminhoAtual?` opcional (para `aria-current`). O layout `(interno)` da 4.3 deve repassar o caminho atual. Nos testes de componente que importam `actions.ts`, mockar `@/modules/auth/actions`.
 - 4.3: o proxy grava o cabeçalho `x-caminho` (sobrescrevendo o que vier do cliente), e o layout `(interno)` o lê para o `callbackUrl` e o `aria-current`. O matcher exclui prefixos sem fronteira (`login`, `api`), então `/login2` também escaparia do proxy; é inofensivo porque a DAL protege, mas pode ser endurecido com `login(?:/|$)`. O implementador ficou BLOCKED porque o classificador de permissão estava indisponível; build, smoke via curl e e2e foram verificados pelo controlador.
+- 5.1: o preparo do banco do e2e (`tests/e2e/preparar-banco.ts`) roda via `npx tsx`, porque o client ESM do Prisma não carrega no loader do Playwright. Ele se recusa a rodar fora do `acutis_test` e limpa as tabelas de auth, então e2e e integração não podem rodar ao mesmo tempo. O e2e roda com `AUTH_RATE_LIMIT=off`. Revisão feita inline (a revisão por subagente foi bloqueada pela indisponibilidade do classificador).
