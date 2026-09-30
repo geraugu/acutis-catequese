@@ -53,7 +53,7 @@ Cada spec fica em `.kiro/specs/<funcionalidade>/`, com os arquivos `brief.md`, `
 | # | Spec | Descrição | Status |
 |---|---|---|---|
 | 1 | [fundacao-autenticacao](.kiro/specs/fundacao-autenticacao/) | Setup do projeto e login com os perfis coordenação e catequista | 🚀 Entregue (v0.1.0) |
-| 2 | [cadastro-catequistas](.kiro/specs/cadastro-catequistas/) | Cadastro de catequistas com conta de acesso | 📝 Brief |
+| 2 | [cadastro-catequistas](.kiro/specs/cadastro-catequistas/) | Cadastro de catequistas com conta de acesso | ✅ Tarefas aprovadas |
 | 3 | [cadastro-catequizandos](.kiro/specs/cadastro-catequizandos/) | Cadastro de catequizandos e situação sacramental | 📝 Brief |
 | 4 | [gestao-turmas](.kiro/specs/gestao-turmas/) | Turmas, catequistas responsáveis e inscrições | 📝 Brief |
 | 5 | [programa-catequese](.kiro/specs/programa-catequese/) | Encontros e temas de cada turma | 📝 Brief |

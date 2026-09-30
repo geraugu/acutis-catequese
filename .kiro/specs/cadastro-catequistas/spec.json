@@ -1,24 +1,22 @@
 {
   "feature_name": "cadastro-catequistas",
   "created_at": "2026-09-30T14:45:22Z",
-  "updated_at": "2026-09-30T14:45:22Z",
+  "updated_at": "2026-09-30T15:50:00Z",
   "language": "pt",
-  "phase": "initialized",
+  "phase": "tasks-generated",
   "approvals": {
     "requirements": {
-      "generated": false,
-      "approved": false
+      "generated": true,
+      "approved": true
     },
     "design": {
-      "generated": false,
-      "approved": false
+      "generated": true,
+      "approved": true
     },
     "tasks": {
-      "generated": false,
-      "approved": false
+      "generated": true,
+      "approved": true
     }
   },
   "ready_for_implementation": false
 }
-
-
