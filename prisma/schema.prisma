@@ -26,6 +26,7 @@ model User {
 
   sessions Session[]
   accounts Account[]
+  perfil   PerfilMembro?
 
   @@unique([email])
   @@map("user")
@@ -99,4 +100,15 @@ model LoginAttempt {
 
   @@index([email, createdAt])
   @@map("login_attempt")
+}
+
+model PerfilMembro {
+  userId      String   @id
+  telefone    String
+  observacoes String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("perfil_membro")
 }

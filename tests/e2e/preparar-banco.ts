@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { semearCoordenacao } from "@/modules/auth/seed-coordenacao";
 import { CATEQUISTA, COORDENACAO } from "./fixtures";
 
-const TABELAS = ["user", "session", "account", "verification", "rateLimit", "login_attempt"];
+const TABELAS = ["user", "session", "account", "verification", "rateLimit", "login_attempt", "perfil_membro"];
 
 async function main() {
   if (!/acutis_test/.test(process.env.DATABASE_URL ?? "")) {

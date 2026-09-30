@@ -2,7 +2,7 @@
 
 - [ ] 1. Fundação da feature: dados do perfil do membro
 
-- [ ] 1.1 Criar a tabela de perfil do membro e incluí-la na limpeza dos testes
+- [x] 1.1 Criar a tabela de perfil do membro e incluí-la na limpeza dos testes
   - Acrescentar ao schema o modelo de perfil do membro (telefone só com dígitos, observações opcionais, datas), com relação 1:1 com o usuário e exclusão em cascata. Adicionar no usuário o campo de relação opcional.
   - Gerar e aplicar a migração nos bancos de desenvolvimento e de teste e regenerar o client.
   - Incluir a nova tabela nas listas de TRUNCATE do setup de integração e do preparo do banco do e2e.
@@ -149,3 +149,5 @@
   - Pronto quando: `npm run test:e2e` passa com todos os cenários da fundação e desta spec.
   - _Depends: 4.5_
   - _Requirements: 1.2, 2.1, 2.9, 3.2, 3.4, 3.7, 6.1, 6.2, 6.3, 8.1, 8.3, 8.4, 8.5_
+
+## Implementation Notes

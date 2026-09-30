@@ -1,7 +1,7 @@
 import { afterAll, beforeEach } from "vitest";
 import { prisma } from "@/lib/prisma";
 
-const TABELAS = ["user", "session", "account", "verification", "rateLimit", "login_attempt"];
+const TABELAS = ["user", "session", "account", "verification", "rateLimit", "login_attempt", "perfil_membro"];
 
 const url = process.env.DATABASE_URL ?? "";
 if (!/acutis_test/.test(url)) {
