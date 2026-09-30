@@ -80,8 +80,11 @@ openssl rand -base64 32
 npm install
 npm run db:up      # sobe o PostgreSQL 17 e aguarda ficar saudável
 npm run db:migrate # aplica as migrações do Prisma no banco local
+npm run db:seed    # cria a conta inicial de coordenação (SEED_COORDENACAO_*)
 npm run dev
 ```
+
+O `db:seed` lê `SEED_COORDENACAO_EMAIL`, `SEED_COORDENACAO_SENHA` (mínimo 8 caracteres) e `SEED_COORDENACAO_NOME` do `.env`. Rodar de novo não altera uma conta já existente.
 
 Para parar o banco: `npm run db:down`. Se faltar ou for inválida alguma variável do `.env`, a aplicação não inicia e a mensagem indica qual variável corrigir.
 

@@ -99,7 +99,7 @@
   - _Depends: 3.1, 3.2, 3.3, 2.1, 2.3_
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 5.3, 5.4, 6.2_
 
-- [ ] 3.5 Implementar a carga inicial (seed) da conta de coordenação
+- [x] 3.5 Implementar a carga inicial (seed) da conta de coordenação
   - Ler as credenciais da conta inicial das variáveis de ambiente e falhar nomeando a variável que faltar.
   - Validar a senha com a regra de senha.
   - Se já existir um usuário com o e-mail normalizado, apenas avisar, sem alterar nada. Caso contrário, criar a conta com o papel coordenação.
@@ -182,3 +182,4 @@
 - 3.2: no Better Auth 1.7.6, o hook `after` roda mesmo quando o endpoint lança erro (o erro chega em `ctx.context.returned`). Um `APIError` lançado no `before` não passa pelo `after`. `auth.api.signInEmail({asResponse:true})` repassa ao chamador o `APIError` do `before` (429), então a action da 3.4 precisa capturá-lo. O hook `before` substitui `body.email` pelo e-mail normalizado.
 - 3.3: `getSessao` usa `disableCookieCache: true` para sempre validar a sessão no banco. Um papel inválido leva a `/acesso-negado`, e não ao login, para evitar loop. Nos testes, mockar `next/headers` e `next/navigation` (o `redirect` lança erro). O pacote `server-only` não foi instalado por falta de disco; pendente.
 - 3.4: o destino pós-login fica em `domain/destino-login.ts`. Os testes de action verificam o login pela linha de sessão no banco, porque o `nextCookies` grava via internals do `next/headers` (os atributos do cookie já são cobertos pela 3.1). Pendência defensiva: `sanitizarCallbackUrl` não recusa segmentos `..`; a DAL barra o acesso no destino.
+- 3.5: a lógica do seed fica em `src/modules/auth/seed-coordenacao.ts` (`semearCoordenacao`, reusável no setup do e2e). O `tsx` resolve o alias `@/`, e `src/lib/auth.ts` funciona fora do Next.
