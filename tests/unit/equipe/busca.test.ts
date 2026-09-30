@@ -31,7 +31,9 @@ describe("filtrarPorTermo", () => {
   });
   it("trecho do telefone encontra o membro, inclusive com máscara", () => {
     expect(filtrarPorTermo(membros, "98765", campos).map((m) => m.nome)).toEqual(["João Silva"]);
-    expect(filtrarPorTermo(membros, "(21) 99999", campos).map((m) => m.nome)).toEqual(["Bruno Costa"]);
+    expect(filtrarPorTermo(membros, "(21) 99999", campos).map((m) => m.nome)).toEqual([
+      "Bruno Costa",
+    ]);
   });
   it("casa com e-mail sem diferenciar caixa", () => {
     expect(filtrarPorTermo(membros, "bruno@ex", campos)).toHaveLength(1);

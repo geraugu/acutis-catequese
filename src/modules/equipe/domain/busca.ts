@@ -4,12 +4,7 @@ const TAMANHO_PAGINA = 20;
 
 /** Minúsculas, sem acentos (NFD sem diacríticos) e com espaços colapsados. */
 export function normalizarBusca(texto: string): string {
-  return texto
-    .normalize("NFD")
-    .replace(/\p{M}/gu, "")
-    .toLowerCase()
-    .replace(/\s+/g, " ")
-    .trim();
+  return texto.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace(/\s+/g, " ").trim();
 }
 
 export interface ItemBuscavel {
@@ -58,7 +53,11 @@ export interface Pagina<T> {
 }
 
 /** Restringe a página ao intervalo válido: inválida ou menor que 1 vira 1; acima do total vira a última. */
-export function paginar<T>(itens: readonly T[], pagina: number, tamanho: number = TAMANHO_PAGINA): Pagina<T> {
+export function paginar<T>(
+  itens: readonly T[],
+  pagina: number,
+  tamanho: number = TAMANHO_PAGINA,
+): Pagina<T> {
   const total = itens.length;
   const totalPaginas = Math.max(1, Math.ceil(total / tamanho));
   const inteira = Number.isFinite(pagina) ? Math.trunc(pagina) : 1;

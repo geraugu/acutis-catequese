@@ -7,7 +7,13 @@ const OPCOES: { valor: FiltroSituacao; rotulo: string }[] = [
 ];
 
 /** Busca por GET: a URL é a fonte de verdade e funciona sem JavaScript. */
-export function BuscaEquipe({ termo = "", situacao }: { termo?: string; situacao: FiltroSituacao }) {
+export function BuscaEquipe({
+  termo = "",
+  situacao,
+}: {
+  termo?: string;
+  situacao: FiltroSituacao;
+}) {
   return (
     <form method="get" action="/coordenacao/equipe" role="search" className="busca-equipe">
       <div className="campo busca-termo">

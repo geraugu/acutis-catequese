@@ -20,9 +20,7 @@ describe("CamposMembro", () => {
   });
 
   it("modo edição: sem campo de senha", () => {
-    const { container } = render(
-      <CamposMembro modo="edicao" estado={{}} pendente={false} />,
-    );
+    const { container } = render(<CamposMembro modo="edicao" estado={{}} pendente={false} />);
     expect(container.querySelector('input[name="senha"]')).toBeNull();
     expect(screen.queryByLabelText(/senha/i)).toBeNull();
   });

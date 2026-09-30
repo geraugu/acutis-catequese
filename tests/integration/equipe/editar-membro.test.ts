@@ -40,7 +40,10 @@ describe("editarMembroAction (1.3, 4.1–4.5, 7.2, 7.3)", () => {
     const url = await capturarRedirect(editarMembroAction(alvo.id, {}, form(campos())));
 
     expect(url).toBe(`/coordenacao/equipe/${alvo.id}?aviso=alteracoes-salvas`);
-    const u = await prisma.user.findUniqueOrThrow({ where: { id: alvo.id }, include: { perfil: true } });
+    const u = await prisma.user.findUniqueOrThrow({
+      where: { id: alvo.id },
+      include: { perfil: true },
+    });
     expect(u.name).toBe("Maria Editada");
     expect(u.email).toBe("nova.maria@exemplo.com");
     expect(u.perfil?.telefone).toBe("11912345678");
@@ -55,11 +58,18 @@ describe("editarMembroAction (1.3, 4.1–4.5, 7.2, 7.3)", () => {
     await criarCatequista("outro@exemplo.com");
     usarSessao(coord);
 
-    const estado = await editarMembroAction(alvo.id, {}, form(campos({ email: "Outro@Exemplo.com" })));
+    const estado = await editarMembroAction(
+      alvo.id,
+      {},
+      form(campos({ email: "Outro@Exemplo.com" })),
+    );
 
     expect(estado.erro).toBe(MSG_EMAIL_EM_USO);
     expect(estado.valores?.nome).toBe("Maria Editada");
-    const u = await prisma.user.findUniqueOrThrow({ where: { id: alvo.id }, include: { perfil: true } });
+    const u = await prisma.user.findUniqueOrThrow({
+      where: { id: alvo.id },
+      include: { perfil: true },
+    });
     expect(u.name).toBe("Original");
     expect(u.email).toBe("alvo@exemplo.com");
     expect(u.perfil).toBeNull();
@@ -81,7 +91,11 @@ describe("editarMembroAction (1.3, 4.1–4.5, 7.2, 7.3)", () => {
     usarSessao(coord);
 
     await capturarRedirect(
-      editarMembroAction(alvo.id, {}, form(campos({ email: "alvo@exemplo.com", papel: "coordenacao" }))),
+      editarMembroAction(
+        alvo.id,
+        {},
+        form(campos({ email: "alvo@exemplo.com", papel: "coordenacao" })),
+      ),
     );
 
     usarSessao(alvo);
@@ -99,7 +113,10 @@ describe("editarMembroAction (1.3, 4.1–4.5, 7.2, 7.3)", () => {
     );
 
     expect(estado.erro).toBe(MENSAGEM_VIOLACAO["proprio-papel"]);
-    const u = await prisma.user.findUniqueOrThrow({ where: { id: coord.id }, include: { perfil: true } });
+    const u = await prisma.user.findUniqueOrThrow({
+      where: { id: coord.id },
+      include: { perfil: true },
+    });
     expect(u.role).toBe("coordenacao");
     expect(u.name).toBe("Coord Original");
     expect(u.perfil).toBeNull();
@@ -110,10 +127,16 @@ describe("editarMembroAction (1.3, 4.1–4.5, 7.2, 7.3)", () => {
     const outra = await criarCoordenacao("outra@exemplo.com");
     usarSessao(ativa);
     const url = await capturarRedirect(
-      editarMembroAction(outra.id, {}, form(campos({ email: "outra@exemplo.com", papel: "catequista" }))),
+      editarMembroAction(
+        outra.id,
+        {},
+        form(campos({ email: "outra@exemplo.com", papel: "catequista" })),
+      ),
     );
     expect(url).toContain("alteracoes-salvas");
-    expect((await prisma.user.findUniqueOrThrow({ where: { id: outra.id } })).role).toBe("catequista");
+    expect((await prisma.user.findUniqueOrThrow({ where: { id: outra.id } })).role).toBe(
+      "catequista",
+    );
   });
 
   it("catequista é redirecionado para acesso negado sem gravar", async () => {

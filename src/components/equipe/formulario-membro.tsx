@@ -129,7 +129,9 @@ export function CamposMembro({ modo, estado, pendente }: CamposMembroProps) {
           defaultValue={v.observacoes ?? ""}
           aria-invalid={erros.observacoes ? true : undefined}
           aria-describedby={
-            erros.observacoes ? `membro-observacoes-dica ${idErro("observacoes")}` : "membro-observacoes-dica"
+            erros.observacoes
+              ? `membro-observacoes-dica ${idErro("observacoes")}`
+              : "membro-observacoes-dica"
           }
         />
         <p id="membro-observacoes-dica" className="campo-dica">

@@ -17,7 +17,14 @@ describe("repositório da equipe (2.5, 3.1, 4.3, 6.6, 7.3, 8.1)", () => {
     const seed = await criarUsuario("coordenacao", "seed@exemplo.com", "Seed");
     const lista = await listarMembros();
     expect(lista).toEqual([
-      { id: seed.id, nome: "Seed", email: "seed@exemplo.com", papel: "coordenacao", telefone: null, situacao: "ativo" },
+      {
+        id: seed.id,
+        nome: "Seed",
+        email: "seed@exemplo.com",
+        papel: "coordenacao",
+        telefone: null,
+        situacao: "ativo",
+      },
     ]);
   });
 
@@ -26,7 +33,12 @@ describe("repositório da equipe (2.5, 3.1, 4.3, 6.6, 7.3, 8.1)", () => {
     await salvarPerfil(u.id, { telefone: "11987654321" });
     await prisma.user.update({ where: { id: u.id }, data: { banned: true } });
     const [m] = await listarMembros();
-    expect(m).toMatchObject({ id: u.id, telefone: "11987654321", situacao: "inativo", papel: "catequista" });
+    expect(m).toMatchObject({
+      id: u.id,
+      telefone: "11987654321",
+      situacao: "inativo",
+      papel: "catequista",
+    });
   });
 
   it("omite registros com papel inválido", async () => {
@@ -41,7 +53,13 @@ describe("repositório da equipe (2.5, 3.1, 4.3, 6.6, 7.3, 8.1)", () => {
     await salvarPerfil(u.id, { telefone: "11911112222", observacoes: "Turma A" });
     await salvarPerfil(u.id, { telefone: "11933334444" });
     const d = await obterMembro(u.id);
-    expect(d).toMatchObject({ id: u.id, nome: "Bia", telefone: "11933334444", observacoes: null, situacao: "ativo" });
+    expect(d).toMatchObject({
+      id: u.id,
+      nome: "Bia",
+      telefone: "11933334444",
+      observacoes: null,
+      situacao: "ativo",
+    });
     expect(d?.criadoEm).toBeInstanceOf(Date);
     expect(await obterMembro("inexistente")).toBeNull();
   });

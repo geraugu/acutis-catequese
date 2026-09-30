@@ -9,8 +9,22 @@ import { Paginacao } from "@/components/equipe/paginacao";
 import type { MembroResumo } from "@/modules/equipe/repositorio";
 
 const membros: MembroResumo[] = [
-  { id: "a1", nome: "Ana Souza", email: "ana@x.com", papel: "catequista", telefone: "11987654321", situacao: "ativo" },
-  { id: "b2", nome: "Bruno Lima", email: "b@x.com", papel: "coordenacao", telefone: null, situacao: "inativo" },
+  {
+    id: "a1",
+    nome: "Ana Souza",
+    email: "ana@x.com",
+    papel: "catequista",
+    telefone: "11987654321",
+    situacao: "ativo",
+  },
+  {
+    id: "b2",
+    nome: "Bruno Lima",
+    email: "b@x.com",
+    papel: "coordenacao",
+    telefone: null,
+    situacao: "inativo",
+  },
 ];
 
 describe("ListaMembros", () => {
@@ -19,7 +33,10 @@ describe("ListaMembros", () => {
     const itens = screen.getAllByRole("listitem");
     expect(itens).toHaveLength(2);
     const ana = within(itens[0]);
-    expect(ana.getByRole("link", { name: "Ana Souza" })).toHaveAttribute("href", "/coordenacao/equipe/a1");
+    expect(ana.getByRole("link", { name: "Ana Souza" })).toHaveAttribute(
+      "href",
+      "/coordenacao/equipe/a1",
+    );
     expect(ana.getByText("Catequista")).toBeInTheDocument();
     expect(ana.getByText("(11) 98765-4321")).toBeInTheDocument();
     expect(ana.getByText("Ativo")).toBeInTheDocument();
@@ -31,7 +48,10 @@ describe("ListaMembros", () => {
   it("mostra estado vazio com Limpar busca", () => {
     render(<ListaMembros membros={[]} />);
     expect(screen.queryByRole("list")).toBeNull();
-    expect(screen.getByRole("link", { name: "Limpar busca" })).toHaveAttribute("href", "/coordenacao/equipe");
+    expect(screen.getByRole("link", { name: "Limpar busca" })).toHaveAttribute(
+      "href",
+      "/coordenacao/equipe",
+    );
   });
 });
 
@@ -46,7 +66,11 @@ describe("BuscaEquipe", () => {
     const sel = screen.getByLabelText("Situação");
     expect(sel).toHaveAttribute("name", "situacao");
     expect(sel).toHaveValue("todos");
-    expect(within(sel).getAllByRole("option").map((o) => o.textContent)).toEqual(["Ativos", "Inativos", "Todos"]);
+    expect(
+      within(sel)
+        .getAllByRole("option")
+        .map((o) => o.textContent),
+    ).toEqual(["Ativos", "Inativos", "Todos"]);
     expect(screen.getByRole("button", { name: "Buscar" })).toHaveAttribute("type", "submit");
   });
 });
@@ -66,9 +90,14 @@ describe("Paginacao", () => {
   });
 
   it("omite links nas pontas e não renderiza com uma página", () => {
-    const { rerender, container } = render(<Paginacao pagina={1} totalPaginas={2} situacao="ativo" />);
+    const { rerender, container } = render(
+      <Paginacao pagina={1} totalPaginas={2} situacao="ativo" />,
+    );
     expect(screen.queryByRole("link", { name: /anterior/i })).toBeNull();
-    expect(screen.getByRole("link", { name: /próxima/i })).toHaveAttribute("href", "/coordenacao/equipe?pagina=2");
+    expect(screen.getByRole("link", { name: /próxima/i })).toHaveAttribute(
+      "href",
+      "/coordenacao/equipe?pagina=2",
+    );
     rerender(<Paginacao pagina={1} totalPaginas={1} situacao="ativo" />);
     expect(container).toBeEmptyDOMElement();
   });
@@ -77,7 +106,9 @@ describe("Paginacao", () => {
 describe("Aviso", () => {
   it("anuncia mensagem de código conhecido como status", () => {
     render(<Aviso codigo="senha-redefinida" />);
-    expect(screen.getByRole("status")).toHaveTextContent("Senha redefinida. Repasse a nova senha pessoalmente.");
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Senha redefinida. Repasse a nova senha pessoalmente.",
+    );
   });
 
   it("ignora código desconhecido", () => {

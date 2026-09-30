@@ -32,7 +32,12 @@ describe("permissões do plugin admin para a coordenação (1.3, 6.1, 6.4)", () 
 
     const { user: novo } = await auth.api.createUser({
       headers: h,
-      body: { email: "novo@exemplo.com", password: "senha-inicial-1", name: "Novo", role: "catequista" },
+      body: {
+        email: "novo@exemplo.com",
+        password: "senha-inicial-1",
+        name: "Novo",
+        role: "catequista",
+      },
     });
     expect(novo.id).toBeTruthy();
 
@@ -41,13 +46,19 @@ describe("permissões do plugin admin para a coordenação (1.3, 6.1, 6.4)", () 
     for (const userId of alvos) {
       await auth.api.adminUpdateUser({
         headers: h,
-        body: { userId, data: { name: "Renomeado", email: `ren-${userId.toLowerCase()}@exemplo.com` } },
+        body: {
+          userId,
+          data: { name: "Renomeado", email: `ren-${userId.toLowerCase()}@exemplo.com` },
+        },
       });
       const u = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
       expect(u.name).toBe("Renomeado");
       expect(u.email).toBe(`ren-${userId.toLowerCase()}@exemplo.com`);
 
-      await auth.api.setUserPassword({ headers: h, body: { userId, newPassword: "senha-nova-123" } });
+      await auth.api.setUserPassword({
+        headers: h,
+        body: { userId, newPassword: "senha-nova-123" },
+      });
       await entrarComo(u.email, "senha-nova-123");
       expect(await prisma.session.count({ where: { userId } })).toBeGreaterThan(0);
 
@@ -62,9 +73,13 @@ describe("permissões do plugin admin para a coordenação (1.3, 6.1, 6.4)", () 
 
     // Trocar papel nos dois sentidos.
     await auth.api.setRole({ headers: h, body: { userId: alvos[0], role: "coordenacao" } });
-    expect((await prisma.user.findUniqueOrThrow({ where: { id: alvos[0] } })).role).toBe("coordenacao");
+    expect((await prisma.user.findUniqueOrThrow({ where: { id: alvos[0] } })).role).toBe(
+      "coordenacao",
+    );
     await auth.api.setRole({ headers: h, body: { userId: alvos[1], role: "catequista" } });
-    expect((await prisma.user.findUniqueOrThrow({ where: { id: alvos[1] } })).role).toBe("catequista");
+    expect((await prisma.user.findUniqueOrThrow({ where: { id: alvos[1] } })).role).toBe(
+      "catequista",
+    );
 
     for (const userId of alvos) {
       await auth.api.removeUser({ headers: h, body: { userId } });
@@ -75,16 +90,25 @@ describe("permissões do plugin admin para a coordenação (1.3, 6.1, 6.4)", () 
   it("catequista é recusado nas operações administrativas (403)", async () => {
     const cat = await criarCatequista();
     const outro = await criarCatequista();
-    expect(await status(auth.api.banUser({ headers: cat.headers, body: { userId: outro.id } }))).toBe(403);
+    expect(
+      await status(auth.api.banUser({ headers: cat.headers, body: { userId: outro.id } })),
+    ).toBe(403);
     expect(
       await status(
         auth.api.createUser({
           headers: cat.headers,
-          body: { email: "x@exemplo.com", password: "senha-forte-123", name: "X", role: "catequista" },
+          body: {
+            email: "x@exemplo.com",
+            password: "senha-forte-123",
+            name: "X",
+            role: "catequista",
+          },
         }),
       ),
     ).toBe(403);
-    expect(await status(auth.api.removeUser({ headers: cat.headers, body: { userId: outro.id } }))).toBe(403);
+    expect(
+      await status(auth.api.removeUser({ headers: cat.headers, body: { userId: outro.id } })),
+    ).toBe(403);
   });
 });
 

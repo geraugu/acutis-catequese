@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { membroCriacaoSchema, membroEdicaoSchema, papelSchema } from "@/modules/equipe/domain/membro";
+import {
+  membroCriacaoSchema,
+  membroEdicaoSchema,
+  papelSchema,
+} from "@/modules/equipe/domain/membro";
 
 const valido = {
   nome: "  Maria da Silva ",
@@ -9,19 +13,32 @@ const valido = {
   observacoes: "",
 };
 
-function mensagens(resultado: { success: boolean; error?: { issues: { path: PropertyKey[]; message: string }[] } }) {
-  return Object.fromEntries((resultado.error?.issues ?? []).map((i) => [String(i.path[0]), i.message]));
+function mensagens(resultado: {
+  success: boolean;
+  error?: { issues: { path: PropertyKey[]; message: string }[] };
+}) {
+  return Object.fromEntries(
+    (resultado.error?.issues ?? []).map((i) => [String(i.path[0]), i.message]),
+  );
 }
 
 describe("membroEdicaoSchema", () => {
   it("normaliza nome, e-mail e telefone e transforma observações vazias em undefined", () => {
     const r = membroEdicaoSchema.parse(valido);
-    expect(r).toEqual({ nome: "Maria da Silva", email: "maria@paroquia.org", telefone: "11987654321", papel: "catequista", observacoes: undefined });
+    expect(r).toEqual({
+      nome: "Maria da Silva",
+      email: "maria@paroquia.org",
+      telefone: "11987654321",
+      papel: "catequista",
+      observacoes: undefined,
+    });
   });
 
   it("observações só com espaços viram undefined; texto é aparado", () => {
     expect(membroEdicaoSchema.parse({ ...valido, observacoes: "   " }).observacoes).toBeUndefined();
-    expect(membroEdicaoSchema.parse({ ...valido, observacoes: " Turma A " }).observacoes).toBe("Turma A");
+    expect(membroEdicaoSchema.parse({ ...valido, observacoes: " Turma A " }).observacoes).toBe(
+      "Turma A",
+    );
     const semObs: Partial<typeof valido> = { ...valido };
     delete semObs.observacoes;
     expect(membroEdicaoSchema.parse(semObs).observacoes).toBeUndefined();
@@ -39,14 +56,20 @@ describe("membroEdicaoSchema", () => {
   });
 
   it("recusa e-mail inválido e papel inválido", () => {
-    expect(mensagens(membroEdicaoSchema.safeParse({ ...valido, email: "nao-email" })).email).toBe("E-mail inválido");
-    expect(mensagens(membroEdicaoSchema.safeParse({ ...valido, papel: "admin" })).papel).toBe("Escolha o papel");
+    expect(mensagens(membroEdicaoSchema.safeParse({ ...valido, email: "nao-email" })).email).toBe(
+      "E-mail inválido",
+    );
+    expect(mensagens(membroEdicaoSchema.safeParse({ ...valido, papel: "admin" })).papel).toBe(
+      "Escolha o papel",
+    );
     expect(papelSchema.safeParse("coordenacao").success).toBe(true);
   });
 
   it("limita nome a 120 e observações a 1000 caracteres", () => {
     expect(membroEdicaoSchema.safeParse({ ...valido, nome: "a".repeat(121) }).success).toBe(false);
-    expect(membroEdicaoSchema.safeParse({ ...valido, observacoes: "a".repeat(1001) }).success).toBe(false);
+    expect(membroEdicaoSchema.safeParse({ ...valido, observacoes: "a".repeat(1001) }).success).toBe(
+      false,
+    );
   });
 });
 

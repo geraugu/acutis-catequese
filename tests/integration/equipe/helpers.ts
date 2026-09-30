@@ -67,8 +67,10 @@ export async function criarAtor(papel: Papel, email?: string, nome?: string): Pr
   };
 }
 
-export const criarCoordenacao = (email?: string, nome?: string) => criarAtor("coordenacao", email, nome);
-export const criarCatequista = (email?: string, nome?: string) => criarAtor("catequista", email, nome);
+export const criarCoordenacao = (email?: string, nome?: string) =>
+  criarAtor("coordenacao", email, nome);
+export const criarCatequista = (email?: string, nome?: string) =>
+  criarAtor("catequista", email, nome);
 
 /** Faz o mock de next/headers responder com a sessão do ator (Server Actions agem como ele). */
 export function usarSessao(ator: Pick<Ator, "cookie">): void {

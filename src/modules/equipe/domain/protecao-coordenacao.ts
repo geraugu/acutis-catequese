@@ -1,9 +1,7 @@
 import type { Papel } from "@/modules/auth/domain/papeis";
 import type { Situacao } from "./membro";
 
-export type OperacaoSensivel =
-  | { tipo: "inativar" }
-  | { tipo: "mudar-papel"; novoPapel: Papel };
+export type OperacaoSensivel = { tipo: "inativar" } | { tipo: "mudar-papel"; novoPapel: Papel };
 
 export type ViolacaoProtecao = "a-si-mesmo" | "proprio-papel" | "ultima-coordenacao";
 

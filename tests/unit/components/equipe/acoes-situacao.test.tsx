@@ -34,9 +34,7 @@ describe("AcoesSituacao", () => {
   it("ativo: abre o diálogo nomeado e confirmar envia inativar", async () => {
     const { inativar, reativar } = montar("ativo");
     fireEvent.click(screen.getByRole("button", { name: "Inativar" }));
-    expect(
-      screen.getByRole("heading", { name: "Inativar Maria Souza?" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Inativar Maria Souza?" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Cancelar" })).toHaveFocus();
     fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Inativar" }));
     await waitFor(() => expect(inativar).toHaveBeenCalledTimes(1));
@@ -46,9 +44,7 @@ describe("AcoesSituacao", () => {
   it("inativo: confirmar envia reativar", async () => {
     const { inativar, reativar } = montar("inativo");
     fireEvent.click(screen.getByRole("button", { name: "Reativar" }));
-    expect(
-      screen.getByRole("heading", { name: "Reativar Maria Souza?" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Reativar Maria Souza?" })).toBeInTheDocument();
     fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Reativar" }));
     await waitFor(() => expect(reativar).toHaveBeenCalledTimes(1));
     expect(inativar).not.toHaveBeenCalled();

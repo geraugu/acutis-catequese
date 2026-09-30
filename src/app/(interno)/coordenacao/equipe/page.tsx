@@ -44,7 +44,12 @@ export default async function EquipePage({ searchParams }: { searchParams: Promi
       <Aviso codigo={primeiro(params.aviso)} />
       <BuscaEquipe termo={termo} situacao={situacao} />
       <ListaMembros membros={pagina.itens} />
-      <Paginacao pagina={pagina.pagina} totalPaginas={pagina.totalPaginas} termo={termo} situacao={situacao} />
+      <Paginacao
+        pagina={pagina.pagina}
+        totalPaginas={pagina.totalPaginas}
+        termo={termo}
+        situacao={situacao}
+      />
     </>
   );
 }

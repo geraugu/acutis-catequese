@@ -58,7 +58,12 @@ export default async function MembroPage({
                 {formatarTelefone(membro.telefone)}
                 <span className="membro-contato">
                   <a href={linkLigacao(membro.telefone)}>Ligar</a>
-                  <a href={linkWhatsApp(membro.telefone)} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp (abre em nova aba)">
+                  <a
+                    href={linkWhatsApp(membro.telefone)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="WhatsApp (abre em nova aba)"
+                  >
                     WhatsApp
                   </a>
                 </span>
@@ -75,7 +80,9 @@ export default async function MembroPage({
         <div>
           <dt>Situação</dt>
           <dd>
-            <span className={`situacao situacao-${membro.situacao}`}>{ROTULO_SITUACAO[membro.situacao]}</span>
+            <span className={`situacao situacao-${membro.situacao}`}>
+              {ROTULO_SITUACAO[membro.situacao]}
+            </span>
           </dd>
         </div>
         <div>

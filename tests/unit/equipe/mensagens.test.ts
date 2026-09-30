@@ -8,9 +8,13 @@ import {
 
 describe("mensagens da equipe", () => {
   it("traduz os códigos de aviso conhecidos", () => {
-    expect(mensagemDeAviso("cadastrado")).toBe("Membro cadastrado. Repasse a senha inicial pessoalmente.");
+    expect(mensagemDeAviso("cadastrado")).toBe(
+      "Membro cadastrado. Repasse a senha inicial pessoalmente.",
+    );
     expect(mensagemDeAviso("alteracoes-salvas")).toBe("Alterações salvas");
-    expect(mensagemDeAviso("senha-redefinida")).toBe("Senha redefinida. Repasse a nova senha pessoalmente.");
+    expect(mensagemDeAviso("senha-redefinida")).toBe(
+      "Senha redefinida. Repasse a nova senha pessoalmente.",
+    );
     expect(mensagemDeAviso("inativado")).toBe("Membro inativado");
     expect(mensagemDeAviso("reativado")).toBe("Membro reativado");
     expect(CODIGOS_AVISO).toHaveLength(5);

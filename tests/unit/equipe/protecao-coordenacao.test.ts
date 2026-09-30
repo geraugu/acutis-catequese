@@ -32,8 +32,12 @@ describe("verificarProtecaoCoordenacao — a si mesmo (7.1, 7.2)", () => {
     expect(verificar({ id: "ator", papel: "coordenacao" }, INATIVAR, 1)).toBe("a-si-mesmo");
   });
   it("mudar o próprio papel para catequista resulta em proprio-papel", () => {
-    expect(verificar({ id: "ator", papel: "coordenacao" }, PARA_CATEQUISTA, 5)).toBe("proprio-papel");
-    expect(verificar({ id: "ator", papel: "coordenacao" }, PARA_CATEQUISTA, 1)).toBe("proprio-papel");
+    expect(verificar({ id: "ator", papel: "coordenacao" }, PARA_CATEQUISTA, 5)).toBe(
+      "proprio-papel",
+    );
+    expect(verificar({ id: "ator", papel: "coordenacao" }, PARA_CATEQUISTA, 1)).toBe(
+      "proprio-papel",
+    );
   });
   it("mudar o próprio papel para o mesmo papel nunca é violação", () => {
     expect(verificar({ id: "ator", papel: "coordenacao" }, PARA_COORDENACAO, 1)).toBeNull();

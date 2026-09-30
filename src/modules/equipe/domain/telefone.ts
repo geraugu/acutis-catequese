@@ -23,16 +23,14 @@ export function formatarTelefone(digitos: string): string {
 }
 
 /** Valida o telefone e devolve só os dígitos. */
-export const telefoneSchema: z.ZodType<string, string> = z
-  .string()
-  .transform((valor, ctx) => {
-    const digitos = normalizarTelefone(valor);
-    if (digitos === null) {
-      ctx.addIssue({ code: "custom", message: MENSAGEM_TELEFONE });
-      return z.NEVER;
-    }
-    return digitos;
-  });
+export const telefoneSchema: z.ZodType<string, string> = z.string().transform((valor, ctx) => {
+  const digitos = normalizarTelefone(valor);
+  if (digitos === null) {
+    ctx.addIssue({ code: "custom", message: MENSAGEM_TELEFONE });
+    return z.NEVER;
+  }
+  return digitos;
+});
 
 /** Link para ligar: "tel:+5511987654321". */
 export function linkLigacao(digitos: string): string {

@@ -29,7 +29,9 @@ export function ListaMembros({ membros }: { membros: readonly MembroResumo[] }) 
             {m.nome}
           </Link>
           <span className="etiqueta">{ROTULO_PAPEL[m.papel]}</span>
-          <span className="lista-membros-telefone">{m.telefone ? formatarTelefone(m.telefone) : "—"}</span>
+          <span className="lista-membros-telefone">
+            {m.telefone ? formatarTelefone(m.telefone) : "—"}
+          </span>
           <span className={`situacao situacao-${m.situacao}`}>{ROTULO_SITUACAO[m.situacao]}</span>
         </li>
       ))}
