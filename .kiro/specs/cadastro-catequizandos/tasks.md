@@ -71,7 +71,7 @@
   - _Depends: 1.5, 2.1, 2.2_
   - _Requirements: 2.1, 5.8, 6.1, 7.1, 7.5_
 
-- [ ] 3.2 Implementar as ações de cadastrar e editar
+- [x] 3.2 Implementar as ações de cadastrar e editar
   - Implementar `EstadoFicha`, `criarCatequizandoAction` (com duplicidade e `confirmarDuplicidade`) e `editarCatequizandoAction` (sem mudar o estado), seguindo o padrão da equipe: `requireRole` primeiro e redirect fora do try/catch.
   - Pronto quando: os testes de integração mostram que um catequista é redirecionado sem gravar nada; que o cadastro válido redireciona com `cadastrado` e grava o estado ativo; que um duplicado sem confirmação não grava e com confirmação grava; que os erros por campo trazem os valores; e que a edição de uma ficha pendente salva sem mudar o estado.
   - _Boundary: catequizandos/actions_
@@ -128,3 +128,4 @@
 - 1.5: os modelos `Catequizando` e `SacramentoRecebido` foram criados e a migração é `*_catequizandos`. O global-setup da integração roda `prisma migrate deploy` no acutis_test. Nos testes, as datas `@db.Date` são gravadas como `new Date("AAAA-MM-DD")` (meia-noite UTC) e lidas com `toISOString().slice(0,10)`.
 - 2.1: `ficha.ts` exporta `campoDoFormulario(path)`, que mapeia `["sacramentos", s, "data"]` para `"{s}Data"`, e as actions devem usá-la para montar `errosCampos`. No Zod 4, `abort: true` torna a issue fatal e impede refinamentos com `when`. Mensagens condicionais devem usar a função `error`.
 - 3.1: `atualizarFicha` lança P2025 quando o id não existe, então as actions devem chamar `obterCatequizando` antes. Ao ler, `SacramentoFicha` omite `data` e `paroquia` quando são nulos.
+- 3.2: por causa da LGPD, os logs das actions registram só `e.name` e o id, nunca `e.message`, que pode trazer dados da ficha. Os testes de integração dos catequizandos reaproveitam os helpers da equipe por `tests/integration/catequizandos/helpers.ts`.
