@@ -4,7 +4,9 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { requireRole } from "@/modules/auth/dal";
-import type { z } from "zod";
+import { senhaSchema } from "@/modules/auth/domain/senha";
+import { limparFalhas } from "@/modules/auth/tentativas-login";
+import { z } from "zod";
 import { membroCriacaoSchema, membroEdicaoSchema } from "@/modules/equipe/domain/membro";
 import { verificarProtecaoCoordenacao } from "@/modules/equipe/domain/protecao-coordenacao";
 import {
@@ -162,4 +164,37 @@ export async function editarMembroAction(
     return { erro: MSG_ERRO_INESPERADO, valores };
   }
   redirect(`/coordenacao/equipe/${id}?aviso=alteracoes-salvas`);
+}
+
+const redefinicaoSenhaSchema = z.object({ senha: senhaSchema });
+
+/** Redefinição de senha (5.1, 5.2, 5.4); o `id` é vinculado via `.bind` na página. */
+export async function redefinirSenhaAction(
+  id: string,
+  _anterior: EstadoFormulario,
+  dados: FormData,
+): Promise<EstadoFormulario> {
+  await requireRole(["coordenacao"]); // 1.3
+
+  const resultado = redefinicaoSenhaSchema.safeParse({ senha: texto(dados, "senha") ?? "" });
+  if (!resultado.success) return { errosCampos: errosPorCampo(resultado.error) };
+
+  try {
+    const alvo = await obterMembro(id);
+    if (!alvo) return { erro: MSG_ERRO_INESPERADO };
+    const cabecalhos = await headers();
+    await auth.api.setUserPassword({
+      headers: cabecalhos,
+      body: { userId: id, newPassword: resultado.data.senha },
+    });
+    await auth.api.revokeUserSessions({ headers: cabecalhos, body: { userId: id } });
+    await limparFalhas(alvo.email);
+  } catch (e) {
+    console.error("[equipe] falha ao redefinir senha", {
+      userId: id,
+      erro: e instanceof Error ? e.message : String(e),
+    });
+    return { erro: MSG_ERRO_INESPERADO };
+  }
+  redirect(`/coordenacao/equipe/${id}?aviso=senha-redefinida`);
 }

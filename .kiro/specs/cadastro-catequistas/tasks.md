@@ -75,7 +75,7 @@
   - _Depends: 2.3, 3.2_
   - _Requirements: 1.3, 4.1, 4.2, 4.3, 4.4, 4.5, 7.2, 7.3_
 
-- [ ] 3.4 Implementar a ação de redefinir senha
+- [x] 3.4 Implementar a ação de redefinir senha
   - Autorizar e validar com a regra de senha. Definir a nova senha pelo plugin admin, encerrar todas as sessões do membro e limpar as tentativas falhas do e-mail dele. Redirecionar com o aviso "senha redefinida".
   - Pronto quando: os testes de integração mostram que a senha antiga falha e a nova funciona; que a sessão anterior do membro deixa de valer; que um e-mail bloqueado por tentativas consegue logar logo em seguida; e que uma senha de 7 caracteres é recusada.
   - _Depends: 3.2_
