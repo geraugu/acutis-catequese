@@ -61,7 +61,7 @@ O projeto é acadêmico (pós-graduação em Engenharia de Software), com prazo 
 ## Specs (ordem de dependência)
 - [x] fundacao-autenticacao -- Setup do projeto (Next.js, Prisma, testes, CI) e login com perfis coordenação e catequista. Dependências: none
 - [x] cadastro-catequistas -- Criar, listar, editar e inativar catequistas, com vínculo à conta de usuário. Dependências: fundacao-autenticacao
-- [ ] cadastro-catequizandos -- Criar, listar, editar e inativar catequizandos, com dados pessoais e situação sacramental. Dependências: fundacao-autenticacao
+- [x] cadastro-catequizandos -- Criar, listar, editar e inativar catequizandos, com dados pessoais e situação sacramental. Dependências: fundacao-autenticacao
 - [ ] gestao-turmas -- Turmas por ciclo, catequistas responsáveis e inscrição de catequizandos. Dependências: cadastro-catequistas, cadastro-catequizandos
 - [ ] programa-catequese -- Encontros da turma com data, tema e descrição. Dependências: gestao-turmas
 - [ ] autocadastro-catequizandos -- Link público da turma para o adulto preencher a própria ficha, que fica pendente até o catequista ou a coordenação confirmar. Dependências: cadastro-catequizandos, gestao-turmas
