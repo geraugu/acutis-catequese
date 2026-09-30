@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [ ] 1. Base compartilhada e dados
+- [x] 1. Base compartilhada e dados
 
 - [x] 1.1 Extrair busca e telefone para o módulo compartilhado
   - Mover `normalizarBusca`, `filtrarPorTermo`, `paginar` e `Pagina` para `compartilhado/busca`, e o telefone inteiro para `compartilhado/telefone`. A equipe mantém `filtrarMembros` e os próprios tipos, e passa a importar o restante do compartilhado. Nenhuma mudança de comportamento.
@@ -28,7 +28,7 @@
   - _Boundary: compartilhado/datas_
   - _Requirements: 2.4, 2.5, 3.3, 9.4_
 
-- [ ] 1.5 (P) Criar as tabelas de catequizando e sacramentos
+- [x] 1.5 (P) Criar as tabelas de catequizando e sacramentos
   - Criar os enums `EstadoCatequizando` e `Sacramento` e os modelos `Catequizando` e `SacramentoRecebido`, com migração e `prisma generate`. Incluir as duas tabelas no TRUNCATE da integração e do e2e.
   - Pronto quando: a migração aplica nos bancos de dev e de teste, e um teste de integração grava um catequizando com um sacramento, lê a data de volta sem deslocamento de dia e confirma que a limpeza zera as tabelas.
   - _Boundary: prisma/schema, tests/integration/setup, tests/e2e/preparar-banco_
@@ -125,3 +125,4 @@
   - _Requirements: 1.2, 2.8, 3.5, 4.1, 4.2, 5.2, 5.4, 5.5, 5.8, 6.1, 6.2, 6.6, 7.2, 7.3, 8.1, 9.3_
 
 ## Implementation Notes
+- 1.5: os modelos `Catequizando` e `SacramentoRecebido` foram criados e a migração é `*_catequizandos`. O global-setup da integração roda `prisma migrate deploy` no acutis_test. Nos testes, as datas `@db.Date` são gravadas como `new Date("AAAA-MM-DD")` (meia-noite UTC) e lidas com `toISOString().slice(0,10)`.

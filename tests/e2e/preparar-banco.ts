@@ -16,6 +16,8 @@ const TABELAS = [
   "rateLimit",
   "login_attempt",
   "perfil_membro",
+  "catequizando",
+  "sacramento_recebido",
 ];
 
 async function main() {

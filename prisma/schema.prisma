@@ -112,3 +112,47 @@ model PerfilMembro {
 
   @@map("perfil_membro")
 }
+
+enum EstadoCatequizando {
+  pendente
+  ativo
+  inativo
+
+  @@map("estado_catequizando")
+}
+
+enum Sacramento {
+  batismo
+  eucaristia
+  crisma
+
+  @@map("sacramento")
+}
+
+model Catequizando {
+  id             String               @id @default(uuid())
+  nome           String
+  dataNascimento DateTime             @db.Date
+  telefone       String
+  email          String?
+  endereco       String?
+  observacoes    String?
+  estado         EstadoCatequizando   @default(ativo)
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  sacramentos    SacramentoRecebido[]
+
+  @@index([estado])
+  @@map("catequizando")
+}
+
+model SacramentoRecebido {
+  catequizandoId String
+  sacramento     Sacramento
+  data           DateTime?    @db.Date
+  paroquia       String?
+  catequizando   Catequizando @relation(fields: [catequizandoId], references: [id], onDelete: Restrict)
+
+  @@id([catequizandoId, sacramento])
+  @@map("sacramento_recebido")
+}

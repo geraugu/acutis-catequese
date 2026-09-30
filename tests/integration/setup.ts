@@ -9,6 +9,8 @@ const TABELAS = [
   "rateLimit",
   "login_attempt",
   "perfil_membro",
+  "catequizando",
+  "sacramento_recebido",
 ];
 
 const url = process.env.DATABASE_URL ?? "";
