@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { SairButton } from "@/components/auth/sair-button";
+import { Marca } from "@/components/layout/marca";
 import { menuPorPapel } from "@/components/layout/menu-por-papel";
 import type { SessaoUsuario } from "@/modules/auth/dal";
 import { ROTULO_PAPEL } from "@/modules/auth/domain/papeis";
@@ -20,7 +21,7 @@ export function AppShell({ sessao, caminhoAtual, children }: AppShellProps) {
       </a>
       <header className="cabecalho">
         <div className="container cabecalho-conteudo">
-          <span className="marca">Acutis Catequese</span>
+          <Marca />
           <div className="usuario">
             <span className="usuario-nome">{sessao.nome}</span>
             <span className="usuario-papel">{ROTULO_PAPEL[sessao.papel]}</span>

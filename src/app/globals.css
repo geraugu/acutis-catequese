@@ -1,12 +1,22 @@
 :root {
-  --cor-fundo: #fbf8f3;
+  --cor-fundo: #eef3e6;
   --cor-superficie: #ffffff;
-  --cor-texto: #1f1b16;
-  --cor-texto-suave: #5a4e42;
-  --cor-primaria: #7a3b12;
+  --cor-campo: #f3f6ee;
+  --cor-texto: #1e2a14;
+  --cor-texto-suave: #5f6b55;
+  --cor-primaria: #3b6d11;
+  --cor-primaria-hover: #27500a;
+  --cor-primaria-suave: #eaf3de;
   --cor-primaria-contraste: #ffffff;
-  --cor-borda: #d9cfc2;
+  --cor-borda: #d5dec8;
+  --cor-perigo: #a32d2d;
+  --cor-perigo-fundo: #fcebeb;
+  --cor-sucesso: #27500a;
+  --cor-sucesso-fundo: #eaf3de;
   --cor-foco: #1d4ed8;
+  --raio-campo: 10px;
+  --raio-cartao: 14px;
+  --raio-pilula: 999px;
   --largura-maxima: 960px;
 }
 
@@ -71,7 +81,7 @@ main {
   background: var(--cor-superficie);
   color: var(--cor-primaria);
   border: 2px solid var(--cor-primaria);
-  border-radius: 4px;
+  border-radius: var(--raio-campo);
 }
 
 .pular-link:focus {
@@ -93,9 +103,24 @@ main {
 }
 
 .marca {
-  font-weight: 700;
-  font-size: 1.125rem;
-  color: var(--cor-primaria);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 1.0625rem;
+  color: var(--cor-primaria-hover);
+}
+
+.marca-icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: var(--cor-primaria);
+  color: var(--cor-primaria-contraste);
+  flex-shrink: 0;
 }
 
 .usuario {
@@ -124,10 +149,11 @@ main {
 .botao {
   font: inherit;
   cursor: pointer;
-  padding: 0.375rem 0.875rem;
-  border-radius: 4px;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--raio-pilula);
   border: 1px solid var(--cor-primaria);
-  min-height: 2.25rem;
+  min-height: 2.75rem;
 }
 
 .botao-secundario {
@@ -136,7 +162,7 @@ main {
 }
 
 .botao-secundario:hover {
-  background: var(--cor-fundo);
+  background: var(--cor-primaria-suave);
 }
 
 .navegacao {
@@ -154,9 +180,9 @@ main {
 
 .navegacao-lista a {
   display: inline-block;
-  padding: 0.25rem 0.5rem;
+  padding: 0.375rem 0.875rem;
   text-decoration: none;
-  border-radius: 4px;
+  border-radius: var(--raio-pilula);
 }
 
 .navegacao-lista a:hover {
@@ -164,9 +190,9 @@ main {
 }
 
 .navegacao-lista a[aria-current="page"] {
-  font-weight: 700;
-  background: var(--cor-fundo);
-  text-decoration: underline;
+  font-weight: 600;
+  background: var(--cor-primaria-suave);
+  color: var(--cor-primaria-hover);
 }
 
 .conteudo:focus {
@@ -178,13 +204,45 @@ main {
   color: var(--cor-primaria-contraste);
 }
 
+.botao-primario:hover {
+  background: var(--cor-primaria-hover);
+  border-color: var(--cor-primaria-hover);
+}
+
 .botao-primario:disabled {
   opacity: 0.7;
   cursor: progress;
 }
 
 .login-pagina {
-  max-width: 24rem;
+  max-width: 26rem;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.login-cartao {
+  background: var(--cor-superficie);
+  border-radius: var(--raio-cartao);
+  padding: 1.5rem 1.25rem;
+}
+
+.login-cartao h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.login-subtitulo {
+  margin: 0.25rem 0 1.25rem;
+  color: var(--cor-texto-suave);
+}
+
+.login-form .botao {
+  width: 100%;
+  margin-top: 0.25rem;
 }
 
 .login-form {
@@ -199,32 +257,46 @@ main {
   gap: 0.25rem;
 }
 
+.campo label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
 .campo input {
   font: inherit;
   width: 100%;
-  min-height: 2.5rem;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--cor-borda);
-  border-radius: 4px;
-  background: var(--cor-superficie);
+  min-height: 2.75rem;
+  padding: 0.5rem 0.875rem;
+  border: 1px solid transparent;
+  border-radius: var(--raio-campo);
+  background: var(--cor-campo);
   color: var(--cor-texto);
 }
 
+.campo input:hover {
+  border-color: var(--cor-borda);
+}
+
+.campo input:focus {
+  background: var(--cor-superficie);
+  border-color: var(--cor-primaria);
+}
+
 .campo input[aria-invalid="true"] {
-  border-color: #b91c1c;
+  border-color: var(--cor-perigo);
 }
 
 .campo-erro {
   margin: 0;
-  color: #b91c1c;
+  color: var(--cor-perigo);
   font-size: 0.9375rem;
 }
 
 .login-alerta {
   margin: 0;
   padding: 0.75rem 1rem;
-  border: 1px solid #b91c1c;
-  border-radius: 4px;
-  background: #fef2f2;
-  color: #7f1d1d;
+  border: 1px solid var(--cor-perigo);
+  border-radius: var(--raio-campo);
+  background: var(--cor-perigo-fundo);
+  color: var(--cor-perigo);
 }
