@@ -87,7 +87,7 @@
   - _Depends: 1.2, 2.3, 3.2_
   - _Requirements: 1.3, 6.1, 6.3, 6.4, 6.5, 7.1, 7.3_
 
-- [ ] 4. Interface da equipe
+- [x] 4. Interface da equipe
 
 - [x] 4.1 (P) Construir os componentes de lista, busca, paginação e aviso
   - Lista em linhas com borda, com nome como link, papel em etiqueta, telefone formatado e situação, e estado vazio com "Limpar busca".
@@ -125,7 +125,7 @@
   - _Depends: 3.2, 4.1, 4.2_
   - _Requirements: 1.1, 1.2, 3.1, 3.4, 8.4_
 
-- [ ] 4.5 Integração: página do membro, edição, senha e "não encontrado"
+- [x] 4.5 Integração: página do membro, edição, senha e "não encontrado"
   - Página do membro com dados em lista de definição, links de ligação e WhatsApp, aviso de sucesso e ações conforme a situação. Páginas de edição e de redefinição de senha. Página "Membro não encontrado" para um id inexistente.
   - Estilos da página do membro no CSS global.
   - Pronto quando: o build passa e, verificando manualmente, a coordenação edita, redefine a senha, inativa e reativa pela página do membro. Os cenários de "não encontrado" e do conteúdo da página do membro são cobertos pelo e2e (5.1).
