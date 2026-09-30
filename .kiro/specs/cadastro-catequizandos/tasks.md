@@ -87,7 +87,7 @@
 
 - [ ] 4. Interface dos catequizandos
 
-- [ ] 4.1 (P) Construir a lista e a busca dos catequizandos
+- [x] 4.1 (P) Construir a lista e a busca dos catequizandos
   - `ListaCatequizandos` (nome como link, idade, telefone formatado, selos de sacramento com texto acessível, estado e estado vazio com "Limpar busca") e `BuscaCatequizandos` (GET com `q`, `estado` e `sem`, com rótulos visíveis). Estilos da lista no CSS global, sem rolagem a 360 px.
   - Pronto quando: os testes de componente mostram os dados formatados, os selos, o estado vazio e a busca com os valores atuais.
   - _Boundary: components/catequizandos (lista, busca), globals.css (lista)_
@@ -129,3 +129,4 @@
 - 2.1: `ficha.ts` exporta `campoDoFormulario(path)`, que mapeia `["sacramentos", s, "data"]` para `"{s}Data"`, e as actions devem usá-la para montar `errosCampos`. No Zod 4, `abort: true` torna a issue fatal e impede refinamentos com `when`. Mensagens condicionais devem usar a função `error`.
 - 3.1: `atualizarFicha` lança P2025 quando o id não existe, então as actions devem chamar `obterCatequizando` antes. Ao ler, `SacramentoFicha` omite `data` e `paroquia` quando são nulos.
 - 3.2: por causa da LGPD, os logs das actions registram só `e.name` e o id, nunca `e.message`, que pode trazer dados da ficha. Os testes de integração dos catequizandos reaproveitam os helpers da equipe por `tests/integration/catequizandos/helpers.ts`.
+- 4.1: a lista dos catequizandos reaproveita as classes CSS `lista-membros*`, `busca-equipe` e `situacao` da equipe. O `globals.css` ganhou `.visualmente-oculto`, `.selo-sacramento` e `.estado-*`. Props: `ListaCatequizandos({catequizandos, hoje})` e `BuscaCatequizandos({termo, estado, semSacramento})`.
