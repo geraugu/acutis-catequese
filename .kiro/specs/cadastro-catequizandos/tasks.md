@@ -85,7 +85,7 @@
   - _Depends: 3.2_
   - _Requirements: 1.3, 7.2, 7.4, 7.5, 8.1, 8.2, 8.3_
 
-- [ ] 4. Interface dos catequizandos
+- [x] 4. Interface dos catequizandos
 
 - [x] 4.1 (P) Construir a lista e a busca dos catequizandos
   - `ListaCatequizandos` (nome como link, idade, telefone formatado, selos de sacramento com texto acessível, estado e estado vazio com "Limpar busca") e `BuscaCatequizandos` (GET com `q`, `estado` e `sem`, com rótulos visíveis). Estilos da lista no CSS global, sem rolagem a 360 px.
@@ -109,7 +109,7 @@
   - _Depends: 1.2, 2.2, 3.3_
   - _Requirements: 6.5, 7.3, 8.3_
 
-- [ ] 4.4 Integração: menu, lista, cadastro e página do catequizando
+- [x] 4.4 Integração: menu, lista, cadastro e página do catequizando
   - Item "Catequizandos" no menu da coordenação, com os testes do menu e do app-shell. Páginas da lista (filtros da URL validados, contador de pendentes com atalho, aviso e paginação comum), do cadastro, do detalhe (lista de definição, idade, sacramentos, links de ligação e WhatsApp, aviso e ações), da edição e de "não encontrado". Todas exigem coordenação com o caminho exato. Estilos da página do catequizando.
   - Pronto quando: os testes do menu passam, o build passa e, verificando no navegador, a coordenação cadastra, busca, filtra, edita, inativa e reativa um catequizando, e a página de uma ficha pendente mostra "Confirmar ficha" e "Recusar ficha". A evidência automatizada desses fluxos fica com o e2e da 5.1.
   - _Boundary: menu-por-papel, app/(interno)/coordenacao/catequizandos, globals.css (página)_

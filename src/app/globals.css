@@ -701,3 +701,13 @@ main {
 .ficha-duplicado a {
   color: var(--cor-primaria);
 }
+
+/* Página do catequizando: reaproveita .membro-dados, .membro-contato e .membro-acoes. */
+.catequizandos-pendentes {
+  margin: 0 0 1rem;
+  font-weight: 600;
+}
+
+.catequizando-sacramento-detalhe {
+  color: var(--cor-texto-suave);
+}

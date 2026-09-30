@@ -35,10 +35,14 @@ describe("AppShell", () => {
     const link = within(nav).getByRole("link", { name: "Início" });
     expect(link).toHaveAttribute("href", "/coordenacao");
     expect(link).toHaveAttribute("aria-current", "page");
-    expect(within(nav).getAllByRole("link")).toHaveLength(2);
+    expect(within(nav).getAllByRole("link")).toHaveLength(3);
     expect(within(nav).getByRole("link", { name: "Equipe" })).toHaveAttribute(
       "href",
       "/coordenacao/equipe",
+    );
+    expect(within(nav).getByRole("link", { name: "Catequizandos" })).toHaveAttribute(
+      "href",
+      "/coordenacao/catequizandos",
     );
     expect(screen.getByRole("main")).toHaveAttribute("id", "conteudo");
     expect(screen.getByRole("main")).toHaveTextContent("conteúdo");
