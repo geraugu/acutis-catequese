@@ -38,7 +38,7 @@
 
 - [ ] 2. Núcleo de domínio da autenticação
 
-- [ ] 2.1 (P) Implementar os papéis e a hierarquia de acesso
+- [x] 2.1 (P) Implementar os papéis e a hierarquia de acesso
   - Definir os dois papéis (coordenação e catequista) com seus rótulos em pt-BR.
   - A regra de acesso deve deixar a coordenação acessar tudo o que o catequista acessa, mas não o contrário.
   - Definir a página inicial de cada papel e a verificação de que um valor é um papel válido.
