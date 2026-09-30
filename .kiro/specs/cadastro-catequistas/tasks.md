@@ -69,7 +69,7 @@
   - _Depends: 1.2, 2.4, 3.1_
   - _Requirements: 1.3, 2.1, 2.3, 2.4, 2.5, 2.7, 2.10_
 
-- [ ] 3.3 Implementar a ação de editar membro
+- [x] 3.3 Implementar a ação de editar membro
   - Autorizar, validar com o schema de edição e verificar o e-mail em uso por outro membro. Se o papel mudar, aplicar as regras de proteção antes. Atualizar nome e e-mail e o papel pelo plugin admin, e o perfil pelo repositório. Em caso de sucesso, redirecionar para a página do membro com o aviso "alterações salvas". E-mail em uso e violação de proteção voltam como mensagem geral (alerta), sem gravar nada.
   - Pronto quando: os testes de integração mostram que a edição válida redireciona com a confirmação; que, após trocar o e-mail, o novo loga e o antigo não; que o e-mail de outro membro é recusado; que o papel alterado aparece na próxima leitura de sessão; e que a última coordenação não consegue se rebaixar, sem nada mudar no banco.
   - _Depends: 2.3, 3.2_

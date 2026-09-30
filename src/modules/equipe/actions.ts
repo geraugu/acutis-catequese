@@ -4,9 +4,20 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { requireRole } from "@/modules/auth/dal";
-import { membroCriacaoSchema } from "@/modules/equipe/domain/membro";
-import { MSG_EMAIL_EM_USO, MSG_ERRO_INESPERADO } from "@/modules/equipe/mensagens";
-import { emailEmUso, salvarPerfil } from "@/modules/equipe/repositorio";
+import type { z } from "zod";
+import { membroCriacaoSchema, membroEdicaoSchema } from "@/modules/equipe/domain/membro";
+import { verificarProtecaoCoordenacao } from "@/modules/equipe/domain/protecao-coordenacao";
+import {
+  MENSAGEM_VIOLACAO,
+  MSG_EMAIL_EM_USO,
+  MSG_ERRO_INESPERADO,
+} from "@/modules/equipe/mensagens";
+import {
+  contarCoordenacoesAtivas,
+  emailEmUso,
+  obterMembro,
+  salvarPerfil,
+} from "@/modules/equipe/repositorio";
 
 type CampoValor = "nome" | "email" | "telefone" | "papel" | "observacoes";
 type CampoErro = CampoValor | "senha";
@@ -39,6 +50,25 @@ function isCampoErro(c: unknown): c is CampoErro {
   return (CAMPOS_ERRO as readonly unknown[]).includes(c);
 }
 
+function errosPorCampo(error: z.ZodError): EstadoFormulario["errosCampos"] {
+  const errosCampos: EstadoFormulario["errosCampos"] = {};
+  for (const issue of error.issues) {
+    const campo = issue.path[0];
+    if (isCampoErro(campo) && !errosCampos[campo]) errosCampos[campo] = issue.message;
+  }
+  return errosCampos;
+}
+
+function camposMembro(dados: FormData) {
+  return {
+    nome: texto(dados, "nome") ?? "",
+    email: texto(dados, "email") ?? "",
+    telefone: texto(dados, "telefone") ?? "",
+    papel: texto(dados, "papel"),
+    observacoes: texto(dados, "observacoes"),
+  };
+}
+
 export async function criarMembroAction(
   _anterior: EstadoFormulario,
   dados: FormData,
@@ -47,21 +77,10 @@ export async function criarMembroAction(
 
   const valores = valoresPreenchidos(dados);
   const resultado = membroCriacaoSchema.safeParse({
-    nome: texto(dados, "nome") ?? "",
-    email: texto(dados, "email") ?? "",
-    telefone: texto(dados, "telefone") ?? "",
-    papel: texto(dados, "papel"),
-    observacoes: texto(dados, "observacoes"),
+    ...camposMembro(dados),
     senha: texto(dados, "senha") ?? "",
   });
-  if (!resultado.success) {
-    const errosCampos: EstadoFormulario["errosCampos"] = {};
-    for (const issue of resultado.error.issues) {
-      const campo = issue.path[0];
-      if (isCampoErro(campo) && !errosCampos[campo]) errosCampos[campo] = issue.message;
-    }
-    return { errosCampos, valores };
-  }
+  if (!resultado.success) return { errosCampos: errosPorCampo(resultado.error), valores };
 
   const { nome, email, telefone, papel, observacoes, senha } = resultado.data;
   let userId: string;
@@ -95,4 +114,52 @@ export async function criarMembroAction(
   }
   // Fora do try/catch: redirect lança NEXT_REDIRECT.
   redirect(`/coordenacao/equipe/${userId}?aviso=cadastrado`);
+}
+
+/** Edição de membro (4.1–4.5); o `id` é vinculado via `.bind` na página. */
+export async function editarMembroAction(
+  id: string,
+  _anterior: EstadoFormulario,
+  dados: FormData,
+): Promise<EstadoFormulario> {
+  const ator = await requireRole(["coordenacao"]); // 1.3
+
+  const valores = valoresPreenchidos(dados);
+  const resultado = membroEdicaoSchema.safeParse(camposMembro(dados));
+  if (!resultado.success) return { errosCampos: errosPorCampo(resultado.error), valores };
+
+  const { nome, email, telefone, papel, observacoes } = resultado.data;
+  try {
+    const alvo = await obterMembro(id);
+    if (!alvo) return { erro: MSG_ERRO_INESPERADO, valores };
+    if (await emailEmUso(email, id)) return { erro: MSG_EMAIL_EM_USO, valores };
+
+    const mudouPapel = papel !== alvo.papel;
+    if (mudouPapel) {
+      const violacao = verificarProtecaoCoordenacao({
+        atorId: ator.userId,
+        alvo,
+        operacao: { tipo: "mudar-papel", novoPapel: papel },
+        coordenacoesAtivas: await contarCoordenacoesAtivas(),
+      });
+      if (violacao) return { erro: MENSAGEM_VIOLACAO[violacao], valores };
+    }
+
+    const cabecalhos = await headers();
+    await auth.api.adminUpdateUser({
+      headers: cabecalhos,
+      body: { userId: id, data: { name: nome, email } },
+    });
+    if (mudouPapel) {
+      await auth.api.setRole({ headers: cabecalhos, body: { userId: id, role: papel } });
+    }
+    await salvarPerfil(id, { telefone, observacoes });
+  } catch (e) {
+    console.error("[equipe] falha ao editar membro", {
+      userId: id,
+      erro: e instanceof Error ? e.message : String(e),
+    });
+    return { erro: MSG_ERRO_INESPERADO, valores };
+  }
+  redirect(`/coordenacao/equipe/${id}?aviso=alteracoes-salvas`);
 }
