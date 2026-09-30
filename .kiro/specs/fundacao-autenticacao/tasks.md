@@ -119,7 +119,7 @@
   - _Depends: 3.4_
   - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6_
 
-- [ ] 4.2 (P) Construir o formulário e a página de login
+- [x] 4.2 (P) Construir o formulário e a página de login
   - Formulário com rótulos associados, preenchimento automático adequado, erros por campo ligados aos campos e mensagem geral anunciada como alerta. O botão fica desabilitado durante o envio.
   - A página de login redireciona para a página inicial do papel quando já existe sessão, e repassa o endereço de retorno para o formulário.
   - Pronto quando: um teste de componente mostra os rótulos em pt-BR e os erros por campo recebidos do estado da ação. O redirecionamento de um usuário já logado é verificado no e2e (5.1).
