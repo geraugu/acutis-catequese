@@ -94,7 +94,7 @@
   - _Depends: 1.1, 1.4, 2.2, 2.3, 3.1_ (a 3.1 fornece o tipo `CatequizandoResumo`, usado só via `import type`)
   - _Requirements: 3.5, 5.1, 5.3, 5.4, 5.5, 5.6, 9.3_
 
-- [ ] 4.2 Construir o formulário da ficha
+- [x] 4.2 Construir o formulário da ficha
   - `FormularioFicha` nos modos de criação e edição, com um fieldset por sacramento, a dica das observações, os erros ligados aos campos, os valores reapresentados, o botão desabilitado durante o envio e o aviso de duplicidade com link e "Salvar mesmo assim". Estilos do formulário no CSS global.
   - Pronto quando: os testes de componente mostram `aria-describedby` nos erros, os campos de sacramento, a dica, o aviso de duplicidade enviando `confirmarDuplicidade=1` e os valores preservados.
   - _Boundary: components/catequizandos (formulario-ficha), globals.css (ficha)_
@@ -130,3 +130,4 @@
 - 3.1: `atualizarFicha` lança P2025 quando o id não existe, então as actions devem chamar `obterCatequizando` antes. Ao ler, `SacramentoFicha` omite `data` e `paroquia` quando são nulos.
 - 3.2: por causa da LGPD, os logs das actions registram só `e.name` e o id, nunca `e.message`, que pode trazer dados da ficha. Os testes de integração dos catequizandos reaproveitam os helpers da equipe por `tests/integration/catequizandos/helpers.ts`.
 - 4.1: a lista dos catequizandos reaproveita as classes CSS `lista-membros*`, `busca-equipe` e `situacao` da equipe. O `globals.css` ganhou `.visualmente-oculto`, `.selo-sacramento` e `.estado-*`. Props: `ListaCatequizandos({catequizandos, hoje})` e `BuscaCatequizandos({termo, estado, semSacramento})`.
+- 4.2: com o aviso de duplicidade na tela, o botão principal precisa ser o primeiro submit do form, porque o Enter usa o primeiro submit. "Salvar mesmo assim" vem depois. Data e paróquia ficam sempre habilitadas e o servidor as descarta quando o sacramento não foi marcado.
