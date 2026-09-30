@@ -108,7 +108,7 @@
   - _Depends: 3.2_
   - _Requirements: 2.3, 2.6, 2.10, 4.6, 5.2_
 
-- [ ] 4.3 (P) Construir a confirmação de inativar e reativar
+- [x] 4.3 (P) Construir a confirmação de inativar e reativar
   - Botão que abre um diálogo nativo com o título nomeando a ação e o membro (por exemplo, "Inativar Maria Souza?"), um texto explicando o efeito e os botões de confirmar (estilo de perigo para inativar) e "Cancelar". O foco inicial fica em "Cancelar" e o Esc fecha.
   - Os estilos do diálogo ficam num arquivo próprio do componente, fora do CSS global.
   - Pronto quando: um teste de componente mostra o título com o nome do membro, os dois botões e que confirmar envia a ação correspondente à situação.
