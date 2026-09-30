@@ -300,3 +300,152 @@ main {
   background: var(--cor-perigo-fundo);
   color: var(--cor-perigo);
 }
+
+/* Equipe: busca, lista, paginação e aviso */
+.busca-equipe {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem 1rem;
+  margin-block: 1rem;
+}
+
+.busca-equipe .campo {
+  min-width: 0;
+}
+
+.busca-termo {
+  flex: 1 1 14rem;
+}
+
+.busca-situacao {
+  flex: 0 1 10rem;
+}
+
+.busca-equipe input,
+.busca-equipe select {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  font: inherit;
+  color: var(--cor-texto);
+  background: var(--cor-campo);
+  border: 1px solid transparent;
+  border-radius: var(--raio-campo);
+  padding: 0.5rem 0.75rem;
+}
+
+.busca-equipe input:hover,
+.busca-equipe select:hover,
+.busca-equipe input:focus,
+.busca-equipe select:focus {
+  border-color: var(--cor-primaria);
+}
+
+.lista-membros {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-cartao);
+}
+
+.lista-membros-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  padding: 0.75rem 1rem;
+  min-width: 0;
+}
+
+.lista-membros-item + .lista-membros-item {
+  border-top: 1px solid var(--cor-borda);
+}
+
+.lista-membros-nome {
+  flex: 1 1 100%;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  padding-block: 0.5rem;
+}
+
+.lista-membros-telefone {
+  color: var(--cor-texto-suave);
+  font-size: 0.875rem;
+}
+
+.etiqueta {
+  font-size: 0.875rem;
+  padding: 0.125rem 0.625rem;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-primaria-suave);
+  color: var(--cor-primaria-hover);
+}
+
+.situacao {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.situacao-ativo {
+  color: var(--cor-sucesso);
+}
+
+.situacao-inativo {
+  color: var(--cor-texto-suave);
+}
+
+.lista-vazia {
+  background: var(--cor-superficie);
+  border-radius: var(--raio-cartao);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.lista-vazia h2 {
+  font-size: 1.25rem;
+  margin-block: 0 0.5rem;
+}
+
+.lista-vazia p {
+  color: var(--cor-texto-suave);
+  margin-block: 0 1rem;
+}
+
+.lista-vazia .botao,
+.paginacao .botao {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.paginacao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-block: 1rem;
+}
+
+.paginacao-posicao {
+  color: var(--cor-texto-suave);
+  font-size: 0.875rem;
+}
+
+.aviso {
+  background: var(--cor-sucesso-fundo);
+  color: var(--cor-sucesso);
+  border-radius: var(--raio-campo);
+  padding: 0.75rem 1rem;
+  margin-block: 0 1rem;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 640px) {
+  .lista-membros-nome {
+    flex: 1 1 auto;
+  }
+}

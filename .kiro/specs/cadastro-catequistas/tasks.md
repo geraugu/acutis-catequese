@@ -89,7 +89,7 @@
 
 - [ ] 4. Interface da equipe
 
-- [ ] 4.1 (P) Construir os componentes de lista, busca, paginação e aviso
+- [x] 4.1 (P) Construir os componentes de lista, busca, paginação e aviso
   - Lista em linhas com borda, com nome como link, papel em etiqueta, telefone formatado e situação, e estado vazio com "Limpar busca".
   - Formulário de busca por método GET, com rótulos visíveis e seletor de situação, que funciona sem JavaScript. Paginação com links que preservam a busca. Aviso de sucesso a partir de um código conhecido, anunciado como status.
   - Esta é a única tarefa paralela que altera o CSS global. Os estilos dos formulários ficam com a 4.4 e os da página do membro com a 4.5.
@@ -155,3 +155,4 @@
 - 2.2: `Situacao` e `FiltroSituacao` foram declarados provisoriamente em `domain/busca.ts`. A tarefa 2.4 deve movê-los para `domain/membro.ts` e fazer `busca.ts` importá-los de lá.
 - 3.2: as actions ficam em `src/modules/equipe/actions.ts`, que exporta `EstadoFormulario`. A equipe usa um `MSG_ERRO_INESPERADO` próprio, em `equipe/mensagens.ts`, porque o da fundação tem texto de login. O teste de falha simulada usa `vi.spyOn` no namespace do repositório.
 - 3.3/3.5: a regra "última coordenação" pura não pode ser montada na integração, porque quem age é sempre uma coordenação ativa e o único alvo possível é ela mesma, caso em que "a-si-mesmo" ou "próprio papel" tem precedência. Por isso ela fica coberta pelos testes unitários do domínio.
+- 4.1: props definidas pelos componentes: `ListaMembros({membros})`, `BuscaEquipe({termo?, situacao})`, `Paginacao({pagina, totalPaginas, termo?, situacao})` e `Aviso({codigo})`. Os parâmetros da URL são `q`, `situacao` e `pagina`, e os valores padrão (`situacao=ativo` e `pagina=1`) ficam fora dela.
