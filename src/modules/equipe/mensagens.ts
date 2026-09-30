@@ -33,3 +33,5 @@ export function isCodigoAviso(valor: unknown): valor is CodigoAviso {
 export function mensagemDeAviso(codigo: unknown): string | null {
   return isCodigoAviso(codigo) ? MENSAGEM_AVISO[codigo] : null;
 }
+
+export const MSG_ERRO_INESPERADO = "Não foi possível concluir agora. Tente novamente em instantes.";

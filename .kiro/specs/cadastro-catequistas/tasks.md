@@ -61,7 +61,7 @@
   - _Depends: 1.1_
   - _Requirements: 2.5, 3.1, 4.3, 6.6, 7.3, 8.1_
 
-- [ ] 3.2 Implementar a ação de cadastrar membro
+- [x] 3.2 Implementar a ação de cadastrar membro
   - Autorizar a coordenação antes de qualquer outra coisa. Validar com o schema de criação e verificar o e-mail em uso. Criar a conta pelo plugin admin, repassando a sessão da coordenação, e gravar o perfil. Se o perfil falhar, remover a conta criada (compensação).
   - O tipo de estado dos formulários é exportado por esta tarefa e consumido pelos formulários da tarefa 4.2.
   - Em caso de erro, devolver os erros por campo e os valores preenchidos, nunca a senha. Em caso de sucesso, redirecionar para a página do membro com o aviso "cadastrado".
@@ -153,3 +153,4 @@
 ## Implementation Notes
 - 1.2: com a sessão de coordenação, todas as chamadas do plugin admin funcionam (createUser, adminUpdateUser, setRole, setUserPassword, revokeUserSessions, banUser/unbanUser, inclusive com alvo coordenação, e removeUser). Nenhuma permissão foi alterada, então não houve revalidação da fundação. Os helpers ficam em `tests/integration/equipe/helpers.ts` e `next-mocks.ts` (os `vi.mock` ficam em cada arquivo de teste). O e-mail é gravado em minúsculas.
 - 2.2: `Situacao` e `FiltroSituacao` foram declarados provisoriamente em `domain/busca.ts`. A tarefa 2.4 deve movê-los para `domain/membro.ts` e fazer `busca.ts` importá-los de lá.
+- 3.2: as actions ficam em `src/modules/equipe/actions.ts`, que exporta `EstadoFormulario`. A equipe usa um `MSG_ERRO_INESPERADO` próprio, em `equipe/mensagens.ts`, porque o da fundação tem texto de login. O teste de falha simulada usa `vi.spyOn` no namespace do repositório.
