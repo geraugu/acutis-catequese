@@ -46,7 +46,7 @@
   - _Boundary: domain/papeis_
   - _Requirements: 3.1, 6.1, 6.5_
 
-- [ ] 2.2 (P) Implementar a política de bloqueio por tentativas falhas
+- [x] 2.2 (P) Implementar a política de bloqueio por tentativas falhas
   - Regra pura: 5 falhas dentro de 15 minutos bloqueiam o e-mail por 15 minutos, contados a partir da quinta falha. O resultado informa quando o bloqueio termina.
   - Pronto quando: os testes unitários mostram que 4 falhas não bloqueiam, que 5 falhas em 15 minutos bloqueiam, que 5 falhas espalhadas por mais de 15 minutos não bloqueiam, e que o bloqueio termina após 15 minutos.
   - _Boundary: domain/bloqueio_
@@ -176,3 +176,4 @@
 - 1.2: o Docker (OrbStack) fica em `~/.orbstack/bin`, que não está no PATH padrão. O banco `acutis_test` só é criado pelo init script quando o volume é criado. Os scripts `db:migrate` e `db:seed` ficam com as tarefas 1.3 e 3.5. A validação de env roda em `next.config.ts`.
 - 1.3: os modelos do Better Auth foram escritos à mão no formato 1.7. Na 3.1, conferir com `npx auth@latest generate` que não há diferença. O seed está configurado como `tsx prisma/seed.ts` no prisma.config.ts; o script `db:seed` e o arquivo ficam com a 3.5. O client é importado de `@/generated/prisma/client`.
 - 1.4: os testes de integração usam `DATABASE_URL_TEST`, e o setup aborta se a URL não for a do `acutis_test`. Os componentes são testados com `// @vitest-environment jsdom`. O Playwright usa `channel: "chromium"` porque faltou disco para o headless shell; se sobrar espaço, remover essa linha. O webServer reaproveita um servidor que já esteja na porta 3000 (fora do CI).
+- 2.2: `avaliarBloqueio` ignora falhas com data posterior a `agora`. Para a query use `JANELA_CONSULTA_FALHAS_MS` (30 min). Na 3.2, não registrar falhas enquanto o e-mail estiver bloqueado, senão o bloqueio se estende.
