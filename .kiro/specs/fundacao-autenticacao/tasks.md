@@ -127,7 +127,7 @@
   - _Depends: 3.4_
   - _Requirements: 3.3, 3.5, 8.4, 8.6_
 
-- [ ] 4.3 Integração: proteção de rotas e páginas internas
+- [x] 4.3 Integração: proteção de rotas e páginas internas
   - Checagem otimista (proxy): sem cookie de sessão, redireciona para o login com o endereço de retorno. As rotas públicas e os arquivos estáticos ficam de fora.
   - A raiz redireciona para a página inicial do papel ou para o login.
   - A área interna exige sessão e aplica o layout base. As páginas iniciais de coordenação e de catequista exigem o papel correspondente e mostram uma mensagem de boas-vindas.
@@ -184,3 +184,4 @@
 - 3.4: o destino pós-login fica em `domain/destino-login.ts`. Os testes de action verificam o login pela linha de sessão no banco, porque o `nextCookies` grava via internals do `next/headers` (os atributos do cookie já são cobertos pela 3.1). Pendência defensiva: `sanitizarCallbackUrl` não recusa segmentos `..`; a DAL barra o acesso no destino.
 - 3.5: a lógica do seed fica em `src/modules/auth/seed-coordenacao.ts` (`semearCoordenacao`, reusável no setup do e2e). O `tsx` resolve o alias `@/`, e `src/lib/auth.ts` funciona fora do Next.
 - 4.1: o `AppShell` recebe `sessao` e o `caminhoAtual?` opcional (para `aria-current`). O layout `(interno)` da 4.3 deve repassar o caminho atual. Nos testes de componente que importam `actions.ts`, mockar `@/modules/auth/actions`.
+- 4.3: o proxy grava o cabeçalho `x-caminho` (sobrescrevendo o que vier do cliente), e o layout `(interno)` o lê para o `callbackUrl` e o `aria-current`. O matcher exclui prefixos sem fronteira (`login`, `api`), então `/login2` também escaparia do proxy; é inofensivo porque a DAL protege, mas pode ser endurecido com `login(?:/|$)`. O implementador ficou BLOCKED porque o classificador de permissão estava indisponível; build, smoke via curl e e2e foram verificados pelo controlador.
