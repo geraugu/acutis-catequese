@@ -102,7 +102,7 @@
   - Sem (P): edita o `globals.css`, assim como a 4.1.
   - _Requirements: 2.2, 2.3, 2.9, 3.1, 3.2, 4.1, 4.2, 4.3, 9.2, 9.3_
 
-- [ ] 4.3 (P) Construir as ações de estado
+- [x] 4.3 (P) Construir as ações de estado
   - `AcoesEstado` usa `Confirmacao` e mostra só as operações do estado atual: "Inativar" e "Recusar ficha" com estilo de perigo, "Reativar" e "Confirmar ficha" sem.
   - Pronto quando: os testes de componente mostram as ações certas para cada estado, o título com o nome do catequizando e que confirmar chama a action correspondente.
   - _Boundary: components/catequizandos (acoes-estado)_
