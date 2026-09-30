@@ -49,7 +49,7 @@
   - _Boundary: catequizandos/domain/estado_
   - _Requirements: 6.5, 7.1, 7.2, 7.4, 8.1, 8.3_
 
-- [ ] 2.3 Implementar a busca e a detecção de duplicidade
+- [x] 2.3 Implementar a busca e a detecção de duplicidade
   - Criar `filtrarCatequizandos` (termo, estado e sem sacramento, em ordem pt-BR) e `chaveDuplicidade`/`encontrarDuplicado` sobre o compartilhado.
   - Pronto quando: os testes unitários mostram que "jose" encontra "José", que um trecho do telefone encontra, que os filtros de estado e de "sem crisma" funcionam, e que a duplicidade ignora caixa e acento e respeita `ignorarId`.
   - _Boundary: catequizandos/domain/busca, catequizandos/domain/duplicidade_
