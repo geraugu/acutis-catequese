@@ -9,7 +9,7 @@
   - _Boundary: compartilhado/busca, compartilhado/telefone, equipe/domain_
   - _Requirements: 2.6, 5.2, 5.7_
 
-- [ ] 1.2 (P) Criar os componentes comuns de aviso, paginação e confirmação
+- [x] 1.2 (P) Criar os componentes comuns de aviso, paginação e confirmação
   - Criar `Aviso({ mensagem })`, `Paginacao({ base, pagina, totalPaginas, parametros })` e `Confirmacao` (botão com `<dialog>`, "Cancelar" com foco inicial, Esc fecha, estilo de perigo opcional, alerta de erro, `useId` no título e CSS Module próprio), conforme o design.
   - Pronto quando: os testes de componente mostram o aviso com role=status e nada quando a mensagem é nula, as URLs da paginação omitindo parâmetros vazios e `pagina=1`, e o diálogo com o título, o foco inicial em "Cancelar", confirmar chamando a ação e o erro exibido como alerta.
   - _Boundary: components/comum_
