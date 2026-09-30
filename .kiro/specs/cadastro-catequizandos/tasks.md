@@ -36,7 +36,7 @@
 
 - [ ] 2. Domínio dos catequizandos (regras puras)
 
-- [ ] 2.1 Implementar o schema da ficha
+- [x] 2.1 Implementar o schema da ficha
   - Criar `criarFichaSchema({ hoje, idadeMinima })` e `lerFichaDoFormulario`, com os sacramentos, as mensagens pt-BR, `IDADE_MINIMA_PADRAO = 16`, `SACRAMENTOS` e os rótulos.
   - Pronto quando: os testes unitários cobrem os obrigatórios, a data futura, 15 anos e 364 dias recusado e 16 anos exatos aceito, uma idade mínima customizada, o e-mail normalizado ou vazio, o sacramento não recebido descartando data e paróquia, a data do sacramento inválida e a leitura dos checkboxes do formulário.
   - _Boundary: catequizandos/domain/ficha_
@@ -126,3 +126,4 @@
 
 ## Implementation Notes
 - 1.5: os modelos `Catequizando` e `SacramentoRecebido` foram criados e a migração é `*_catequizandos`. O global-setup da integração roda `prisma migrate deploy` no acutis_test. Nos testes, as datas `@db.Date` são gravadas como `new Date("AAAA-MM-DD")` (meia-noite UTC) e lidas com `toISOString().slice(0,10)`.
+- 2.1: `ficha.ts` exporta `campoDoFormulario(path)`, que mapeia `["sacramentos", s, "data"]` para `"{s}Data"`, e as actions devem usá-la para montar `errosCampos`. No Zod 4, `abort: true` torna a issue fatal e impede refinamentos com `when`. Mensagens condicionais devem usar a função `error`.
