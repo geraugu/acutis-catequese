@@ -24,7 +24,7 @@ A coordenação cria, lista, busca, edita e inativa catequizandos. A ficha regis
 - **Out**:
   - inscrição em turma;
   - upload de documentos (certidões);
-  - autocadastro.
+  - autocadastro por link (spec `autocadastro-catequizandos`, que reutiliza as validações daqui).
 
 ## Boundary Candidates
 - Entidade Catequizando e validações
@@ -35,7 +35,7 @@ A coordenação cria, lista, busca, edita e inativa catequizandos. A ficha regis
 
 ## Upstream / Downstream
 - **Upstream**: fundacao-autenticacao
-- **Downstream**: gestao-turmas, controle-presenca
+- **Downstream**: gestao-turmas, autocadastro-catequizandos, controle-presenca
 
 ## Existing Spec Touchpoints
 - **Extends**: nenhum
@@ -45,3 +45,4 @@ A coordenação cria, lista, busca, edita e inativa catequizandos. A ficha regis
 - LGPD: coletar o mínimo necessário.
 - Somente a coordenação edita; o catequista consulta apenas os catequizandos das próprias turmas (regra aplicada em gestao-turmas).
 - Idade mínima de adulto a definir nos requisitos.
+- Prever o estado do catequizando (pendente, ativo, inativo). O estado pendente é usado pelo autocadastro.
