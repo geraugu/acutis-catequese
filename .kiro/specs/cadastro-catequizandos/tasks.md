@@ -43,7 +43,7 @@
   - _Depends: 1.1, 1.4_
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 3.1, 3.2, 3.3, 3.4, 6.4_
 
-- [ ] 2.2 (P) Implementar os estados e as transições
+- [x] 2.2 (P) Implementar os estados e as transições
   - Criar `ESTADOS`, `FiltroEstado`, `transicao`, `operacoesDisponiveis` e `ROTULO_ESTADO`.
   - Pronto quando: os testes unitários cobrem a tabela completa de transições (as válidas e as nulas) e as operações disponíveis de cada estado.
   - _Boundary: catequizandos/domain/estado_
