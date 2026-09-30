@@ -84,7 +84,7 @@
   - _Depends: 3.1, 2.2, 2.3_
   - _Requirements: 3.2, 3.4, 4.1, 4.2, 4.3, 4.4_
 
-- [ ] 3.3 Implementar a camada de sessão e autorização (DAL)
+- [x] 3.3 Implementar a camada de sessão e autorização (DAL)
   - Obter a sessão validada no banco, memorizada por requisição, com nome, e-mail e papel.
   - Exigir sessão: sem sessão, redirecionar para o login levando o caminho atual como endereço de retorno.
   - Exigir papel: sem permissão, redirecionar para "Acesso negado". Papel inválido no banco é tratado como sem permissão.
@@ -180,3 +180,4 @@
 - 2.3: `mensagens.ts` exporta `MSG_*`, `CODIGO_CREDENCIAIS_INVALIDAS`, `CODIGO_CONTA_DESABILITADA`, `STATUS_BLOQUEIO` e `mensagemDeErroLogin`. O domínio exporta `normalizarEmail`, que 3.2 e 3.5 devem reusar. `sanitizarCallbackUrl` também recusa espaços e caracteres de controle.
 - 3.1: no Better Auth 1.7.6, `rememberMe:false` grava a sessão no banco com validade fixa de 24h. Um `databaseHooks.session.create.before` limita a 12h. O `createUser` do admin ignora `minPasswordLength`, então `hooks.before` valida `/admin/create-user` com `senhaSchema`. **Na 3.2, estender esse `hooks.before`, sem substituí-lo.** A tabela `rateLimit` foi adicionada. Depois de uma migração, rodar `npx prisma generate`.
 - 3.2: no Better Auth 1.7.6, o hook `after` roda mesmo quando o endpoint lança erro (o erro chega em `ctx.context.returned`). Um `APIError` lançado no `before` não passa pelo `after`. `auth.api.signInEmail({asResponse:true})` repassa ao chamador o `APIError` do `before` (429), então a action da 3.4 precisa capturá-lo. O hook `before` substitui `body.email` pelo e-mail normalizado.
+- 3.3: `getSessao` usa `disableCookieCache: true` para sempre validar a sessão no banco. Um papel inválido leva a `/acesso-negado`, e não ao login, para evitar loop. Nos testes, mockar `next/headers` e `next/navigation` (o `redirect` lança erro). O pacote `server-only` não foi instalado por falta de disco; pendente.
