@@ -9,3 +9,17 @@ coverage/
 # Claude Code (local)
 .claude/settings.local.json
 .claude/worktrees/
+
+# Next.js / build
+.next/
+out/
+build/
+next-env.d.ts
+*.tsbuildinfo
+
+# Prisma client gerado
+src/generated/
+
+# Testes
+test-results/
+playwright-report/

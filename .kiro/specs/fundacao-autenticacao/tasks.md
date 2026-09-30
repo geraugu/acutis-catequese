@@ -2,7 +2,7 @@
 
 - [ ] 1. Fundação: projeto, banco e infraestrutura de testes
 
-- [ ] 1.1 Criar o projeto Next.js com TypeScript strict e as ferramentas de qualidade
+- [x] 1.1 Criar o projeto Next.js com TypeScript strict e as ferramentas de qualidade
   - Criar a aplicação Next.js 16 (App Router, diretório `src/`, alias `@/*`), com React 19 e TypeScript em modo strict.
   - Configurar ESLint e Prettier.
   - Registrar os scripts `dev`, `build`, `start`, `lint`, `format` e `typecheck`.
@@ -170,3 +170,6 @@
   - Atualizar as instruções de execução e de teste e a lista de variáveis de ambiente para refletir os comandos reais.
   - Pronto quando: seguindo apenas as instruções, um clone novo chega à aplicação rodando com login da coordenação funcionando, e cada comando de verificação documentado executa com sucesso.
   - _Requirements: 1.1, 2.3_
+
+## Implementation Notes
+- 1.1: Better Auth, Prisma e Vitest não foram instalados na 1.1 (ficam com 3.1, 1.3 e 1.4); fixar `better-auth@^1.7`, `prisma@^7.10` e `vitest@^4` nessas tarefas. O npm 11 retém os install scripts (ex.: unrs-resolver); até aqui não foi preciso aprová-los.

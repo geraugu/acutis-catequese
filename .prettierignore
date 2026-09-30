@@ -1,0 +1,13 @@
+.next/
+node_modules/
+src/generated/
+coverage/
+test-results/
+playwright-report/
+package-lock.json
+next-env.d.ts
+.kiro/
+.claude/
+README.md
+CLAUDE.md
+LICENSE
