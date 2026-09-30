@@ -99,7 +99,7 @@
   - _Depends: 2.2, 2.4, 3.1_
   - _Requirements: 2.9, 3.3, 3.4, 3.5, 3.7, 5.3, 6.6_
 
-- [ ] 4.2 (P) Construir os formulários de membro e de senha
+- [x] 4.2 (P) Construir os formulários de membro e de senha
   - Formulário de membro nos modos criação e edição: o campo de senha aparece só na criação, o papel vem com catequista pré-selecionado, há uma dica de não registrar dados sensíveis nas observações, os erros ficam ligados aos campos, os valores são reapresentados, e o botão fica desabilitado durante o envio.
   - Formulário de redefinição de senha com um único campo e o mesmo padrão de erro.
   - Pronto quando: os testes de componente mostram os erros ligados aos campos com `aria-describedby`, a ausência de campo de senha no modo edição, o catequista pré-selecionado e o campo de senha sempre vazio após um erro.
@@ -156,3 +156,4 @@
 - 3.2: as actions ficam em `src/modules/equipe/actions.ts`, que exporta `EstadoFormulario`. A equipe usa um `MSG_ERRO_INESPERADO` próprio, em `equipe/mensagens.ts`, porque o da fundação tem texto de login. O teste de falha simulada usa `vi.spyOn` no namespace do repositório.
 - 3.3/3.5: a regra "última coordenação" pura não pode ser montada na integração, porque quem age é sempre uma coordenação ativa e o único alvo possível é ela mesma, caso em que "a-si-mesmo" ou "próprio papel" tem precedência. Por isso ela fica coberta pelos testes unitários do domínio.
 - 4.1: props definidas pelos componentes: `ListaMembros({membros})`, `BuscaEquipe({termo?, situacao})`, `Paginacao({pagina, totalPaginas, termo?, situacao})` e `Aviso({codigo})`. Os parâmetros da URL são `q`, `situacao` e `pagina`, e os valores padrão (`situacao=ativo` e `pagina=1`) ficam fora dela.
+- 4.2: `FormularioMembro({modo, acao, valoresIniciais?})` e `FormularioSenha({acao})` recebem a action já com o id vinculado por `.bind`. As classes `formulario` e `campo-dica` ainda não existem no CSS; elas ficam para a 4.4. O alerta geral reaproveita `login-alerta`.
