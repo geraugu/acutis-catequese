@@ -9,7 +9,10 @@ import { normalizarEmail } from "@/modules/auth/domain/credenciais";
  */
 
 /** Instantes das falhas do e-mail nos últimos 30 minutos até `agora`. */
-export async function listarFalhasRecentes(email: string, agora: Date = new Date()): Promise<Date[]> {
+export async function listarFalhasRecentes(
+  email: string,
+  agora: Date = new Date(),
+): Promise<Date[]> {
   const desde = new Date(agora.getTime() - JANELA_CONSULTA_FALHAS_MS);
   const linhas = await prisma.loginAttempt.findMany({
     where: { email: normalizarEmail(email), createdAt: { gte: desde, lte: agora } },
