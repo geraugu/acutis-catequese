@@ -2,10 +2,11 @@
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { Aviso } from "@/components/equipe/aviso";
+import { Aviso } from "@/components/comum/aviso";
+import { Paginacao } from "@/components/comum/paginacao";
 import { BuscaEquipe } from "@/components/equipe/busca-equipe";
 import { ListaMembros } from "@/components/equipe/lista-membros";
-import { Paginacao } from "@/components/equipe/paginacao";
+import { mensagemDeAviso } from "@/modules/equipe/mensagens";
 import type { MembroResumo } from "@/modules/equipe/repositorio";
 
 const membros: MembroResumo[] = [
@@ -77,7 +78,14 @@ describe("BuscaEquipe", () => {
 
 describe("Paginacao", () => {
   it("gera links preservando a busca", () => {
-    render(<Paginacao pagina={2} totalPaginas={3} termo="ana" situacao="inativo" />);
+    render(
+      <Paginacao
+        base="/coordenacao/equipe"
+        pagina={2}
+        totalPaginas={3}
+        parametros={{ q: "ana", situacao: "inativo" }}
+      />,
+    );
     expect(screen.getByRole("link", { name: /anterior/i })).toHaveAttribute(
       "href",
       "/coordenacao/equipe?q=ana&situacao=inativo",
@@ -91,28 +99,28 @@ describe("Paginacao", () => {
 
   it("omite links nas pontas e não renderiza com uma página", () => {
     const { rerender, container } = render(
-      <Paginacao pagina={1} totalPaginas={2} situacao="ativo" />,
+      <Paginacao base="/coordenacao/equipe" pagina={1} totalPaginas={2} parametros={{}} />,
     );
     expect(screen.queryByRole("link", { name: /anterior/i })).toBeNull();
     expect(screen.getByRole("link", { name: /próxima/i })).toHaveAttribute(
       "href",
       "/coordenacao/equipe?pagina=2",
     );
-    rerender(<Paginacao pagina={1} totalPaginas={1} situacao="ativo" />);
+    rerender(<Paginacao base="/coordenacao/equipe" pagina={1} totalPaginas={1} parametros={{}} />);
     expect(container).toBeEmptyDOMElement();
   });
 });
 
 describe("Aviso", () => {
   it("anuncia mensagem de código conhecido como status", () => {
-    render(<Aviso codigo="senha-redefinida" />);
+    render(<Aviso mensagem={mensagemDeAviso("senha-redefinida")} />);
     expect(screen.getByRole("status")).toHaveTextContent(
       "Senha redefinida. Repasse a nova senha pessoalmente.",
     );
   });
 
   it("ignora código desconhecido", () => {
-    const { container } = render(<Aviso codigo="<script>" />);
+    const { container } = render(<Aviso mensagem={mensagemDeAviso("<script>")} />);
     expect(container).toBeEmptyDOMElement();
   });
 });

@@ -5,10 +5,11 @@ import { listarMembros } from "@/modules/equipe/repositorio";
 import { paginar } from "@/modules/compartilhado/busca";
 import { filtrarMembros } from "@/modules/equipe/domain/busca";
 import type { FiltroSituacao } from "@/modules/equipe/domain/membro";
-import { Aviso } from "@/components/equipe/aviso";
+import { Aviso } from "@/components/comum/aviso";
+import { Paginacao } from "@/components/comum/paginacao";
+import { mensagemDeAviso } from "@/modules/equipe/mensagens";
 import { BuscaEquipe } from "@/components/equipe/busca-equipe";
 import { ListaMembros } from "@/components/equipe/lista-membros";
-import { Paginacao } from "@/components/equipe/paginacao";
 
 export const metadata: Metadata = {
   title: "Equipe — Acutis Catequese",
@@ -42,14 +43,14 @@ export default async function EquipePage({ searchParams }: { searchParams: Promi
           Cadastrar membro
         </Link>
       </div>
-      <Aviso codigo={primeiro(params.aviso)} />
+      <Aviso mensagem={mensagemDeAviso(primeiro(params.aviso))} />
       <BuscaEquipe termo={termo} situacao={situacao} />
       <ListaMembros membros={pagina.itens} />
       <Paginacao
         pagina={pagina.pagina}
         totalPaginas={pagina.totalPaginas}
-        termo={termo}
-        situacao={situacao}
+        base="/coordenacao/equipe"
+        parametros={{ q: termo, situacao: situacao === "ativo" ? undefined : situacao }}
       />
     </>
   );

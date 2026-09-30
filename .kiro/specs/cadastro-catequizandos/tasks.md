@@ -15,7 +15,7 @@
   - _Boundary: components/comum_
   - _Requirements: 5.5, 5.7, 7.3, 8.3_
 
-- [ ] 1.3 Migrar a equipe para os componentes comuns
+- [x] 1.3 Migrar a equipe para os componentes comuns
   - As páginas da equipe usam `Aviso` e `Paginacao` comuns, resolvendo a mensagem com `mensagemDeAviso` da equipe, e `AcoesSituacao` compõe `Confirmacao` mantendo os mesmos textos. Remover `components/equipe/aviso` e `paginacao`, e ajustar os testes da equipe só nos imports ou props.
   - Pronto quando: nenhum arquivo importa os componentes removidos, os testes unitários da equipe passam, o build passa e `npm run test:e2e` segue verde sem mudança nos cenários da equipe.
   - _Boundary: components/equipe, app/(interno)/coordenacao/equipe_

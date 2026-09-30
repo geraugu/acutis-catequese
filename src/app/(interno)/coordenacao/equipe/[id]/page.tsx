@@ -6,7 +6,8 @@ import { ROTULO_PAPEL } from "@/modules/auth/domain/papeis";
 import { obterMembro } from "@/modules/equipe/repositorio";
 import { formatarTelefone, linkLigacao, linkWhatsApp } from "@/modules/compartilhado/telefone";
 import { inativarMembroAction, reativarMembroAction } from "@/modules/equipe/actions";
-import { Aviso } from "@/components/equipe/aviso";
+import { Aviso } from "@/components/comum/aviso";
+import { mensagemDeAviso } from "@/modules/equipe/mensagens";
 import { AcoesSituacao } from "@/components/equipe/acoes-situacao";
 
 export const metadata: Metadata = {
@@ -40,7 +41,7 @@ export default async function MembroPage({
       <div className="pagina-cabecalho">
         <h1>{membro.nome}</h1>
       </div>
-      <Aviso codigo={aviso} />
+      <Aviso mensagem={mensagemDeAviso(aviso)} />
       <dl className="membro-dados">
         <div>
           <dt>Papel</dt>
