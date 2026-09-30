@@ -1,6 +1,4 @@
-/** Situação de um membro da equipe (design: membro.ts). */
-export type Situacao = "ativo" | "inativo";
-export type FiltroSituacao = Situacao | "todos";
+import type { FiltroSituacao, Situacao } from "./membro";
 
 const TAMANHO_PAGINA = 20;
 

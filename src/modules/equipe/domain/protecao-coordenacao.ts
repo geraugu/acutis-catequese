@@ -1,5 +1,5 @@
 import type { Papel } from "@/modules/auth/domain/papeis";
-import type { Situacao } from "./busca";
+import type { Situacao } from "./membro";
 
 export type OperacaoSensivel =
   | { tipo: "inativar" }

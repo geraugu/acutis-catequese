@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Papel } from "@/modules/auth/domain/papeis";
-import type { Situacao } from "@/modules/equipe/domain/busca";
+import type { Situacao } from "@/modules/equipe/domain/membro";
 import {
   verificarProtecaoCoordenacao,
   type OperacaoSensivel,

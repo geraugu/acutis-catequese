@@ -20,7 +20,7 @@
   - _Depends: 1.1_
   - _Requirements: 1.3, 6.1, 6.4_
 
-- [ ] 2. Domínio da equipe (regras puras, sem framework)
+- [x] 2. Domínio da equipe (regras puras, sem framework)
 
 - [x] 2.1 (P) Implementar as regras de telefone
   - Normalização para dígitos: aceita pontuação e um `+55` inicial e exige 10 ou 11 dígitos. Formatação no padrão brasileiro. Schema de validação com mensagem em pt-BR.
@@ -44,7 +44,7 @@
   - _Boundary: equipe/domain/protecao-coordenacao_
   - _Requirements: 7.1, 7.2, 7.3_
 
-- [ ] 2.4 Implementar os schemas do membro e as mensagens da equipe
+- [x] 2.4 Implementar os schemas do membro e as mensagens da equipe
   - Schema de edição (nome, e-mail normalizado, telefone, papel, observações opcionais que viram indefinidas quando vazias) e schema de criação (edição mais a senha, que reutiliza a regra de senha da fundação).
   - Mensagens em pt-BR e códigos de aviso da tabela do design (cadastrado, alterações salvas, senha redefinida, inativado, reativado, e-mail em uso e as três violações de proteção). Função que traduz um código de aviso vindo da URL, aceitando apenas códigos conhecidos.
   - Pronto quando: os testes unitários cobrem os campos obrigatórios com as mensagens, a normalização do e-mail, o papel inválido recusado, a senha de 7 caracteres recusada na criação, as observações vazias e o código de aviso desconhecido resultando em nenhuma mensagem.
