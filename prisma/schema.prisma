@@ -81,6 +81,17 @@ model Verification {
   @@map("verification")
 }
 
+// Rate limit do Better Auth (rateLimit.storage = "database")
+model RateLimit {
+  id          String @id
+  key         String
+  count       Int
+  lastRequest BigInt
+
+  @@unique([key])
+  @@map("rateLimit")
+}
+
 model LoginAttempt {
   id        String   @id @default(cuid())
   email     String

@@ -64,7 +64,7 @@
 
 - [ ] 3. Autenticação no servidor
 
-- [ ] 3.1 Configurar o Better Auth e a rota de autenticação
+- [x] 3.1 Configurar o Better Auth e a rota de autenticação
   - Login por e-mail e senha, com cadastro público desabilitado e senha de no mínimo 8 caracteres.
   - Plugin admin com os papéis coordenação e catequista, coordenação como papel administrativo e mensagem em pt-BR para conta desabilitada.
   - Sessão com validade máxima de 12 horas no servidor. O rate limit por IP é ligado ou desligado por variável de ambiente, e o plugin de cookies do Next fica por último.
@@ -178,3 +178,4 @@
 - 1.4: os testes de integração usam `DATABASE_URL_TEST`, e o setup aborta se a URL não for a do `acutis_test`. Os componentes são testados com `// @vitest-environment jsdom`. O Playwright usa `channel: "chromium"` porque faltou disco para o headless shell; se sobrar espaço, remover essa linha. O webServer reaproveita um servidor que já esteja na porta 3000 (fora do CI).
 - 2.2: `avaliarBloqueio` ignora falhas com data posterior a `agora`. Para a query use `JANELA_CONSULTA_FALHAS_MS` (30 min). Na 3.2, não registrar falhas enquanto o e-mail estiver bloqueado, senão o bloqueio se estende.
 - 2.3: `mensagens.ts` exporta `MSG_*`, `CODIGO_CREDENCIAIS_INVALIDAS`, `CODIGO_CONTA_DESABILITADA`, `STATUS_BLOQUEIO` e `mensagemDeErroLogin`. O domínio exporta `normalizarEmail`, que 3.2 e 3.5 devem reusar. `sanitizarCallbackUrl` também recusa espaços e caracteres de controle.
+- 3.1: no Better Auth 1.7.6, `rememberMe:false` grava a sessão no banco com validade fixa de 24h. Um `databaseHooks.session.create.before` limita a 12h. O `createUser` do admin ignora `minPasswordLength`, então `hooks.before` valida `/admin/create-user` com `senhaSchema`. **Na 3.2, estender esse `hooks.before`, sem substituí-lo.** A tabela `rateLimit` foi adicionada. Depois de uma migração, rodar `npx prisma generate`.
