@@ -22,7 +22,7 @@
   - _Depends: 1.1, 1.2_
   - _Requirements: 5.5, 7.3_
 
-- [ ] 1.4 (P) Implementar as datas civis
+- [x] 1.4 (P) Implementar as datas civis
   - Criar em `compartilhado/datas` o tipo `DataCivil` e as funções `dataCivilSchema`, `hojeCivil` (fuso de São Paulo), `calcularIdade`, `compararDatas` e `formatarData` (dd/mm/aaaa), conforme o design.
   - Pronto quando: os testes unitários cobrem aniversário hoje, ontem e amanhã, 29/02, datas impossíveis recusadas, formatação e `hojeCivil` às 23h30 de São Paulo.
   - _Boundary: compartilhado/datas_
