@@ -34,7 +34,7 @@
   - _Boundary: prisma/schema, tests/integration/setup, tests/e2e/preparar-banco_
   - _Requirements: 3.1, 7.1, 7.5_
 
-- [ ] 2. Domínio dos catequizandos (regras puras)
+- [x] 2. Domínio dos catequizandos (regras puras)
 
 - [x] 2.1 Implementar o schema da ficha
   - Criar `criarFichaSchema({ hoje, idadeMinima })` e `lerFichaDoFormulario`, com os sacramentos, as mensagens pt-BR, `IDADE_MINIMA_PADRAO = 16`, `SACRAMENTOS` e os rótulos.
@@ -56,7 +56,7 @@
   - _Depends: 1.1, 1.4, 2.2_
   - _Requirements: 4.1, 5.1, 5.2, 5.3, 5.4_
 
-- [ ] 2.4 (P) Implementar as mensagens dos catequizandos
+- [x] 2.4 (P) Implementar as mensagens dos catequizandos
   - Definir os códigos de aviso e os textos da tabela do design, as constantes de erro e `mensagemDeAviso`, que aceita só códigos conhecidos.
   - Pronto quando: os testes unitários cobrem cada código e mostram que um código desconhecido, vazio ou herdado do protótipo resulta em null.
   - _Boundary: catequizandos/mensagens_
