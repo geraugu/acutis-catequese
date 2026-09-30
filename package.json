@@ -13,13 +13,16 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "test:unit": "vitest run",
+    "test:unit": "vitest run --project unit",
     "db:up": "docker compose up -d --wait",
     "db:down": "docker compose down",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
     "db:reset": "prisma migrate reset",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "test": "vitest run",
+    "test:integration": "vitest run --project integration",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",
@@ -32,6 +35,12 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@types/jsdom": "^30.0.0",
     "@types/node": "^22",
     "@types/pg": "^8.23.1",
     "@types/react": "^19",
@@ -39,6 +48,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.7",
     "eslint-config-prettier": "^10",
+    "jsdom": "^30.1.1",
     "prettier": "^3",
     "prisma": "^7.10.0",
     "tsx": "^4.23.15",

@@ -28,7 +28,7 @@
   - Pronto quando: `npm run db:migrate` cria no banco local as tabelas `user`, `session`, `account`, `verification` e `login_attempt`, e o cliente gerado compila no typecheck.
   - _Requirements: 1.1, 6.1_
 
-- [ ] 1.4 Montar a infraestrutura de testes unitários, de integração e e2e
+- [x] 1.4 Montar a infraestrutura de testes unitários, de integração e e2e
   - Configurar o Vitest `^4` com dois projetos: unitário (sem banco) e integração (com banco de teste). O setup de integração aplica as migrações e limpa as tabelas entre os testes.
   - Incluir um ambiente DOM (jsdom + Testing Library) no projeto unitário, para testar componentes de interface isoladamente.
   - Configurar o Playwright: servidor da aplicação em build de produção, um projeto de setup para login por papel e viewport padrão.
@@ -175,3 +175,4 @@
 - 1.1: Better Auth, Prisma e Vitest não foram instalados na 1.1 (ficam com 3.1, 1.3 e 1.4); fixar `better-auth@^1.7`, `prisma@^7.10` e `vitest@^4` nessas tarefas. O npm 11 retém os install scripts (ex.: unrs-resolver); até aqui não foi preciso aprová-los.
 - 1.2: o Docker (OrbStack) fica em `~/.orbstack/bin`, que não está no PATH padrão. O banco `acutis_test` só é criado pelo init script quando o volume é criado. Os scripts `db:migrate` e `db:seed` ficam com as tarefas 1.3 e 3.5. A validação de env roda em `next.config.ts`.
 - 1.3: os modelos do Better Auth foram escritos à mão no formato 1.7. Na 3.1, conferir com `npx auth@latest generate` que não há diferença. O seed está configurado como `tsx prisma/seed.ts` no prisma.config.ts; o script `db:seed` e o arquivo ficam com a 3.5. O client é importado de `@/generated/prisma/client`.
+- 1.4: os testes de integração usam `DATABASE_URL_TEST`, e o setup aborta se a URL não for a do `acutis_test`. Os componentes são testados com `// @vitest-environment jsdom`. O Playwright usa `channel: "chromium"` porque faltou disco para o headless shell; se sobrar espaço, remover essa linha. O webServer reaproveita um servidor que já esteja na porta 3000 (fora do CI).
