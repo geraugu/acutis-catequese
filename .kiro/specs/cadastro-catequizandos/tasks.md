@@ -116,9 +116,9 @@
   - _Depends: 1.2, 1.3, 4.1, 4.2, 4.3_
   - _Requirements: 1.1, 1.2, 5.1, 5.5, 5.7, 5.8, 6.1, 6.2, 6.5, 6.6, 8.1, 8.3, 9.1, 9.4_
 
-- [ ] 5. Validação ponta a ponta
+- [x] 5. Validação ponta a ponta
 
-- [ ] 5.1 Escrever os testes e2e dos catequizandos
+- [x] 5.1 Escrever os testes e2e dos catequizandos
   - Cenários: cadastrar com crisma recebida e ver "Catequizando cadastrado" com a idade e os links; busca sem acento e filtro "sem crisma" refletidos na URL; aviso de duplicidade e "Salvar mesmo assim"; inativar pelo diálogo; uma ficha pendente, criada no preparo do teste, aparecendo no contador e sendo confirmada; catequista vendo "Acesso negado"; sem rolagem horizontal a 360 px na lista, no formulário e na página; id inexistente mostrando "Catequizando não encontrado". Usar nomes únicos por teste.
   - Pronto quando: `npm run test:e2e` passa com todos os cenários da fundação, da equipe e desta spec, e `npm run format:check` passa.
   - _Depends: 4.4_
@@ -131,3 +131,4 @@
 - 3.2: por causa da LGPD, os logs das actions registram só `e.name` e o id, nunca `e.message`, que pode trazer dados da ficha. Os testes de integração dos catequizandos reaproveitam os helpers da equipe por `tests/integration/catequizandos/helpers.ts`.
 - 4.1: a lista dos catequizandos reaproveita as classes CSS `lista-membros*`, `busca-equipe` e `situacao` da equipe. O `globals.css` ganhou `.visualmente-oculto`, `.selo-sacramento` e `.estado-*`. Props: `ListaCatequizandos({catequizandos, hoje})` e `BuscaCatequizandos({termo, estado, semSacramento})`.
 - 4.2: com o aviso de duplicidade na tela, o botão principal precisa ser o primeiro submit do form, porque o Enter usa o primeiro submit. "Salvar mesmo assim" vem depois. Data e paróquia ficam sempre habilitadas e o servidor as descarta quando o sacramento não foi marcado.
+- 5.1: o client gerado do Prisma não carrega no Playwright, então o e2e cria dados direto no banco chamando um script com `npx tsx` (`tests/e2e/criar-ficha-pendente.ts`). O script se recusa a rodar fora do acutis_test.
