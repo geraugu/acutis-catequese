@@ -9,7 +9,7 @@
   - Pronto quando: `npm run db:migrate` cria `perfil_membro` e os testes de integração existentes continuam passando.
   - _Requirements: 2.1, 8.1_
 
-- [ ] 1.2 Verificar as permissões do plugin admin e preparar os helpers de teste da equipe
+- [x] 1.2 Verificar as permissões do plugin admin e preparar os helpers de teste da equipe
   - Com uma sessão real de coordenação no banco de teste, exercitar cada chamada do plugin admin que a feature usa: criar, atualizar, trocar papel, definir senha, revogar sessões, banir e desbanir (inclusive um alvo com papel coordenação) e remover. Registrar o resultado nas Implementation Notes.
   - Se alguma chamada for recusada, ajustar as permissões do papel coordenação e rodar novamente a suíte de integração da fundação. É um gatilho de revalidação registrado no design.
   - Criar os helpers compartilhados dos testes de integração da equipe:
@@ -151,3 +151,4 @@
   - _Requirements: 1.2, 2.1, 2.9, 3.2, 3.4, 3.7, 6.1, 6.2, 6.3, 8.1, 8.3, 8.4, 8.5_
 
 ## Implementation Notes
+- 1.2: com a sessão de coordenação, todas as chamadas do plugin admin funcionam (createUser, adminUpdateUser, setRole, setUserPassword, revokeUserSessions, banUser/unbanUser, inclusive com alvo coordenação, e removeUser). Nenhuma permissão foi alterada, então não houve revalidação da fundação. Os helpers ficam em `tests/integration/equipe/helpers.ts` e `next-mocks.ts` (os `vi.mock` ficam em cada arquivo de teste). O e-mail é gravado em minúsculas.
