@@ -20,7 +20,7 @@
   - Pronto quando: `docker compose up -d` deixa o banco saudável, e iniciar a aplicação sem uma variável obrigatória falha com mensagem que a identifica.
   - _Requirements: 1.2, 1.3, 1.6_
 
-- [ ] 1.3 Configurar o Prisma 7 e o schema das tabelas de autenticação
+- [x] 1.3 Configurar o Prisma 7 e o schema das tabelas de autenticação
   - Instalar o Prisma `^7.10` (não usar a 8) com o adapter de PostgreSQL. Configurar o arquivo de configuração do Prisma: schema, migrações, comando de seed e carregamento do `.env`.
   - Gerar os modelos de autenticação com a CLI do Better Auth, incluindo os campos de papel e bloqueio do plugin admin. Acrescentar o modelo de tentativas de login com índice por e-mail e data.
   - Criar o cliente único do banco e a primeira migração.
@@ -174,3 +174,4 @@
 ## Implementation Notes
 - 1.1: Better Auth, Prisma e Vitest não foram instalados na 1.1 (ficam com 3.1, 1.3 e 1.4); fixar `better-auth@^1.7`, `prisma@^7.10` e `vitest@^4` nessas tarefas. O npm 11 retém os install scripts (ex.: unrs-resolver); até aqui não foi preciso aprová-los.
 - 1.2: o Docker (OrbStack) fica em `~/.orbstack/bin`, que não está no PATH padrão. O banco `acutis_test` só é criado pelo init script quando o volume é criado. Os scripts `db:migrate` e `db:seed` ficam com as tarefas 1.3 e 3.5. A validação de env roda em `next.config.ts`.
+- 1.3: os modelos do Better Auth foram escritos à mão no formato 1.7. Na 3.1, conferir com `npx auth@latest generate` que não há diferença. O seed está configurado como `tsx prisma/seed.ts` no prisma.config.ts; o script `db:seed` e o arquivo ficam com a 3.5. O client é importado de `@/generated/prisma/client`.

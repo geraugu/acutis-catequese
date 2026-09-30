@@ -79,6 +79,7 @@ cp .env.example .env
 openssl rand -base64 32
 npm install
 npm run db:up      # sobe o PostgreSQL 17 e aguarda ficar saudável
+npm run db:migrate # aplica as migrações do Prisma no banco local
 npm run dev
 ```
 
