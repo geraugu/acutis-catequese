@@ -52,7 +52,7 @@
   - _Boundary: domain/bloqueio_
   - _Requirements: 4.1, 4.3_
 
-- [ ] 2.3 (P) Implementar a validação de entrada e as mensagens de erro
+- [x] 2.3 (P) Implementar a validação de entrada e as mensagens de erro
   - Regra de senha: no mínimo 8 caracteres, com mensagem em pt-BR.
   - Formulário de login: e-mail sem espaços nas pontas e em minúsculas; e-mail e senha obrigatórios; mensagens por campo.
   - Sanitização do endereço de retorno: aceita somente caminhos internos.
@@ -177,3 +177,4 @@
 - 1.3: os modelos do Better Auth foram escritos à mão no formato 1.7. Na 3.1, conferir com `npx auth@latest generate` que não há diferença. O seed está configurado como `tsx prisma/seed.ts` no prisma.config.ts; o script `db:seed` e o arquivo ficam com a 3.5. O client é importado de `@/generated/prisma/client`.
 - 1.4: os testes de integração usam `DATABASE_URL_TEST`, e o setup aborta se a URL não for a do `acutis_test`. Os componentes são testados com `// @vitest-environment jsdom`. O Playwright usa `channel: "chromium"` porque faltou disco para o headless shell; se sobrar espaço, remover essa linha. O webServer reaproveita um servidor que já esteja na porta 3000 (fora do CI).
 - 2.2: `avaliarBloqueio` ignora falhas com data posterior a `agora`. Para a query use `JANELA_CONSULTA_FALHAS_MS` (30 min). Na 3.2, não registrar falhas enquanto o e-mail estiver bloqueado, senão o bloqueio se estende.
+- 2.3: `mensagens.ts` exporta `MSG_*`, `CODIGO_CREDENCIAIS_INVALIDAS`, `CODIGO_CONTA_DESABILITADA`, `STATUS_BLOQUEIO` e `mensagemDeErroLogin`. O domínio exporta `normalizarEmail`, que 3.2 e 3.5 devem reusar. `sanitizarCallbackUrl` também recusa espaços e caracteres de controle.
