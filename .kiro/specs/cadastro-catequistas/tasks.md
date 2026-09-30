@@ -38,7 +38,7 @@
   - _Boundary: equipe/domain/busca_
   - _Requirements: 3.1, 3.2, 3.3, 3.6_
 
-- [ ] 2.3 (P) Implementar as regras de proteção da coordenação
+- [x] 2.3 (P) Implementar as regras de proteção da coordenação
   - Identificar as violações "a si mesmo", "próprio papel" e "última coordenação" para as operações inativar e mudar papel, a partir do ator, do alvo e da contagem de coordenações ativas.
   - Pronto quando: os testes unitários cobrem todas as combinações do fluxograma do design, incluindo que mudar para o mesmo papel nunca é violação e que um alvo catequista nunca aciona a regra da última coordenação.
   - _Boundary: equipe/domain/protecao-coordenacao_
