@@ -63,7 +63,7 @@
   - Pronto quando: os testes de integração mostram `true` para coordenação e catequista designado, `false` para catequista não designado, e `false` logo após a remoção da designação ou o desligamento do catequizando.
   - _Requirements: 1.2, 1.3, 9.3, 9.4_
 
-- [ ] 3.4 Verificar os triggers de inativação pelas actions existentes
+- [x] 3.4 Verificar os triggers de inativação pelas actions existentes
   - Testes de integração que usam `inativarMembroAction` e `editarMembroAction` (equipe) e `inativarCatequizandoAction` (catequizandos), sem alterar esses módulos.
   - Pronto quando: inativar ou mudar o papel de um catequista remove as designações vigentes dele; inativar um catequizando encerra a inscrição vigente com motivo `inativacao` e a data de hoje em São Paulo; reativar não restaura nada.
   - _Depends: 1.1_
@@ -149,3 +149,4 @@
 ## Implementation Notes
 - Prisma 7: `migrate dev` não regenera o client; rodar `npm run db:generate` após migrar. Psql no container: usuário `acutis` (`docker compose exec postgres psql -U acutis -d acutis_test`).
 - Repositório: `encerrarTurma(id, hoje)` recebe a data do chamador — actions devem passar `hojeCivil()`; `atualizarTurma` lança P2025 para id inexistente e `designar` deixa P2002 subir.
+- Testes de actions: atores com sessão simulada vêm de `tests/integration/equipe/helpers.ts` + `next-mocks`; designações no teste via `prisma.designacao.create`.
