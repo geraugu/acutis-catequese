@@ -16,7 +16,7 @@
 
 - [ ] 2. Domínio do programa (regras puras)
 
-- [ ] 2.1 (P) Implementar as regras de tema
+- [x] 2.1 (P) Implementar as regras de tema
   - Criar `criarTemaSchema`, `chaveDoTitulo`, `numerarTemas` e `vizinhoParaMover`, com as mensagens pt-BR do design.
   - Pronto quando: os testes unitários cobrem título vazio, curto e longo, descrição longa, chaves iguais para "Batismo" e "batísmo ", numeração contínua com desativado no meio (desativados ao fim, sem número) e o vizinho nos limites e pulando desativados.
   - _Boundary: programa/domain/tema_
