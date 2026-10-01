@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { compararDatas, dataCivilSchema, type DataCivil } from "@/modules/compartilhado/datas";
+import { MSG_TEMA_INDISPONIVEL } from "@/modules/programa/mensagens";
 
 export const SITUACOES = ["planejado", "realizado", "cancelado"] as const;
 export type SituacaoEncontro = (typeof SITUACOES)[number];
@@ -19,8 +20,7 @@ export interface EncontroDados {
 
 const MENSAGEM_DATA = "Informe a data";
 const MENSAGEM_HORARIO = "Informe um horário válido (ex.: 19:30)";
-/** Mesmo texto de MSG_TEMA_INDISPONIVEL. */
-const MENSAGEM_TEMA = "Escolha um tema ativo do programa.";
+const MENSAGEM_TEMA = MSG_TEMA_INDISPONIVEL;
 const HORARIO = /^([01]\d|2[0-3]):[0-5]\d$/;
 const uuidSchema = z.uuid();
 

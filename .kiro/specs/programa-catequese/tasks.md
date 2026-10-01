@@ -35,9 +35,9 @@
   - _Boundary: programa/domain/progresso_
   - _Requirements: 3.6, 6.4, 6.5_
 
-- [ ] 2.4 (P) Criar as mensagens do programa
+- [x] 2.4 (P) Criar as mensagens do programa
   - Criar os códigos de aviso e as constantes da tabela do design, mais `mensagemDeAviso`, no padrão dos outros módulos.
-  - Pronto quando: os testes unitários mostram o texto de cada código, `null` para desconhecidos e não string, e `MSG_TEMA_REPETIDO("05/10/2026")` igual a "Este tema já tem encontro nesta turma em 05/10/2026.".
+  - Pronto quando: os testes unitários mostram o texto de cada código, `null` para desconhecidos e não string, e `MSG_TEMA_REPETIDO("03/10/2026")` igual a "Este tema já tem encontro nesta turma em 03/10/2026.".
   - _Boundary: programa/mensagens_
   - _Requirements: 2.1, 2.4, 2.5, 3.3, 3.4, 4.1, 4.5, 4.7, 5.1, 5.2, 5.3, 5.4, 7.1_
 
@@ -127,4 +127,3 @@
 ## Implementation Notes
 - Prisma 7: rodar `npm run db:generate` depois de migrar; migração com SQL manual via `--create-only`. Psql: `docker compose exec postgres psql -U acutis -d acutis_test`.
 - Há arquivos de outra sessão em `.kiro/specs/autocadastro-catequizandos/`: nunca incluí-los nos commits desta spec.
-- `domain/encontro.ts` repete localmente o texto de `MSG_TEMA_INDISPONIVEL`; na 2.4, fazer o domínio e `mensagens.ts` usarem a mesma constante (mensagens.ts é puro).
