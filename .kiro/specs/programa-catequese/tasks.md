@@ -117,9 +117,9 @@
   - _Depends: 3.2, 5.4_
   - _Requirements: 6.3_
 
-- [ ] 7. Validação ponta a ponta
+- [x] 7. Validação ponta a ponta
 
-- [ ] 7.1 Escrever os testes e2e do programa
+- [x] 7.1 Escrever os testes e2e do programa
   - Cenários do design em `tests/e2e/programa.spec.ts`: programa (criar, reordenar, desativar; catequista sem ações); encontro com aviso de tema repetido; realizado e progresso "1 de 2 temas"; cancelar com motivo e reabrir; próximo encontro na página da turma; equivalência entre duas turmas; "Acesso negado" para o não designado; teclado ao criar encontro; sem rolagem horizontal a 360 px no programa, no cronograma e no formulário. Dados com nomes únicos, compatíveis com a execução em paralelo.
   - Pronto quando: `CI=1 npm run test:e2e` passa por inteiro (novos e anteriores), assim como `npm run test:unit`, `npm run test:integration`, lint, typecheck e `format:check`.
   - _Requirements: 1.2, 1.4, 2.6, 3.1, 4.5, 4.6, 5.1, 5.3, 5.4, 6.2, 6.3, 6.4, 8.2, 9.2, 9.3_
@@ -134,3 +134,4 @@
 - FormularioEncontro envia `confirmarTemaRepetido=1` pelo name/value do botão "Salvar mesmo assim" (não input hidden); o e2e (7.1) deve cobrir esse reenvio.
 - E2e: depois de ações que redirecionam/atualizam a lista (ex.: Subir), usar `expect.poll` ou asserções auto-retry antes de conferir a nova ordem.
 - Páginas de encontros: lógica comum aos dois papéis em `src/app/(interno)/_encontros/paginas.tsx` (pasta privada, fora do File Structure Plan original); as rotas só fazem requireRole e delegam.
+- E2e do programa roda em `mode: "serial"` porque temas são globais; o progresso compara "1 de N" com N lido do programa. Só `programa.spec.ts` cria temas.
