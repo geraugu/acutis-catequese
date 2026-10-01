@@ -13,6 +13,7 @@ Este projeto é um trabalho da pós-graduação em Engenharia de Software e foi 
 - [x] Login com perfis coordenação e catequista — v0.1.0
 - [x] Cadastro de catequizandos — v0.3.0
 - [x] Cadastro de catequistas e coordenação (equipe) — v0.2.0
+- [x] Turmas, catequistas responsáveis e inscrições — v0.4.0
 - [ ] Programa da catequese (encontros e temas)
 - [ ] Controle de presença dos catequizandos
 
@@ -56,7 +57,7 @@ Cada spec fica em `.kiro/specs/<funcionalidade>/`, com os arquivos `brief.md`, `
 | 1 | [fundacao-autenticacao](.kiro/specs/fundacao-autenticacao/) | Setup do projeto e login com os perfis coordenação e catequista | 🚀 Entregue (v0.1.0) |
 | 2 | [cadastro-catequistas](.kiro/specs/cadastro-catequistas/) | Gestão da equipe (catequistas e coordenação) com conta de acesso | 🚀 Entregue (v0.2.0) |
 | 3 | [cadastro-catequizandos](.kiro/specs/cadastro-catequizandos/) | Cadastro de catequizandos e situação sacramental | 🚀 Entregue (v0.3.0) |
-| 4 | [gestao-turmas](.kiro/specs/gestao-turmas/) | Turmas, catequistas responsáveis e inscrições | 📝 Brief |
+| 4 | [gestao-turmas](.kiro/specs/gestao-turmas/) | Turmas, catequistas responsáveis e inscrições | 🚀 Entregue (v0.4.0) |
 | 5 | [programa-catequese](.kiro/specs/programa-catequese/) | Encontros e temas de cada turma | 📝 Brief |
 | 6 | [autocadastro-catequizandos](.kiro/specs/autocadastro-catequizandos/) | Link da turma para o adulto preencher a própria ficha (pendente até confirmação) | 📝 Brief |
 | 7 | [controle-presenca](.kiro/specs/controle-presenca/) | Chamada por encontro e frequência | 📝 Brief |
