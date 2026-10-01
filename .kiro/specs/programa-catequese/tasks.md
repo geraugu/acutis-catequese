@@ -49,7 +49,7 @@
   - Pronto quando: os testes de integração mostram `chaveEmUso` e o índice recusando "Batismo" e "batismo", o tema novo no fim, a troca de posições, a exclusão recusada para tema usado e aceita para não usado, a contagem de encontros e a seleção com o desativado em uso só quando pedido.
   - _Requirements: 2.1, 2.4, 2.5, 2.6, 2.7, 3.1, 3.2, 3.3, 3.4, 4.3, 4.9_
 
-- [ ] 3.2 Implementar o repositório de encontros e equivalência
+- [x] 3.2 Implementar o repositório de encontros e equivalência
   - Implementar `dadosDaTurma` (lendo a tabela `turma`), `listarEncontros`, `obterEncontro`, `encontroComMesmoTema`, `conflitoDeHorario`, `criarEncontro`, `atualizarEncontro` (só planejado), `mudarSituacao` (update condicional; reabrir limpa o motivo) e `encontrosEquivalentes` (não cancelados, turmas abertas, cronológico).
   - Pronto quando: os testes de integração mostram o tema repetido ignorando cancelados, o conflito de horário (inclusive via índice), a edição recusada fora de planejado, a segunda mudança de situação devolvendo false, a reabertura limpando o motivo e conflitando quando há outro encontro no horário, a equivalência excluindo cancelados e turmas encerradas, e o título novo de um tema aparecendo nos encontros.
   - _Requirements: 2.5, 4.1, 4.5, 4.7, 4.8, 5.1, 5.3, 5.4, 5.7, 5.8, 6.1, 8.1, 8.2, 8.3_
@@ -128,3 +128,4 @@
 - Prisma 7: rodar `npm run db:generate` depois de migrar; migração com SQL manual via `--create-only`. Psql: `docker compose exec postgres psql -U acutis -d acutis_test`.
 - Há arquivos de outra sessão em `.kiro/specs/autocadastro-catequizandos/`: nunca incluí-los nos commits desta spec.
 - Repositório de temas: `atualizarTema` e `trocarPosicoes` lançam erro do Prisma com id inválido/inexistente — as actions (4.1) devem validar o id ou tratar o erro. `criarTema` pode gerar posições iguais sob concorrência; a ordem desempata por título.
+- Repositório de encontros: `criarEncontro` não valida o UUID da turma; as actions chamam `dadosDaTurma` antes. Updates de encontro são condicionais (`updateMany` com a situação no WHERE) e devolvem boolean.

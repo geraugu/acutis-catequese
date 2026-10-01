@@ -2,7 +2,7 @@ import "server-only";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { DataCivil } from "@/modules/compartilhado/datas";
-import type { SituacaoEncontro } from "./domain/encontro";
+import type { EncontroDados, SituacaoEncontro } from "./domain/encontro";
 import { chaveDoTitulo, numerarTemas, type TemaDados } from "./domain/tema";
 
 export interface TemaResumo {
@@ -158,5 +158,190 @@ export async function temasParaSelecao(
     titulo: t.titulo,
     numero: t.numero,
     ativo: t.ativo,
+  }));
+}
+
+// ---------------------------------------------------------------- encontros
+
+/** Coluna `@db.Date` (meia-noite UTC) ↔ DataCivil, sem passar pelo fuso local. */
+const paraData = (d: DataCivil): Date => new Date(`${d}T00:00:00Z`);
+const paraCivil = (d: Date): DataCivil => d.toISOString().slice(0, 10) as DataCivil;
+
+const selecaoEncontro = {
+  id: true,
+  turmaId: true,
+  data: true,
+  horario: true,
+  situacao: true,
+  observacoes: true,
+  motivoCancelamento: true,
+  tema: { select: { id: true, titulo: true, ativo: true } },
+} satisfies Prisma.EncontroSelect;
+
+type LinhaEncontro = Prisma.EncontroGetPayload<{ select: typeof selecaoEncontro }>;
+
+/** Número exibido de cada tema, calculado sobre todos os temas (desativados → null). */
+async function numerosDosTemas(): Promise<Map<string, number | null>> {
+  const temas = await prisma.tema.findMany({
+    select: { id: true, ativo: true, posicao: true },
+    orderBy: [{ posicao: "asc" }, { titulo: "asc" }],
+  });
+  return new Map(numerarTemas(temas).map((t) => [t.id, t.numero]));
+}
+
+function paraEncontroResumo(l: LinhaEncontro, numeros: Map<string, number | null>): EncontroResumo {
+  return {
+    id: l.id,
+    turmaId: l.turmaId,
+    data: paraCivil(l.data),
+    horario: l.horario,
+    situacao: l.situacao,
+    observacoes: l.observacoes,
+    motivoCancelamento: l.motivoCancelamento,
+    tema: l.tema ? { ...l.tema, numero: numeros.get(l.tema.id) ?? null } : null,
+  };
+}
+
+const naoCancelado = { situacao: { not: "cancelado" } } satisfies Prisma.EncontroWhereInput;
+
+function ignorando(ignorarId?: string): Prisma.EncontroWhereInput {
+  return ignorarId && UUID.test(ignorarId) ? { id: { not: ignorarId } } : {};
+}
+
+function dadosDoEncontro(d: EncontroDados) {
+  return {
+    data: paraData(d.data),
+    horario: d.horario,
+    temaId: d.temaId ?? null,
+    observacoes: d.observacoes ?? null,
+  };
+}
+
+/** Lê a tabela turma diretamente (o módulo não depende de @/modules/turmas). */
+export async function dadosDaTurma(turmaId: string): Promise<DadosTurma | null> {
+  if (!UUID.test(turmaId)) return null;
+  const t = await prisma.turma.findUnique({
+    where: { id: turmaId },
+    select: { id: true, nome: true, horario: true, encerradaEm: true },
+  });
+  return t
+    ? { id: t.id, nome: t.nome, horario: t.horario, encerrada: t.encerradaEm !== null }
+    : null;
+}
+
+export async function listarEncontros(turmaId: string): Promise<EncontroResumo[]> {
+  if (!UUID.test(turmaId)) return [];
+  const [linhas, numeros] = await Promise.all([
+    prisma.encontro.findMany({
+      where: { turmaId },
+      select: selecaoEncontro,
+      orderBy: [{ data: "asc" }, { horario: "asc" }],
+    }),
+    numerosDosTemas(),
+  ]);
+  return linhas.map((l) => paraEncontroResumo(l, numeros));
+}
+
+export async function obterEncontro(id: string): Promise<EncontroResumo | null> {
+  if (!UUID.test(id)) return null;
+  const l = await prisma.encontro.findUnique({ where: { id }, select: selecaoEncontro });
+  return l ? paraEncontroResumo(l, await numerosDosTemas()) : null;
+}
+
+/** Data do encontro não cancelado mais antigo da turma com esse tema (4.5). */
+export async function encontroComMesmoTema(
+  turmaId: string,
+  temaId: string,
+  ignorarId?: string,
+): Promise<DataCivil | null> {
+  if (!UUID.test(turmaId) || !UUID.test(temaId)) return null;
+  const l = await prisma.encontro.findFirst({
+    where: { turmaId, temaId, ...naoCancelado, ...ignorando(ignorarId) },
+    select: { data: true },
+    orderBy: [{ data: "asc" }, { horario: "asc" }],
+  });
+  return l ? paraCivil(l.data) : null;
+}
+
+/** Mesma regra do índice `encontro_horario_unico` (só não cancelados). */
+export async function conflitoDeHorario(
+  turmaId: string,
+  data: DataCivil,
+  horario: string,
+  ignorarId?: string,
+): Promise<boolean> {
+  if (!UUID.test(turmaId)) return false;
+  const l = await prisma.encontro.findFirst({
+    where: { turmaId, data: paraData(data), horario, ...naoCancelado, ...ignorando(ignorarId) },
+    select: { id: true },
+  });
+  return l !== null;
+}
+
+/** P2002 (índice de horário) sobe para o chamador. */
+export async function criarEncontro(turmaId: string, d: EncontroDados): Promise<string> {
+  const e = await prisma.encontro.create({
+    data: { turmaId, ...dadosDoEncontro(d) },
+    select: { id: true },
+  });
+  return e.id;
+}
+
+/** Update condicional: só grava se o encontro ainda estiver planejado (5.7). */
+export async function atualizarEncontro(id: string, d: EncontroDados): Promise<boolean> {
+  if (!UUID.test(id)) return false;
+  const { count } = await prisma.encontro.updateMany({
+    where: { id, situacao: "planejado" },
+    data: dadosDoEncontro(d),
+  });
+  return count > 0;
+}
+
+/**
+ * Update condicional por `situacao IN de`. Cancelar grava o motivo; reabrir (para planejado)
+ * limpa o motivo. P2002 (reabrir em horário ocupado) sobe para o chamador.
+ */
+export async function mudarSituacao(
+  id: string,
+  de: readonly SituacaoEncontro[],
+  para: SituacaoEncontro,
+  extras?: { motivoCancelamento?: string | null },
+): Promise<boolean> {
+  if (!UUID.test(id)) return false;
+  const motivo =
+    para === "cancelado"
+      ? { motivoCancelamento: extras?.motivoCancelamento ?? null }
+      : para === "planejado"
+        ? { motivoCancelamento: null }
+        : {};
+  const { count } = await prisma.encontro.updateMany({
+    where: { id, situacao: { in: [...de] } },
+    data: { situacao: para, ...motivo },
+  });
+  return count > 0;
+}
+
+/** Encontros não cancelados com o tema, só de turmas abertas, em ordem cronológica (8.3). */
+export async function encontrosEquivalentes(temaId: string): Promise<EncontroEquivalente[]> {
+  if (!UUID.test(temaId)) return [];
+  const linhas = await prisma.encontro.findMany({
+    where: { temaId, ...naoCancelado, turma: { encerradaEm: null } },
+    select: {
+      id: true,
+      turmaId: true,
+      data: true,
+      horario: true,
+      situacao: true,
+      turma: { select: { nome: true } },
+    },
+    orderBy: [{ data: "asc" }, { horario: "asc" }],
+  });
+  return linhas.map((l) => ({
+    id: l.id,
+    turmaId: l.turmaId,
+    turmaNome: l.turma.nome,
+    data: paraCivil(l.data),
+    horario: l.horario,
+    situacao: l.situacao,
   }));
 }
