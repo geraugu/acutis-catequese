@@ -121,7 +121,7 @@
   - _Depends: 4.1, 5.1, 5.2_
   - _Requirements: 1.1, 2.1, 2.5, 3.1, 3.2, 3.3, 3.4, 8.3, 10.1, 10.3_
 
-- [ ] 6.2 Criar a página da turma da coordenação
+- [x] 6.2 Criar a página da turma da coordenação
   - `/coordenacao/turmas/[id]`: dados, situação, ocupação e selos; catequistas com "Remover" e `DesignarCatequista`; `InscreverCatequizando` e `Inscritos` com ações; "Editar" e "Encerrar"; ações ocultas na turma encerrada; `notFound()` com a página "Turma não encontrada" e link para a lista.
   - Pronto quando: a página mostra todas as ações numa turma aberta e nenhuma numa encerrada, o id inexistente mostra "Turma não encontrada" e os avisos de cada action aparecem após o redirect.
   - _Depends: 4.2, 4.3, 5.3, 5.4_

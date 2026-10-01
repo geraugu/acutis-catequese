@@ -797,6 +797,46 @@ main {
   overflow-wrap: anywhere;
 }
 
+.turma-selos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.turma-observacoes {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.turma-secao {
+  margin-block: 1.5rem;
+  min-width: 0;
+}
+
+.turma-catequistas {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-cartao);
+}
+
+.turma-catequistas > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 0.75rem;
+  padding: 0.75rem 1rem;
+  overflow-wrap: anywhere;
+}
+
+.turma-catequistas > li + li {
+  border-top: 1px solid var(--cor-borda);
+}
+
 .inscritos {
   display: flex;
   flex-direction: column;
