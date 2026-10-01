@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [ ] 1. Base de dados e extensões compartilhadas
+- [x] 1. Base de dados e extensões compartilhadas
 
 - [x] 1.1 Criar as tabelas de tema e encontro
   - Criar o enum `SituacaoEncontro`, os modelos `Tema` e `Encontro` e a relação `Turma.encontros` (só campo de relação), com a migração `*_programa` contendo o SQL do índice parcial `encontro_horario_unico`, conforme o design. Rodar `npm run db:generate` depois de migrar.
@@ -14,7 +14,7 @@
   - _Boundary: compartilhado/datas_
   - _Requirements: 9.4_
 
-- [ ] 2. Domínio do programa (regras puras)
+- [x] 2. Domínio do programa (regras puras)
 
 - [x] 2.1 (P) Implementar as regras de tema
   - Criar `criarTemaSchema`, `chaveDoTitulo`, `numerarTemas` e `vizinhoParaMover`, com as mensagens pt-BR do design.
@@ -41,7 +41,7 @@
   - _Boundary: programa/mensagens_
   - _Requirements: 2.1, 2.4, 2.5, 3.3, 3.4, 4.1, 4.5, 4.7, 5.1, 5.2, 5.3, 5.4, 7.1_
 
-- [ ] 3. Repositório do programa
+- [x] 3. Repositório do programa
 
 - [x] 3.1 Implementar o repositório de temas
   - Implementar `listarTemas` (com contagem de encontros), `obterTema`, `chaveEmUso`, `criarTema` (no fim, em transação), `atualizarTema`, `trocarPosicoes` (transação), `definirAtivo`, `excluirTema` (devolve "excluido", "em-uso" ou "inexistente") e `temasParaSelecao` (ativos, mais o desativado em uso quando pedido).
@@ -54,7 +54,7 @@
   - Pronto quando: os testes de integração mostram o tema repetido ignorando cancelados, o conflito de horário (inclusive via índice), a edição recusada fora de planejado, a segunda mudança de situação devolvendo false, a reabertura limpando o motivo e conflitando quando há outro encontro no horário, a equivalência excluindo cancelados e turmas encerradas, e o título novo de um tema aparecendo nos encontros.
   - _Requirements: 2.5, 4.1, 4.5, 4.7, 4.8, 5.1, 5.3, 5.4, 5.7, 5.8, 6.1, 8.1, 8.2, 8.3_
 
-- [ ] 4. Server Actions do programa
+- [x] 4. Server Actions do programa
 
 - [x] 4.1 Implementar as actions de tema
   - `criarTemaAction`, `editarTemaAction`, `moverTemaAction`, `desativarTemaAction`, `reativarTemaAction` e `excluirTemaAction`, com `requireRole(["coordenacao"])` primeiro, título em uso pela chave (inclusive P2002), `MSG_TEMA_EM_USO` ao excluir tema usado, redirect fora do try/catch e log só com ids e `e.name`.
@@ -71,7 +71,7 @@
   - Pronto quando: os testes de integração mostram realizar com data futura recusado e com data passada aceito, cancelar com motivo, reabrir realizado e cancelado, reabrir com conflito recusado, transição inválida devolvendo `MSG_SITUACAO_MUDOU`, turma encerrada recusando as três e o não designado redirecionado.
   - _Requirements: 1.3, 1.4, 1.5, 5.1, 5.2, 5.3, 5.4, 5.8, 7.1_
 
-- [ ] 5. Componentes de interface do programa
+- [x] 5. Componentes de interface do programa
 
 - [x] 5.1 (P) Criar a lista de temas, o formulário e as ações de tema
   - `ListaTemas({ temas, gestao? })`, `FormularioTema` e `AcoesTema`, conforme o design.
