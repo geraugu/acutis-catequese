@@ -1,5 +1,5 @@
 import "server-only";
-import type { Prisma } from "@/generated/prisma/client";
+import type { EstadoCatequizando, Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { filtrarPorTermo } from "@/modules/compartilhado/busca";
 import type { DataCivil } from "@/modules/compartilhado/datas";
@@ -260,6 +260,18 @@ export async function catequizandosParaInscricao(termo: string): Promise<Candida
     turmaAtual: l.inscricoes[0]?.turma ?? null,
   }));
   return filtrarPorTermo(candidatos, termo, (c) => ({ textos: [c.nome] }));
+}
+
+/** Estado e nascimento para validar a inscrição; id não-UUID é tratado como inexistente. */
+export async function obterCatequizandoParaInscricao(
+  id: string,
+): Promise<{ estado: EstadoCatequizando; dataNascimento: DataCivil } | null> {
+  if (!UUID.test(id)) return null;
+  const l = await prisma.catequizando.findUnique({
+    where: { id },
+    select: { estado: true, dataNascimento: true },
+  });
+  return l ? { estado: l.estado, dataNascimento: paraDataCivil(l.dataNascimento) } : null;
 }
 
 export async function inscricaoVigente(

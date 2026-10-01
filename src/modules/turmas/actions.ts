@@ -3,11 +3,14 @@
 import { redirect } from "next/navigation";
 import type { z } from "zod";
 import { requireRole } from "@/modules/auth/dal";
-import { hojeCivil } from "@/modules/compartilhado/datas";
-import { criarTurmaSchema } from "@/modules/turmas/domain/turma";
+import { dataCivilSchema, type DataCivil, hojeCivil } from "@/modules/compartilhado/datas";
+import { validarDataEntrada, validarDataSaida } from "@/modules/turmas/domain/inscricao";
+import { criarTurmaSchema, estaLotada } from "@/modules/turmas/domain/turma";
 import {
   MSG_CATEQUISTA_INDISPONIVEL,
+  MSG_CATEQUIZANDO_INATIVO,
   MSG_ERRO_INESPERADO,
+  MSG_JA_INSCRITO,
   MSG_NOME_EM_USO,
   MSG_TURMA_ENCERRADA,
 } from "@/modules/turmas/mensagens";
@@ -16,10 +19,15 @@ import {
   catequistasElegiveis,
   criarTurma,
   designar,
+  desligar,
   encerrarTurma,
+  inscrever,
+  inscricaoVigente,
   nomeEmUso,
+  obterCatequizandoParaInscricao,
   obterTurma,
   removerDesignacao,
+  transferir,
 } from "@/modules/turmas/repositorio";
 
 export type EstadoTurma = {
@@ -201,4 +209,103 @@ export async function removerCatequistaAction(
     return { erro: MSG_ERRO_INESPERADO };
   }
   redirect(`/coordenacao/turmas/${turmaId}?aviso=catequista-removido`);
+}
+
+const DATA_INVALIDA = "Data inválida";
+
+/** Data do formulário; vazia → hoje; malformada → null. */
+function lerData(dados: FormData, campo: string, hoje: DataCivil): DataCivil | null {
+  const bruto = dados.get(campo);
+  if (typeof bruto !== "string" || bruto.trim() === "") return hoje;
+  const r = dataCivilSchema.safeParse(bruto.trim());
+  return r.success ? r.data : null;
+}
+
+/**
+ * Inscrição (5.1, 5.3, 5.4, 5.5, 8.3, 11.5, 11.6): lotação é checada antes da transferência,
+ * com confirmações separadas para os dois avisos aparecerem em sequência.
+ */
+export async function inscreverAction(
+  turmaId: string,
+  _anterior: EstadoTurma,
+  dados: FormData,
+): Promise<EstadoTurma> {
+  await requireRole(["coordenacao"]); // 1.4
+
+  const valores = valoresDoFormulario(dados);
+  const bruto = dados.get("catequizandoId");
+  const catequizandoId = typeof bruto === "string" ? bruto : "";
+  const confirmarTransferencia = dados.get("confirmarTransferencia") === "1";
+  const confirmarLotacao = dados.get("confirmarLotacao") === "1";
+  let aviso: "inscrito" | "transferido";
+  try {
+    const turma = await obterTurma(turmaId);
+    if (!turma) return { erro: MSG_ERRO_INESPERADO, valores };
+    if (turma.encerrada) return { erro: MSG_TURMA_ENCERRADA, valores };
+    const catequizando = await obterCatequizandoParaInscricao(catequizandoId);
+    if (!catequizando || catequizando.estado !== "ativo") {
+      return { erro: MSG_CATEQUIZANDO_INATIVO, valores };
+    }
+    const hoje = hojeCivil();
+    const entrada = lerData(dados, "dataEntrada", hoje);
+    if (!entrada || validarDataEntrada(entrada, catequizando.dataNascimento, hoje)) {
+      return { errosCampos: { dataEntrada: DATA_INVALIDA }, valores };
+    }
+    const vigente = await inscricaoVigente(catequizandoId);
+    if (vigente?.turmaId === turmaId) return { erro: MSG_JA_INSCRITO, valores };
+    const inscritos = turma.vigentes.length;
+    if (estaLotada(inscritos, turma.vagas) && !confirmarLotacao) {
+      return { lotada: { inscritos, vagas: turma.vagas ?? 0 }, valores };
+    }
+    if (vigente && !confirmarTransferencia) {
+      return { transferir: { turmaAtualNome: vigente.turmaNome }, valores };
+    }
+    if (vigente) {
+      await transferir(turmaId, catequizandoId, entrada);
+      aviso = "transferido";
+    } else {
+      await inscrever(turmaId, catequizandoId, entrada);
+      aviso = "inscrito";
+    }
+  } catch (e) {
+    if (codigoPrisma(e) === "P2002") return { erro: MSG_JA_INSCRITO, valores };
+    console.error("[turmas] falha ao inscrever", {
+      turmaId,
+      erro: e instanceof Error ? e.name : "desconhecido",
+    });
+    return { erro: MSG_ERRO_INESPERADO, valores };
+  }
+  redirect(`/coordenacao/turmas/${turmaId}?aviso=${aviso}`);
+}
+
+/** Desligamento (6.1, 6.3, 8.3): só a inscrição vigente desta turma; nunca exclui. */
+export async function desligarAction(
+  turmaId: string,
+  inscricaoId: string,
+  _anterior: EstadoTurma,
+  dados: FormData,
+): Promise<EstadoTurma> {
+  await requireRole(["coordenacao"]); // 1.4
+
+  const valores = valoresDoFormulario(dados);
+  try {
+    const turma = await obterTurma(turmaId);
+    if (!turma) return { erro: MSG_ERRO_INESPERADO, valores };
+    if (turma.encerrada) return { erro: MSG_TURMA_ENCERRADA, valores };
+    const inscricao = turma.vigentes.find((i) => i.inscricaoId === inscricaoId);
+    if (!inscricao) return { erro: MSG_ERRO_INESPERADO, valores };
+    const hoje = hojeCivil();
+    const saida = lerData(dados, "dataSaida", hoje);
+    if (!saida || validarDataSaida(saida, inscricao.dataEntrada, hoje)) {
+      return { errosCampos: { dataSaida: DATA_INVALIDA }, valores };
+    }
+    if (!(await desligar(inscricaoId, saida))) return { erro: MSG_ERRO_INESPERADO, valores };
+  } catch (e) {
+    console.error("[turmas] falha ao desligar", {
+      turmaId,
+      erro: e instanceof Error ? e.name : "desconhecido",
+    });
+    return { erro: MSG_ERRO_INESPERADO, valores };
+  }
+  redirect(`/coordenacao/turmas/${turmaId}?aviso=desligado`);
 }

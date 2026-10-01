@@ -17,6 +17,7 @@ import {
   listarTurmas,
   listarTurmasDoCatequista,
   nomeEmUso,
+  obterCatequizandoParaInscricao,
   obterTurma,
   removerDesignacao,
   transferir,
@@ -350,5 +351,19 @@ describe("catequistasDoCatequizando", () => {
     await designar(antiga, daAntiga);
     expect(await catequistasDoCatequizando(c)).toEqual([vigente]);
     expect(await catequistasDoCatequizando(await criarCatequizandoDireto("Sem turma"))).toEqual([]);
+  });
+});
+
+describe("obterCatequizandoParaInscricao (5.1)", () => {
+  it("devolve estado e nascimento; inexistente ou id não-UUID dá null", async () => {
+    const ativo = await criarCatequizandoDireto("Ana", { dataNascimento: "2012-05-06" });
+    const inativo = await criarCatequizandoDireto("Bia", { estado: "inativo" });
+    expect(await obterCatequizandoParaInscricao(ativo)).toEqual({
+      estado: "ativo",
+      dataNascimento: "2012-05-06",
+    });
+    expect((await obterCatequizandoParaInscricao(inativo))?.estado).toBe("inativo");
+    expect(await obterCatequizandoParaInscricao("00000000-0000-4000-8000-000000000000")).toBeNull();
+    expect(await obterCatequizandoParaInscricao("nao-uuid")).toBeNull();
   });
 });

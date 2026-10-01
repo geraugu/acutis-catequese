@@ -81,7 +81,7 @@
   - Pronto quando: os testes de integração mostram o catequista rejeitado, designação válida, não elegível recusado, duplicidade recusada, remoção com o aviso `catequista-removido` e turma encerrada recusando as duas.
   - _Requirements: 1.4, 4.1, 4.2, 4.3, 4.4, 8.3_
 
-- [ ] 4.3 Implementar inscrever, transferir e desligar
+- [x] 4.3 Implementar inscrever, transferir e desligar
   - `inscreverAction`: catequizando ativo, data validada, `MSG_JA_INSCRITO` na mesma turma, `{ lotada }` sem gravar quando lotada e sem `confirmarLotacao=1` (checada antes da transferência), `{ transferir }` quando há vigente em outra turma e sem `confirmarTransferencia=1`, depois `inscrever` ou `transferir`. `desligarAction` valida a data de saída. Ambas recusam turma encerrada.
   - Pronto quando: os testes de integração cobrem inativo recusado, data inválida, já inscrito, transferência sem e com confirmação, lotada sem e com confirmação, lotação e transferência exigindo as duas confirmações, desligamento com data e o catequista rejeitado.
   - _Requirements: 1.4, 5.1, 5.3, 5.4, 5.5, 6.1, 6.3, 8.3, 11.5, 11.6_
@@ -150,3 +150,4 @@
 - Prisma 7: `migrate dev` não regenera o client; rodar `npm run db:generate` após migrar. Psql no container: usuário `acutis` (`docker compose exec postgres psql -U acutis -d acutis_test`).
 - Repositório: `encerrarTurma(id, hoje)` recebe a data do chamador — actions devem passar `hojeCivil()`; `atualizarTurma` lança P2025 para id inexistente e `designar` deixa P2002 subir.
 - Testes de actions: atores com sessão simulada vêm de `tests/integration/equipe/helpers.ts` + `next-mocks`; designações no teste via `prisma.designacao.create`.
+- Fronteira: `src/modules/turmas` não importa `catequizandos` nem `equipe`; leituras da tabela `catequizando` ficam no repositório de turmas (ex.: `obterCatequizandoParaInscricao`). A composição com `catequizandos` só acontece na camada `app`.

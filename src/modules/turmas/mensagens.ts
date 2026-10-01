@@ -26,6 +26,7 @@ export const MSG_TURMA_ENCERRADA = "Esta turma está encerrada e não pode ser a
 export const MSG_CATEQUISTA_INDISPONIVEL =
   "Este catequista não pode ser designado para esta turma.";
 export const MSG_JA_INSCRITO = "Este catequizando já está inscrito nesta turma.";
+export const MSG_CATEQUIZANDO_INATIVO = "Este catequizando não está ativo.";
 
 export function MSG_TRANSFERIR(turma: string): string {
   return `Já inscrito na turma ${turma}. Deseja transferir?`;
