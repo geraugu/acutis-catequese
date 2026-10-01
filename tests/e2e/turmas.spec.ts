@@ -204,7 +204,10 @@ test.describe("coordenação", () => {
       await expect(page.getByLabel("Dia da semana")).toHaveValue("domingo");
       await page.keyboard.press("Tab");
       await expect(page.getByLabel("Horário")).toBeFocused();
-      await page.keyboard.type("1000");
+      // No Linux o Chromium mostra o campo em 12 h com AM/PM mesmo em pt-BR; o "A" preenche
+      // esse segmento e é ignorado onde o campo é de 24 h.
+      await page.keyboard.type("1000A");
+      await expect(page.getByLabel("Horário")).toHaveValue("10:00");
       // O campo de horário pode ter segmentos internos navegáveis por Tab.
       const local = page.getByLabel("Local");
       for (let i = 0; i < 4 && !(await local.evaluate((e) => e === document.activeElement)); i++) {
