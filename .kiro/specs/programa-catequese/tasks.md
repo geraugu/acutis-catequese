@@ -79,7 +79,7 @@
   - _Boundary: components/programa/lista-temas, components/programa/formulario-tema, components/programa/acoes-tema_
   - _Requirements: 1.2, 2.2, 2.3, 2.6, 2.7, 3.5, 3.6, 9.2_
 
-- [ ] 5.2 (P) Criar o cronograma e as ações de encontro
+- [x] 5.2 (P) Criar o cronograma e as ações de encontro
   - `Cronograma({ encontros, hoje, base, acoes? })` e `AcoesEncontro` (realizado, cancelar com motivo, reabrir), com o wrapper que leva erros de campo para o alerta.
   - Pronto quando: os testes de componente mostram a ordem, a data com dia, "Sem tema do programa", os selos "Próximo encontro" e "Aguardando confirmação", o motivo nos cancelados, as ações conforme a situação, nenhuma ação sem `acoes`, o texto das confirmações com data e tema e o motivo enviado no FormData.
   - _Boundary: components/programa/cronograma, components/programa/acoes-encontro_
@@ -130,3 +130,4 @@
 - Repositório de temas: `atualizarTema` e `trocarPosicoes` lançam erro do Prisma com id inválido/inexistente — as actions (4.1) devem validar o id ou tratar o erro. `criarTema` pode gerar posições iguais sob concorrência; a ordem desempata por título.
 - Repositório de encontros: `criarEncontro` não valida o UUID da turma; as actions chamam `dadosDaTurma` antes. Updates de encontro são condicionais (`updateMany` com a situação no WHERE) e devolvem boolean.
 - Arquivos "use server" só exportam actions: toda função exportada vira endpoint público. Helpers puros (ex.: `baseValida`) ficam no domínio; helpers de servidor ficam internos ao arquivo.
+- Tarefa 6.1 deve criar no globals.css as classes usadas pelos componentes do programa: cronograma*, selo, acoes-encontro, situacao-planejado/realizado/cancelado.
