@@ -40,7 +40,7 @@ function MensagemErro({ campo, erro }: { campo: string; erro?: string }) {
 
 /** Rótulo da opção: número do programa, ou o tema desativado identificado (4.9). */
 function rotuloTema(t: TemaParaSelecao): string {
-  if (!t.ativo) return `${t.titulo} (desativado)`;
+  if (!t.ativo) return `${t.titulo} (Desativado)`;
   return t.numero !== null ? `${t.numero}. ${t.titulo}` : t.titulo;
 }
 

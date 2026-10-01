@@ -32,7 +32,10 @@ export function ListaTemas({
       {temas.map((t) => (
         <li key={t.id} className="lista-temas-item">
           {t.numero !== null ? (
-            <span className="lista-temas-numero">{`${t.numero}.`}</span>
+            <>
+              <span className="lista-temas-numero">{`${t.numero}.`}</span>
+              <span className="situacao situacao-ativo">Ativo</span>
+            </>
           ) : (
             <span className="situacao situacao-inativo">Desativado</span>
           )}

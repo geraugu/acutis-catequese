@@ -26,7 +26,7 @@ describe("FormularioEncontro", () => {
     const tema = screen.getByLabelText("Tema");
     expect(within(tema).getByRole("option", { name: "Sem tema do programa" })).toHaveValue("");
     expect(within(tema).getByRole("option", { name: "1. Criação" })).toHaveValue("t1");
-    expect(within(tema).getByRole("option", { name: "Antigo (desativado)" })).toHaveValue("t2");
+    expect(within(tema).getByRole("option", { name: "Antigo (Desativado)" })).toHaveValue("t2");
     expect(screen.getByLabelText("Observações").tagName).toBe("TEXTAREA");
     expect(screen.getByRole("button", { name: "Criar encontro" })).toBeEnabled();
   });

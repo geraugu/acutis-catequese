@@ -36,7 +36,7 @@ A autorização reutiliza `podeVerTurma`, publicado por `gestao-turmas`. As deci
 
 ### Allowed Dependencies
 - `@/modules/auth/dal` (`requireRole`) e `@/modules/auth/domain/papeis`.
-- `@/modules/turmas/acesso` (`podeVerTurma`), conforme a exceção do `structure.md`. Nenhum outro arquivo de `@/modules/turmas`.
+- `@/modules/turmas/acesso` (`podeVerTurma`), conforme a exceção do `structure.md`. Nenhum outro arquivo de `@/modules/turmas`. Exceção na camada de UI (validação final, 2026-10-01): os componentes do programa usam `formatarHorario` de `@/modules/turmas/domain/turma`, função pura de formatação; candidata a migrar para `compartilhado/datas`.
 - `@/modules/compartilhado/*` e `@/components/comum/*`.
 - A tabela `turma` é **lida** pelo repositório do programa (nome, horário, encerramento). O programa nunca escreve nela.
 - A camada `app` compõe `programa` com `turmas` nas páginas da turma (bloco "Próximo encontro").
