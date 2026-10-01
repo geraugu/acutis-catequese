@@ -22,7 +22,7 @@
 
 - [ ] 2. Domínio das turmas (regras puras)
 
-- [ ] 2.1 (P) Implementar o schema e as regras da turma
+- [x] 2.1 (P) Implementar o schema e as regras da turma
   - Criar `DIAS_SEMANA`, `ROTULO_DIA`, `criarTurmaSchema({ anoAtual })` (nome, ciclo, dia, horário "HH:MM", local, observações e vagas opcionais) com as mensagens pt-BR do design, `estaLotada`, `formatarOcupacao`, `formatarHorario` e `ordenarTurmas` (dia, horário, nome).
   - Pronto quando: os testes unitários cobrem obrigatórios vazios, ciclo em 1999, 2000, ano atual + 1 e + 2, horários "7:30" e "24:00" recusados e "07:30" e "23:59" aceitos, vagas vazias = sem limite, 0, 501 e 2,5 recusadas, `estaLotada` com e sem vagas, "12 de 20 vagas" e a ordenação.
   - _Boundary: turmas/domain/turma_
