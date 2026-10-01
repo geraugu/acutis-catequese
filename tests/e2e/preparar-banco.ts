@@ -21,6 +21,8 @@ const TABELAS = [
   "turma",
   "designacao",
   "inscricao",
+  "tema",
+  "encontro",
 ];
 
 async function main() {

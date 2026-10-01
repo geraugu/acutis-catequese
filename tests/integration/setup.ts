@@ -14,6 +14,8 @@ const TABELAS = [
   "turma",
   "designacao",
   "inscricao",
+  "tema",
+  "encontro",
 ];
 
 const url = process.env.DATABASE_URL ?? "";

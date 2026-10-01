@@ -194,6 +194,7 @@ model Turma {
   updatedAt   DateTime     @updatedAt
   designacoes Designacao[]
   inscricoes  Inscricao[]
+  encontros   Encontro[]
 
   @@index([ciclo])
   @@map("turma")
@@ -224,4 +225,47 @@ model Inscricao {
 
   @@index([turmaId])
   @@map("inscricao")
+}
+
+enum SituacaoEncontro {
+  planejado
+  realizado
+  cancelado
+
+  @@map("situacao_encontro")
+}
+
+model Tema {
+  id        String     @id @default(uuid())
+  titulo    String
+  chave     String // normalizarBusca(titulo)
+  descricao String?
+  posicao   Int
+  ativo     Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  encontros Encontro[]
+
+  @@unique([chave], map: "tema_chave_unica")
+  @@index([posicao])
+  @@map("tema")
+}
+
+model Encontro {
+  id                 String           @id @default(uuid())
+  turmaId            String
+  temaId             String?
+  data               DateTime         @db.Date
+  horario            String // "HH:MM"
+  observacoes        String?
+  situacao           SituacaoEncontro @default(planejado)
+  motivoCancelamento String?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  turma              Turma            @relation(fields: [turmaId], references: [id], onDelete: Restrict)
+  tema               Tema?            @relation(fields: [temaId], references: [id], onDelete: Restrict)
+
+  @@index([turmaId, data])
+  @@index([temaId])
+  @@map("encontro")
 }

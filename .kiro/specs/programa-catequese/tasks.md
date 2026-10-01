@@ -2,7 +2,7 @@
 
 - [ ] 1. Base de dados e extensões compartilhadas
 
-- [ ] 1.1 Criar as tabelas de tema e encontro
+- [x] 1.1 Criar as tabelas de tema e encontro
   - Criar o enum `SituacaoEncontro`, os modelos `Tema` e `Encontro` e a relação `Turma.encontros` (só campo de relação), com a migração `*_programa` contendo o SQL do índice parcial `encontro_horario_unico`, conforme o design. Rodar `npm run db:generate` depois de migrar.
   - Incluir `encontro` e `tema` no TRUNCATE de `tests/integration/setup.ts` e `tests/e2e/preparar-banco.ts`.
   - Pronto quando: a migração aplica nos bancos de dev e de teste; um teste de integração grava um tema e um encontro, lê a data sem deslocamento de dia, confirma que `tema_chave_unica` e `encontro_horario_unico` recusam duplicidade (e aceitam o segundo encontro quando o primeiro está cancelado), e a limpeza zera as tabelas.
@@ -123,3 +123,7 @@
   - Cenários do design em `tests/e2e/programa.spec.ts`: programa (criar, reordenar, desativar; catequista sem ações); encontro com aviso de tema repetido; realizado e progresso "1 de 2 temas"; cancelar com motivo e reabrir; próximo encontro na página da turma; equivalência entre duas turmas; "Acesso negado" para o não designado; teclado ao criar encontro; sem rolagem horizontal a 360 px no programa, no cronograma e no formulário. Dados com nomes únicos, compatíveis com a execução em paralelo.
   - Pronto quando: `CI=1 npm run test:e2e` passa por inteiro (novos e anteriores), assim como `npm run test:unit`, `npm run test:integration`, lint, typecheck e `format:check`.
   - _Requirements: 1.2, 1.4, 2.6, 3.1, 4.5, 4.6, 5.1, 5.3, 5.4, 6.2, 6.3, 6.4, 8.2, 9.2, 9.3_
+
+## Implementation Notes
+- Prisma 7: rodar `npm run db:generate` depois de migrar; migração com SQL manual via `--create-only`. Psql: `docker compose exec postgres psql -U acutis -d acutis_test`.
+- Há arquivos de outra sessão em `.kiro/specs/autocadastro-catequizandos/`: nunca incluí-los nos commits desta spec.
