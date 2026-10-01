@@ -88,6 +88,18 @@ describe("nomeEmUso (2.4)", () => {
 });
 
 describe("listagens (3.1, 7.1, 7.2)", () => {
+  it("listarTurmas ordena por dia, horário e nome sem separar abertas e encerradas (3.5)", async () => {
+    const sab = await criarTurmaDireta({ nome: "Aberta de sábado", diaSemana: "sabado" });
+    const dom = await criarTurmaDireta({
+      nome: "Encerrada de domingo",
+      diaSemana: "domingo",
+      encerradaEm: "2026-01-01",
+    });
+
+    const lista = await listarTurmas();
+    expect(lista.map((t) => t.id)).toEqual([dom, sab]);
+  });
+
   it("listarTurmas traz todas ordenadas com catequistas vigentes e inscritos vigentes", async () => {
     const ana = await criarUsuarioDireto("Ana");
     const bia = await criarUsuarioDireto("Bia");

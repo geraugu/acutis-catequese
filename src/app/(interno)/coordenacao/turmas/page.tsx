@@ -37,7 +37,7 @@ export default async function TurmasPage({ searchParams }: { searchParams: Promi
   const params = await searchParams;
   const anoAtual = Number(hojeCivil().slice(0, 4));
 
-  // listarTurmas já devolve as abertas antes das encerradas, cada grupo ordenado (ordenarTurmas).
+  // listarTurmas já devolve as turmas ordenadas por dia, horário e nome (ordenarTurmas).
   const turmas = await listarTurmas();
   const existentes = [...new Set(turmas.map((t) => t.ciclo))].sort((a, b) => b - a);
   const situacao = lerSituacao(primeiro(params.situacao));

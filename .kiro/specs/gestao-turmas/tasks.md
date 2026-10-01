@@ -153,4 +153,4 @@
 - Fronteira: `src/modules/turmas` não importa `catequizandos` nem `equipe`; leituras da tabela `catequizando` ficam no repositório de turmas (ex.: `obterCatequizandoParaInscricao`). A composição com `catequizandos` só acontece na camada `app`.
 - Componentes de turmas usam classes próprias (`lista-turmas*`, `filtros-turmas`, ...) sem CSS; o estilo entra em `globals.css` na tarefa 6.1. Selos reaproveitam `.etiqueta` e `.situacao situacao-inativo`.
 - `Confirmacao` só exibe `estado.erro`; ações com campos extras (ex.: `DesligarCatequizando`) devem converter `errosCampos` em `erro` num wrapper do próprio componente.
-- Pendência (3.5): `listarTurmas` agrupa abertas antes das encerradas; com o filtro "todas" a ordem não é estritamente dia/horário/nome. Resolver na validação final (ordenar a lista inteira ou registrar no design).
+- 3.5: `listarTurmas` ordena a lista inteira por dia, horário e nome, sem separar abertas e encerradas (corrigido na validação final).

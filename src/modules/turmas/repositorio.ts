@@ -83,12 +83,9 @@ function paraResumo(l: LinhaResumo): TurmaResumo {
   };
 }
 
-/** Abertas primeiro (dia, horário, nome); encerradas ao fim, na mesma ordem. */
+/** Dia da semana, horário e nome (3.5), sem separar abertas e encerradas. */
 function ordenar(turmas: TurmaResumo[]): TurmaResumo[] {
-  return [
-    ...ordenarTurmas(turmas.filter((t) => !t.encerrada)),
-    ...ordenarTurmas(turmas.filter((t) => t.encerrada)),
-  ];
+  return ordenarTurmas(turmas);
 }
 
 function dadosDaTurma(d: TurmaDados) {
