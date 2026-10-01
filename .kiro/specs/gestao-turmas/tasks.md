@@ -53,7 +53,7 @@
   - Pronto quando: os testes de integração mostram `nomeEmUso` ignorando caixa e turmas encerradas, o índice parcial de nome e o de designação recusando duplicidade, `encerrarTurma` desligando todos com o motivo e a data corretos, e os elegíveis excluindo inativos, coordenação e já designados.
   - _Requirements: 2.1, 2.4, 2.5, 3.1, 4.1, 4.2, 4.3, 4.4, 7.1, 7.2, 8.1, 8.4, 9.1_
 
-- [ ] 3.2 Implementar o repositório de inscrições
+- [x] 3.2 Implementar o repositório de inscrições
   - Implementar `catequizandosParaInscricao` (só ativos, busca sem diferenciar caixa nem acentos, com a turma atual), `inscricaoVigente`, `inscrever`, `transferir` (transação: fecha a anterior com motivo `transferencia` e abre a nova com a mesma data), `desligar` (motivo `desligamento`, nunca exclui), `historicoDoCatequizando` e `catequistasDoCatequizando`.
   - Pronto quando: os testes de integração mostram a busca por "jose" encontrando "José", inativos fora da lista, o índice de inscrição vigente única recusando a segunda inscrição, a transferência fechando e abrindo com a mesma data, o desligamento preservando a linha e o histórico em ordem.
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.6, 6.1, 6.4_

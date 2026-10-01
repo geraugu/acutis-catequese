@@ -25,14 +25,14 @@ export async function criarUsuarioDireto(
 
 export async function criarCatequizandoDireto(
   nome: string,
-  extra: { dataNascimento?: string; telefone?: string } = {},
+  extra: { dataNascimento?: string; telefone?: string; estado?: "ativo" | "inativo" } = {},
 ): Promise<string> {
   const c = await prisma.catequizando.create({
     data: {
       nome,
       dataNascimento: dia(extra.dataNascimento ?? "2010-03-04"),
       telefone: extra.telefone ?? "11987654321",
-      estado: "ativo",
+      estado: extra.estado ?? "ativo",
     },
     select: { id: true },
   });

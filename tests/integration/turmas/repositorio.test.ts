@@ -3,16 +3,23 @@ import { prisma } from "@/lib/prisma";
 import type { DataCivil } from "@/modules/compartilhado/datas";
 import {
   atualizarTurma,
+  catequistasDoCatequizando,
   catequistasElegiveis,
+  catequizandosParaInscricao,
   criarTurma,
   designadosVigentes,
   designar,
+  desligar,
   encerrarTurma,
+  historicoDoCatequizando,
+  inscricaoVigente,
+  inscrever,
   listarTurmas,
   listarTurmasDoCatequista,
   nomeEmUso,
   obterTurma,
   removerDesignacao,
+  transferir,
 } from "@/modules/turmas/repositorio";
 import {
   criarCatequizandoDireto,
@@ -228,5 +235,120 @@ describe("designações (9.1)", () => {
     await designar(t, ana);
     expect(await designadosVigentes(t)).toEqual([ana]);
     expect(await prisma.designacao.count({ where: { turmaId: t } })).toBe(2);
+  });
+});
+
+describe("catequizandosParaInscricao (5.1)", () => {
+  it("busca sem caixa nem acentos, só ativos, com a turma atual", async () => {
+    const t = await criarTurmaDireta({ nome: "Turma A" });
+    const jose = await criarCatequizandoDireto("José da Silva");
+    await criarCatequizandoDireto("JOSÉ Inativo", { estado: "inativo" });
+    await criarCatequizandoDireto("Maria");
+    await inscreverDireto(t, jose, "2026-02-01");
+
+    const r = await catequizandosParaInscricao("jose");
+    expect(r).toEqual([
+      {
+        id: jose,
+        nome: "José da Silva",
+        dataNascimento: "2010-03-04",
+        turmaAtual: { id: t, nome: "Turma A" },
+      },
+    ]);
+    const todos = await catequizandosParaInscricao("");
+    expect(todos.map((c) => c.nome).sort()).toEqual(["José da Silva", "Maria"]);
+    expect(todos.find((c) => c.nome === "Maria")?.turmaAtual).toBeNull();
+  });
+});
+
+describe("inscrever / inscricaoVigente (5.2, 5.6)", () => {
+  it("inscreve e o índice parcial recusa a segunda inscrição vigente (P2002)", async () => {
+    const t1 = await criarTurmaDireta({ nome: "T1" });
+    const t2 = await criarTurmaDireta({ nome: "T2" });
+    const c = await criarCatequizandoDireto("Ana");
+    expect(await inscricaoVigente(c)).toBeNull();
+    await inscrever(t1, c, "2026-03-01" as DataCivil);
+    const v = await inscricaoVigente(c);
+    expect(v).toMatchObject({ turmaId: t1, turmaNome: "T1", dataEntrada: "2026-03-01" });
+    await expect(inscrever(t2, c, "2026-03-02" as DataCivil)).rejects.toSatisfy(
+      (e) => codigo(e) === "P2002",
+    );
+  });
+});
+
+describe("transferir (5.3, 5.4)", () => {
+  it("fecha a vigente com motivo transferencia e abre a nova com a mesma data", async () => {
+    const t1 = await criarTurmaDireta({ nome: "T1" });
+    const t2 = await criarTurmaDireta({ nome: "T2" });
+    const c = await criarCatequizandoDireto("Ana");
+    const antiga = await inscreverDireto(t1, c, "2026-02-01");
+    await transferir(t2, c, "2026-05-10" as DataCivil);
+    const linhas = await prisma.inscricao.findMany({ where: { catequizandoId: c } });
+    expect(linhas).toHaveLength(2);
+    const fechada = linhas.find((l) => l.id === antiga)!;
+    expect(fechada.dataSaida?.toISOString().slice(0, 10)).toBe("2026-05-10");
+    expect(fechada.motivoSaida).toBe("transferencia");
+    expect(await inscricaoVigente(c)).toMatchObject({ turmaId: t2, dataEntrada: "2026-05-10" });
+  });
+});
+
+describe("desligar (6.1, 6.4)", () => {
+  it("preserva a linha, grava motivo desligamento e só age sobre vigente", async () => {
+    const t = await criarTurmaDireta();
+    const c = await criarCatequizandoDireto("Ana");
+    const i = await inscreverDireto(t, c, "2026-02-01");
+    expect(await desligar(i, "2026-06-01" as DataCivil)).toBe(true);
+    const l = await prisma.inscricao.findUniqueOrThrow({ where: { id: i } });
+    expect(l.dataSaida?.toISOString().slice(0, 10)).toBe("2026-06-01");
+    expect(l.motivoSaida).toBe("desligamento");
+    expect(await desligar(i, "2026-06-02" as DataCivil)).toBe(false);
+    expect(await inscricaoVigente(c)).toBeNull();
+  });
+});
+
+describe("historicoDoCatequizando", () => {
+  it("lista todas as inscrições por dataEntrada decrescente", async () => {
+    const t1 = await criarTurmaDireta({ nome: "T1", ciclo: 2025 });
+    const t2 = await criarTurmaDireta({ nome: "T2" });
+    const c = await criarCatequizandoDireto("Ana");
+    await inscreverDireto(t1, c, "2025-02-01", { data: "2025-11-30", motivo: "encerramento" });
+    await inscreverDireto(t2, c, "2026-02-01");
+    expect(await historicoDoCatequizando(c)).toEqual([
+      {
+        turmaId: t2,
+        turmaNome: "T2",
+        ciclo: 2026,
+        dataEntrada: "2026-02-01",
+        dataSaida: null,
+        motivoSaida: null,
+      },
+      {
+        turmaId: t1,
+        turmaNome: "T1",
+        ciclo: 2025,
+        dataEntrada: "2025-02-01",
+        dataSaida: "2025-11-30",
+        motivoSaida: "encerramento",
+      },
+    ]);
+  });
+});
+
+describe("catequistasDoCatequizando", () => {
+  it("só designações vigentes em turmas com inscrição vigente", async () => {
+    const atual = await criarTurmaDireta({ nome: "Atual" });
+    const antiga = await criarTurmaDireta({ nome: "Antiga" });
+    const c = await criarCatequizandoDireto("Ana");
+    await inscreverDireto(antiga, c, "2025-02-01", { data: "2025-12-01", motivo: "desligamento" });
+    await inscreverDireto(atual, c, "2026-02-01");
+    const vigente = await criarUsuarioDireto("Vigente");
+    const removido = await criarUsuarioDireto("Removido");
+    const daAntiga = await criarUsuarioDireto("Da antiga");
+    await designar(atual, vigente);
+    await designar(atual, removido);
+    await removerDesignacao(atual, removido);
+    await designar(antiga, daAntiga);
+    expect(await catequistasDoCatequizando(c)).toEqual([vigente]);
+    expect(await catequistasDoCatequizando(await criarCatequizandoDireto("Sem turma"))).toEqual([]);
   });
 });

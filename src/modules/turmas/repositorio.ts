@@ -1,6 +1,7 @@
 import "server-only";
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { filtrarPorTermo } from "@/modules/compartilhado/busca";
 import type { DataCivil } from "@/modules/compartilhado/datas";
 import { ordenarTurmas, type DiaSemana, type TurmaDados } from "./domain/turma";
 import type { MotivoSaida } from "./domain/inscricao";
@@ -228,4 +229,130 @@ export async function designadosVigentes(turmaId: string): Promise<string[]> {
     select: { userId: true },
   });
   return linhas.map((l) => l.userId);
+}
+
+export interface CandidatoInscricao {
+  id: string;
+  nome: string;
+  dataNascimento: DataCivil;
+  turmaAtual: { id: string; nome: string } | null;
+}
+
+/** Só ativos; o termo casa sem caixa nem acentos (filtro em memória, como em catequizandos). */
+export async function catequizandosParaInscricao(termo: string): Promise<CandidatoInscricao[]> {
+  const linhas = await prisma.catequizando.findMany({
+    where: { estado: "ativo" },
+    orderBy: { nome: "asc" },
+    select: {
+      id: true,
+      nome: true,
+      dataNascimento: true,
+      inscricoes: {
+        where: { dataSaida: null },
+        select: { turma: { select: { id: true, nome: true } } },
+      },
+    },
+  });
+  const candidatos = linhas.map((l) => ({
+    id: l.id,
+    nome: l.nome,
+    dataNascimento: paraDataCivil(l.dataNascimento),
+    turmaAtual: l.inscricoes[0]?.turma ?? null,
+  }));
+  return filtrarPorTermo(candidatos, termo, (c) => ({ textos: [c.nome] }));
+}
+
+export async function inscricaoVigente(
+  catequizandoId: string,
+): Promise<{ id: string; turmaId: string; turmaNome: string; dataEntrada: DataCivil } | null> {
+  const l = await prisma.inscricao.findFirst({
+    where: { catequizandoId, dataSaida: null },
+    select: { id: true, turmaId: true, dataEntrada: true, turma: { select: { nome: true } } },
+  });
+  if (!l) return null;
+  return {
+    id: l.id,
+    turmaId: l.turmaId,
+    turmaNome: l.turma.nome,
+    dataEntrada: paraDataCivil(l.dataEntrada),
+  };
+}
+
+/** Segunda inscrição vigente viola `inscricao_vigente_unica` (P2002); o chamador converte. */
+export async function inscrever(
+  turmaId: string,
+  catequizandoId: string,
+  entrada: DataCivil,
+): Promise<void> {
+  await prisma.inscricao.create({
+    data: { turmaId, catequizandoId, dataEntrada: paraData(entrada) },
+  });
+}
+
+/** Fecha a vigente (motivo transferencia) e abre a nova com a mesma data, numa transação. */
+export async function transferir(
+  turmaId: string,
+  catequizandoId: string,
+  data: DataCivil,
+): Promise<void> {
+  const d = paraData(data);
+  await prisma.$transaction([
+    prisma.inscricao.updateMany({
+      where: { catequizandoId, dataSaida: null },
+      data: { dataSaida: d, motivoSaida: "transferencia" },
+    }),
+    prisma.inscricao.create({ data: { turmaId, catequizandoId, dataEntrada: d } }),
+  ]);
+}
+
+/** Encerra só a inscrição vigente; nunca exclui. */
+export async function desligar(inscricaoId: string, saida: DataCivil): Promise<boolean> {
+  const { count } = await prisma.inscricao.updateMany({
+    where: { id: inscricaoId, dataSaida: null },
+    data: { dataSaida: paraData(saida), motivoSaida: "desligamento" },
+  });
+  return count > 0;
+}
+
+export async function historicoDoCatequizando(catequizandoId: string): Promise<
+  {
+    turmaId: string;
+    turmaNome: string;
+    ciclo: number;
+    dataEntrada: DataCivil;
+    dataSaida: DataCivil | null;
+    motivoSaida: MotivoSaida | null;
+  }[]
+> {
+  const linhas = await prisma.inscricao.findMany({
+    where: { catequizandoId },
+    orderBy: { dataEntrada: "desc" },
+    select: {
+      turmaId: true,
+      dataEntrada: true,
+      dataSaida: true,
+      motivoSaida: true,
+      turma: { select: { nome: true, ciclo: true } },
+    },
+  });
+  return linhas.map((l) => ({
+    turmaId: l.turmaId,
+    turmaNome: l.turma.nome,
+    ciclo: l.turma.ciclo,
+    dataEntrada: paraDataCivil(l.dataEntrada),
+    dataSaida: l.dataSaida ? paraDataCivil(l.dataSaida) : null,
+    motivoSaida: l.motivoSaida,
+  }));
+}
+
+/** Catequistas com designação vigente em turmas onde o catequizando tem inscrição vigente. */
+export async function catequistasDoCatequizando(catequizandoId: string): Promise<string[]> {
+  const linhas = await prisma.designacao.findMany({
+    where: {
+      removidoEm: null,
+      turma: { inscricoes: { some: { catequizandoId, dataSaida: null } } },
+    },
+    select: { userId: true },
+  });
+  return [...new Set(linhas.map((l) => l.userId))];
 }
