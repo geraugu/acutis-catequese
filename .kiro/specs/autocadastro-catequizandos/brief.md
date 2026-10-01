@@ -50,3 +50,4 @@ Após `cadastro-catequizandos` e `gestao-turmas`, só a coordenação cadastra c
 - É a única área pública do sistema. Nada de dados de outros catequizandos pode ficar exposto, e mensagens de erro não devem revelar se alguém já está cadastrado.
 - LGPD: consentimento explícito e registrado (data e versão do texto), com coleta mínima.
 - Uso pelo celular, com conexões lentas.
+- **Lotação (decisão de 2026-10-01):** a turma tem um número opcional de vagas (spec `gestao-turmas`). Avaliar se o link da turma deve deixar de aceitar fichas quando ela estiver lotada.

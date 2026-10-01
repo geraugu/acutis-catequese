@@ -44,3 +44,6 @@ Existem turmas com catequizandos inscritos e encontros planejados.
 ## Constraints
 - Limite de frequência configurável (valor padrão a definir nos requisitos).
 - Uso em celular durante o encontro.
+- **Presença em outra turma (decisão de 2026-10-01):** todas as turmas seguem o mesmo programa. Um catequizando inscrito numa turma pode assistir ao encontro de outra turma para repor um tema que perdeu.
+  - A chamada deve permitir registrar esse "visitante".
+  - A presença dele deve contar para completar o programa do catequizando, e não para a frequência da turma que ele visitou.

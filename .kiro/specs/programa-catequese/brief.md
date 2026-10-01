@@ -39,3 +39,4 @@ Cada turma tem um cronograma de encontros com data, tema e descrição. A coorde
 
 ## Constraints
 - O catequista só gerencia encontros das próprias turmas.
+- **Programa comum (decisão de 2026-10-01):** todas as turmas seguem o mesmo programa de temas. Os encontros de turmas diferentes sobre o mesmo tema precisam ser identificáveis como equivalentes, para que o catequizando possa repor um tema em outra turma (ver `controle-presenca`).
