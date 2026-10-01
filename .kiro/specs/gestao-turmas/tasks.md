@@ -88,7 +88,7 @@
 
 - [ ] 5. Componentes de interface das turmas
 
-- [ ] 5.1 (P) Criar a lista e os filtros de turmas
+- [x] 5.1 (P) Criar a lista e os filtros de turmas
   - `ListaTurmas({ turmas, base })`: nome como link, ciclo, "Quarta-feira, 19:30", local, catequistas ou selo "Sem catequista", inscritos ou "{n} de {v} vagas", selos "Lotada" e "Encerrada". `FiltrosTurmas`: formulário GET com `situacao` e `ciclo`.
   - Pronto quando: os testes de componente mostram cada selo nas condições certas, a ocupação, o link com a base recebida e os filtros pré-selecionados a partir das props.
   - _Boundary: components/turmas/lista-turmas, components/turmas/filtros-turmas_
@@ -151,3 +151,4 @@
 - Repositório: `encerrarTurma(id, hoje)` recebe a data do chamador — actions devem passar `hojeCivil()`; `atualizarTurma` lança P2025 para id inexistente e `designar` deixa P2002 subir.
 - Testes de actions: atores com sessão simulada vêm de `tests/integration/equipe/helpers.ts` + `next-mocks`; designações no teste via `prisma.designacao.create`.
 - Fronteira: `src/modules/turmas` não importa `catequizandos` nem `equipe`; leituras da tabela `catequizando` ficam no repositório de turmas (ex.: `obterCatequizandoParaInscricao`). A composição com `catequizandos` só acontece na camada `app`.
+- Componentes de turmas usam classes próprias (`lista-turmas*`, `filtros-turmas`, ...) sem CSS; o estilo entra em `globals.css` na tarefa 6.1. Selos reaproveitam `.etiqueta` e `.situacao situacao-inativo`.
