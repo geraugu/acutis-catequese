@@ -56,7 +56,7 @@
 
 - [ ] 4. Server Actions do programa
 
-- [ ] 4.1 Implementar as actions de tema
+- [x] 4.1 Implementar as actions de tema
   - `criarTemaAction`, `editarTemaAction`, `moverTemaAction`, `desativarTemaAction`, `reativarTemaAction` e `excluirTemaAction`, com `requireRole(["coordenacao"])` primeiro, título em uso pela chave (inclusive P2002), `MSG_TEMA_EM_USO` ao excluir tema usado, redirect fora do try/catch e log só com ids e `e.name`.
   - Pronto quando: os testes de integração mostram o catequista rejeitado em todas sem alterar dados, criar e editar com erros de campo e título em uso (acento e caixa diferentes), mover para cima e para baixo, desativar e reativar, e excluir em uso recusado e não usado excluído.
   - _Requirements: 1.1, 1.5, 2.1, 2.3, 2.4, 2.5, 2.6, 3.1, 3.2, 3.3, 3.4_
