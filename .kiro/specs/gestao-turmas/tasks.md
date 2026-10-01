@@ -34,7 +34,7 @@
   - _Boundary: turmas/domain/inscricao_
   - _Requirements: 5.5, 6.3_
 
-- [ ] 2.3 (P) Implementar a regra pura de acesso e os filtros
+- [x] 2.3 (P) Implementar a regra pura de acesso e os filtros
   - Criar `podeVerTurmaRegra` e `podeVerCatequizandoRegra` (coordenação sempre pode; catequista só quando o próprio id está na lista) e `cicloPadrao` e `filtrarTurmas` (situação abertas, encerradas ou todas, combinada com ciclo ou "todos").
   - Pronto quando: os testes unitários cobrem coordenação, catequista designado e não designado, `cicloPadrao` com e sem ciclos existentes e cada combinação de situação com ciclo.
   - _Boundary: turmas/domain/acesso, turmas/domain/filtros_
