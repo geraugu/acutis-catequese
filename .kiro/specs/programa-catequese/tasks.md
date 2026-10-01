@@ -28,7 +28,7 @@
   - _Boundary: programa/domain/encontro_
   - _Requirements: 4.2, 4.4, 5.1, 5.2, 5.3, 5.4, 5.6, 5.7, 6.1, 6.2_
 
-- [ ] 2.3 Implementar o cálculo de progresso
+- [x] 2.3 Implementar o cálculo de progresso
   - Criar `calcularProgresso(temasAtivos, encontros)`.
   - Pronto quando: os testes unitários mostram tema realizado duas vezes contando uma, encontro sem tema e encontros cancelados ou planejados fora da contagem, tema desativado fora do total e pendentes na ordem do programa.
   - _Depends: 2.2_
