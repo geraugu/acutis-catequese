@@ -40,7 +40,7 @@
   - _Boundary: turmas/domain/acesso, turmas/domain/filtros_
   - _Requirements: 1.1, 1.2, 3.1, 3.2_
 
-- [ ] 2.4 (P) Criar as mensagens das turmas
+- [x] 2.4 (P) Criar as mensagens das turmas
   - Criar os códigos de aviso da tabela do design, as constantes `MSG_NOME_EM_USO`, `MSG_TURMA_ENCERRADA`, `MSG_JA_INSCRITO`, `MSG_TRANSFERIR`, `MSG_LOTADA`, `MSG_ERRO_INESPERADO` e `mensagemDeAviso`.
   - Pronto quando: os testes unitários mostram o texto de cada código conhecido, `null` para códigos desconhecidos ou não string, e `MSG_LOTADA(20, 20)` igual a "Turma lotada (20 de 20 vagas).".
   - _Boundary: turmas/mensagens_
