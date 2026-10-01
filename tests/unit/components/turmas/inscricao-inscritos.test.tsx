@@ -33,7 +33,6 @@ describe("InscreverCatequizando", () => {
   it("tem busca GET com campo q rotulado e lista candidatos com turma atual", () => {
     render(
       <InscreverCatequizando
-        turmaId="t1"
         termo="an"
         candidatos={candidatos}
         acao={vi.fn<Acao>(async () => ({}))}
@@ -56,7 +55,6 @@ describe("InscreverCatequizando", () => {
   it("sem candidatos após busca mostra o estado vazio", () => {
     render(
       <InscreverCatequizando
-        turmaId="t1"
         termo="zzz"
         candidatos={[]}
         acao={vi.fn<Acao>(async () => ({}))}
@@ -77,15 +75,7 @@ describe("InscreverCatequizando", () => {
       enviados.push(dados);
       return respostas[enviados.length - 1];
     });
-    render(
-      <InscreverCatequizando
-        turmaId="t1"
-        termo=""
-        candidatos={[candidatos[1]]}
-        acao={acao}
-        hoje={HOJE}
-      />,
-    );
+    render(<InscreverCatequizando termo="" candidatos={[candidatos[1]]} acao={acao} hoje={HOJE} />);
     fireEvent.click(screen.getByRole("button", { name: "Inscrever" }));
     const alertaLotada = await screen.findByRole("alert");
     expect(alertaLotada).toHaveTextContent("Turma lotada (20 de 20 vagas).");
@@ -115,15 +105,7 @@ describe("InscreverCatequizando", () => {
       .fn<Acao>()
       .mockResolvedValueOnce({ errosCampos: { dataEntrada: "Data inválida" } })
       .mockResolvedValueOnce({ erro: "Este catequizando não está ativo." });
-    render(
-      <InscreverCatequizando
-        turmaId="t1"
-        termo=""
-        candidatos={[candidatos[0]]}
-        acao={acao}
-        hoje={HOJE}
-      />,
-    );
+    render(<InscreverCatequizando termo="" candidatos={[candidatos[0]]} acao={acao} hoje={HOJE} />);
     fireEvent.click(screen.getByRole("button", { name: "Inscrever" }));
     expect(await screen.findByText("Data inválida")).toBeInTheDocument();
     expect(screen.getByLabelText(/data de entrada/i)).toHaveAttribute("aria-invalid", "true");

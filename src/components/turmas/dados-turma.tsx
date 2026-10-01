@@ -20,7 +20,9 @@ export function DadosTurma({ turma }: { turma: TurmaDetalhe }) {
         {estaLotada(turma.inscritosVigentes, turma.vagas) ? (
           <span className="etiqueta">Lotada</span>
         ) : null}
-        {turma.catequistas.length === 0 ? <span className="etiqueta">Sem catequista</span> : null}
+        {!turma.encerrada && turma.catequistas.length === 0 ? (
+          <span className="etiqueta">Sem catequista</span>
+        ) : null}
       </div>
 
       <dl className="membro-dados">

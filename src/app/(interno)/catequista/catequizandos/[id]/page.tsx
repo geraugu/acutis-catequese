@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "Catequizando — Acutis Catequese",
 };
 
-/** Ficha em modo leitura para o catequista da turma (9.2, 9.3). */
+/** Ficha em modo leitura para o catequista da turma (9.3, 1.3). */
 export default async function CatequizandoCatequistaPage({
   params,
 }: {

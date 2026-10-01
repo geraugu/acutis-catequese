@@ -115,7 +115,6 @@ export default async function TurmaPage({
         <section className="turma-secao" aria-labelledby="turma-inscrever">
           <h2 id="turma-inscrever">Inscrever catequizando</h2>
           <InscreverCatequizando
-            turmaId={id}
             turmaNome={turma.nome}
             termo={termo}
             candidatos={candidatos}

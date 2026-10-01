@@ -241,3 +241,58 @@ test.describe("catequista a 360 px", () => {
     await semRolagemHorizontal(page);
   });
 });
+
+test.describe("coordenação: estados de borda", () => {
+  test.use({ storageState: COORDENACAO.estado });
+
+  test("turma inexistente mostra 'Turma não encontrada' com link para a lista (7.6)", async ({
+    page,
+  }) => {
+    await page.goto(`${BASE}/00000000-0000-4000-8000-000000000000`);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Turma não encontrada");
+    await page.getByRole("link", { name: "Voltar para a lista de turmas" }).click();
+    await expect(page).toHaveURL(new RegExp(`${BASE}$`));
+  });
+
+  test("filtros sem resultado mostram o estado vazio e 'Limpar filtros' volta à lista (3.2–3.4)", async ({
+    page,
+  }) => {
+    await page.goto(`${BASE}?situacao=encerradas&ciclo=1999`);
+    await expect(page.getByRole("heading", { name: "Nenhuma turma encontrada" })).toBeVisible();
+    await page.reload();
+    await expect(page.getByLabel("Situação")).toHaveValue("encerradas");
+    await expect(page.getByLabel("Ciclo")).toHaveValue("1999");
+    await page.getByRole("link", { name: "Limpar filtros" }).click();
+    await expect(page).toHaveURL(new RegExp(`${BASE}$`));
+  });
+
+  test("catequista sem designações vê a mensagem de lista vazia (9.2)", async ({
+    page,
+    browser,
+    baseURL,
+  }) => {
+    const senha = "SenhaMembro#2026";
+    const email = `sem-turma.${sufixo()}@teste.local`;
+    await page.goto("/coordenacao/equipe/novo");
+    await page.getByLabel("Nome").fill(`Catequista Sem Turma ${sufixo()}`);
+    await page.getByLabel("E-mail").fill(email);
+    await page.getByLabel("Telefone").fill("(21) 3333-4444");
+    await page.getByLabel("Senha inicial").fill(senha);
+    await page.getByRole("button", { name: "Cadastrar membro" }).click();
+    await expect(page.getByRole("status")).toContainText("Membro cadastrado");
+
+    const contexto = await browser.newContext({
+      baseURL,
+      storageState: { cookies: [], origins: [] },
+    });
+    const cat = await contexto.newPage();
+    await cat.goto("/login");
+    await cat.getByLabel("E-mail").fill(email);
+    await cat.getByLabel("Senha").fill(senha);
+    await cat.getByRole("button", { name: "Entrar" }).click();
+    await expect(cat).toHaveURL(/\/catequista$/);
+    await cat.goto("/catequista/turmas");
+    await expect(cat.getByText("Você ainda não tem turmas designadas.")).toBeVisible();
+    await contexto.close();
+  });
+});

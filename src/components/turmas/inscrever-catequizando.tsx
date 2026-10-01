@@ -91,7 +91,6 @@ export function InscreverCatequizando({
   acao,
   hoje,
 }: {
-  turmaId: string;
   turmaNome?: string;
   termo: string;
   candidatos: CandidatoInscricao[];
