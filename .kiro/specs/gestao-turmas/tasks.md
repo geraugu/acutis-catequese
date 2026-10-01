@@ -100,7 +100,7 @@
   - _Boundary: components/turmas/formulario-turma_
   - _Requirements: 2.2, 2.3, 10.1, 10.2, 11.1, 11.2_
 
-- [ ] 5.3 (P) Criar designação de catequista e ações da turma
+- [x] 5.3 (P) Criar designação de catequista e ações da turma
   - `DesignarCatequista({ acao, elegiveis })` com "Nenhum catequista disponível" quando vazio. `AcoesTurma` com `Confirmacao` para "Encerrar turma" ("{n} catequizandos serão desligados"), "Remover" catequista e "Desligar" catequizando (nomeando catequizando e turma, com o campo data de saída como `children`).
   - Pronto quando: os testes de componente mostram o estado vazio da designação, o texto de cada confirmação com os nomes e a contagem, e a data de saída com padrão hoje enviada junto.
   - _Boundary: components/turmas/designar-catequista, components/turmas/acoes-turma_
@@ -152,3 +152,4 @@
 - Testes de actions: atores com sessão simulada vêm de `tests/integration/equipe/helpers.ts` + `next-mocks`; designações no teste via `prisma.designacao.create`.
 - Fronteira: `src/modules/turmas` não importa `catequizandos` nem `equipe`; leituras da tabela `catequizando` ficam no repositório de turmas (ex.: `obterCatequizandoParaInscricao`). A composição com `catequizandos` só acontece na camada `app`.
 - Componentes de turmas usam classes próprias (`lista-turmas*`, `filtros-turmas`, ...) sem CSS; o estilo entra em `globals.css` na tarefa 6.1. Selos reaproveitam `.etiqueta` e `.situacao situacao-inativo`.
+- `Confirmacao` só exibe `estado.erro`; ações com campos extras (ex.: `DesligarCatequizando`) devem converter `errosCampos` em `erro` num wrapper do próprio componente.
