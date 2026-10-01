@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [ ] 1. Base de dados e extensões compartilhadas
+- [x] 1. Base de dados e extensões compartilhadas
 
 - [x] 1.1 Criar as tabelas, índices parciais e triggers de turmas
   - Criar os enums `DiaSemana` e `MotivoSaida`, os modelos `Turma`, `Designacao` e `Inscricao` e as relações `User.designacoes` e `Catequizando.inscricoes`, sem mudar colunas existentes. Na migração `*_turmas`, acrescentar o SQL manual dos três índices parciais (`inscricao_vigente_unica`, `designacao_vigente_unica`, `turma_nome_aberta_unica`) e dos triggers `user_remove_designacoes` e `catequizando_desliga_inscricao`, conforme o design. Rodar `prisma generate`.
@@ -20,7 +20,7 @@
   - _Boundary: components/catequizandos, app/(interno)/coordenacao/catequizandos/[id]_
   - _Requirements: 9.3_
 
-- [ ] 2. Domínio das turmas (regras puras)
+- [x] 2. Domínio das turmas (regras puras)
 
 - [x] 2.1 (P) Implementar o schema e as regras da turma
   - Criar `DIAS_SEMANA`, `ROTULO_DIA`, `criarTurmaSchema({ anoAtual })` (nome, ciclo, dia, horário "HH:MM", local, observações e vagas opcionais) com as mensagens pt-BR do design, `estaLotada`, `formatarOcupacao`, `formatarHorario` e `ordenarTurmas` (dia, horário, nome).
@@ -46,7 +46,7 @@
   - _Boundary: turmas/mensagens_
   - _Requirements: 2.1, 2.4, 2.5, 4.1, 4.4, 5.1, 5.3, 6.1, 8.1, 8.3, 11.5_
 
-- [ ] 3. Repositório e acesso
+- [x] 3. Repositório e acesso
 
 - [x] 3.1 Implementar o repositório de turmas e designações
   - Implementar `listarTurmas`, `listarTurmasDoCatequista`, `obterTurma` (id não-UUID → `null`; vigentes e anteriores separados), `nomeEmUso` (sem diferenciar caixa, só entre abertas), `criarTurma`, `atualizarTurma`, `encerrarTurma` (transação que desliga todos os vigentes com motivo `encerramento` e devolve a quantidade), `catequistasElegiveis`, `designar`, `removerDesignacao` e `designadosVigentes`. As leituras consideram só designações vigentes.
@@ -69,7 +69,7 @@
   - _Depends: 1.1_
   - _Requirements: 4.6, 6.5_
 
-- [ ] 4. Server Actions de turmas
+- [x] 4. Server Actions de turmas
 
 - [x] 4.1 Implementar criar, editar e encerrar turma
   - `criarTurmaAction`, `editarTurmaAction` e `encerrarTurmaAction` com `requireRole(["coordenacao"])` primeiro, validação por `criarTurmaSchema`, `MSG_NOME_EM_USO` (inclusive via P2002), recusa com `MSG_TURMA_ENCERRADA` quando a turma já está encerrada, `redirect` fora do try/catch para `/coordenacao/turmas/{id}?aviso=…` e log só com ids e `e.name`. Reduzir as vagas abaixo dos inscritos é permitido.
@@ -86,7 +86,7 @@
   - Pronto quando: os testes de integração cobrem inativo recusado, data inválida, já inscrito, transferência sem e com confirmação, lotada sem e com confirmação, lotação e transferência exigindo as duas confirmações, desligamento com data e o catequista rejeitado.
   - _Requirements: 1.4, 5.1, 5.3, 5.4, 5.5, 6.1, 6.3, 8.3, 11.5, 11.6_
 
-- [ ] 5. Componentes de interface das turmas
+- [x] 5. Componentes de interface das turmas
 
 - [x] 5.1 (P) Criar a lista e os filtros de turmas
   - `ListaTurmas({ turmas, base })`: nome como link, ciclo, "Quarta-feira, 19:30", local, catequistas ou selo "Sem catequista", inscritos ou "{n} de {v} vagas", selos "Lotada" e "Encerrada". `FiltrosTurmas`: formulário GET com `situacao` e `ciclo`.
@@ -113,7 +113,7 @@
   - _Boundary: components/turmas/inscrever-catequizando, components/turmas/inscritos_
   - _Requirements: 5.1, 5.2, 5.3, 7.1, 7.2, 7.4, 7.5, 10.4, 11.5_
 
-- [ ] 6. Páginas e integração
+- [x] 6. Páginas e integração
 
 - [x] 6.1 Criar as páginas da coordenação: lista, nova e edição
   - `/coordenacao/turmas` com filtros validados (padrões `abertas` e `cicloPadrao`), aviso, "Nova turma" e estado vazio com "Limpar filtros"; `/nova` e `[id]/editar` com `FormularioTurma`, e a edição de turma encerrada em aviso somente leitura. `requireRole` com o caminho exato e títulos "… — Acutis Catequese". Estilos em `globals.css`.
@@ -139,9 +139,9 @@
   - _Depends: 1.3, 3.2_
   - _Requirements: 1.5, 5.6_
 
-- [ ] 7. Validação ponta a ponta
+- [x] 7. Validação ponta a ponta
 
-- [ ] 7.1 Escrever os testes e2e das turmas
+- [x] 7.1 Escrever os testes e2e das turmas
   - Cenários do design: criar turma, designar catequista e inscrever; turma na página do catequizando; catequista em "Minhas turmas", turma e ficha em leitura; "Acesso negado" para outra turma e ficha de não inscrito; transferência entre turmas; turma de 1 vaga com "Turma lotada" e "Inscrever mesmo assim"; encerrar pelo diálogo; operação só com teclado nos fluxos principais; nenhuma rolagem horizontal a 360 px na lista, na página da turma e em "Minhas turmas".
   - Pronto quando: `npm run test:e2e` passa com os novos cenários e os e2e das specs anteriores continuam verdes, assim como `npm run test:unit`, `npm run test:integration`, lint, typecheck e `format:check`.
   - _Requirements: 1.1, 1.2, 1.3, 1.5, 3.1, 3.3, 4.1, 5.1, 5.4, 5.6, 7.1, 8.1, 8.2, 9.1, 9.3, 10.1, 10.2, 10.3, 11.4, 11.5, 11.6_
