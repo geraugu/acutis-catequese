@@ -94,7 +94,7 @@
   - _Boundary: components/turmas/lista-turmas, components/turmas/filtros-turmas_
   - _Requirements: 3.1, 3.2, 3.3, 4.5, 10.4, 11.3, 11.4_
 
-- [ ] 5.2 (P) Criar o formulário de turma
+- [x] 5.2 (P) Criar o formulário de turma
   - `FormularioTurma({ modo, acao, valoresIniciais })` no padrão dos formulários anteriores, com `select` de dia da semana, `input type="time"`, vagas opcionais e erros junto a cada campo.
   - Pronto quando: os testes de componente mostram os campos rotulados, os valores iniciais na edição e as mensagens de erro associadas aos campos (`aria-describedby`).
   - _Boundary: components/turmas/formulario-turma_
