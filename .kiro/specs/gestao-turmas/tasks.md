@@ -2,7 +2,7 @@
 
 - [ ] 1. Base de dados e extensões compartilhadas
 
-- [ ] 1.1 Criar as tabelas, índices parciais e triggers de turmas
+- [x] 1.1 Criar as tabelas, índices parciais e triggers de turmas
   - Criar os enums `DiaSemana` e `MotivoSaida`, os modelos `Turma`, `Designacao` e `Inscricao` e as relações `User.designacoes` e `Catequizando.inscricoes`, sem mudar colunas existentes. Na migração `*_turmas`, acrescentar o SQL manual dos três índices parciais (`inscricao_vigente_unica`, `designacao_vigente_unica`, `turma_nome_aberta_unica`) e dos triggers `user_remove_designacoes` e `catequizando_desliga_inscricao`, conforme o design. Rodar `prisma generate`.
   - Incluir `turma`, `designacao` e `inscricao` no TRUNCATE de `tests/integration/setup.ts` e `tests/e2e/preparar-banco.ts`.
   - Pronto quando: a migração aplica nos bancos de dev e de teste, um teste de integração grava turma, designação e inscrição e lê `dataEntrada` sem deslocamento de dia, e a limpeza zera as três tabelas.
@@ -145,3 +145,6 @@
   - Cenários do design: criar turma, designar catequista e inscrever; turma na página do catequizando; catequista em "Minhas turmas", turma e ficha em leitura; "Acesso negado" para outra turma e ficha de não inscrito; transferência entre turmas; turma de 1 vaga com "Turma lotada" e "Inscrever mesmo assim"; encerrar pelo diálogo; operação só com teclado nos fluxos principais; nenhuma rolagem horizontal a 360 px na lista, na página da turma e em "Minhas turmas".
   - Pronto quando: `npm run test:e2e` passa com os novos cenários e os e2e das specs anteriores continuam verdes, assim como `npm run test:unit`, `npm run test:integration`, lint, typecheck e `format:check`.
   - _Requirements: 1.1, 1.2, 1.3, 1.5, 3.1, 3.3, 4.1, 5.1, 5.4, 5.6, 7.1, 8.1, 8.2, 9.1, 9.3, 10.1, 10.2, 10.3, 11.4, 11.5, 11.6_
+
+## Implementation Notes
+- Prisma 7: `migrate dev` não regenera o client; rodar `npm run db:generate` após migrar. Psql no container: usuário `acutis` (`docker compose exec postgres psql -U acutis -d acutis_test`).

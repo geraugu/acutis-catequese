@@ -18,6 +18,9 @@ const TABELAS = [
   "perfil_membro",
   "catequizando",
   "sacramento_recebido",
+  "turma",
+  "designacao",
+  "inscricao",
 ];
 
 async function main() {

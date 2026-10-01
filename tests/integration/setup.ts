@@ -11,6 +11,9 @@ const TABELAS = [
   "perfil_membro",
   "catequizando",
   "sacramento_recebido",
+  "turma",
+  "designacao",
+  "inscricao",
 ];
 
 const url = process.env.DATABASE_URL ?? "";

@@ -24,9 +24,10 @@ model User {
   banReason     String?
   banExpires    DateTime?
 
-  sessions Session[]
-  accounts Account[]
-  perfil   PerfilMembro?
+  sessions    Session[]
+  accounts    Account[]
+  perfil      PerfilMembro?
+  designacoes Designacao[]
 
   @@unique([email])
   @@map("user")
@@ -141,6 +142,7 @@ model Catequizando {
   createdAt      DateTime             @default(now())
   updatedAt      DateTime             @updatedAt
   sacramentos    SacramentoRecebido[]
+  inscricoes     Inscricao[]
 
   @@index([estado])
   @@map("catequizando")
@@ -155,4 +157,71 @@ model SacramentoRecebido {
 
   @@id([catequizandoId, sacramento])
   @@map("sacramento_recebido")
+}
+
+enum DiaSemana {
+  domingo
+  segunda
+  terca
+  quarta
+  quinta
+  sexta
+  sabado
+
+  @@map("dia_semana")
+}
+
+enum MotivoSaida {
+  desligamento
+  transferencia
+  encerramento
+  inativacao
+
+  @@map("motivo_saida")
+}
+
+model Turma {
+  id          String       @id @default(uuid())
+  nome        String
+  ciclo       Int
+  diaSemana   DiaSemana
+  horario     String // "HH:MM"
+  local       String?
+  observacoes String?
+  vagas       Int?
+  encerradaEm DateTime?    @db.Date
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  designacoes Designacao[]
+  inscricoes  Inscricao[]
+
+  @@index([ciclo])
+  @@map("turma")
+}
+
+model Designacao {
+  id          String    @id @default(uuid())
+  turmaId     String
+  userId      String
+  designadoEm DateTime  @default(now())
+  removidoEm  DateTime?
+  turma       Turma     @relation(fields: [turmaId], references: [id], onDelete: Restrict)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([userId])
+  @@map("designacao")
+}
+
+model Inscricao {
+  id             String       @id @default(uuid())
+  turmaId        String
+  catequizandoId String
+  dataEntrada    DateTime     @db.Date
+  dataSaida      DateTime?    @db.Date
+  motivoSaida    MotivoSaida?
+  turma          Turma        @relation(fields: [turmaId], references: [id], onDelete: Restrict)
+  catequizando   Catequizando @relation(fields: [catequizandoId], references: [id], onDelete: Restrict)
+
+  @@index([turmaId])
+  @@map("inscricao")
 }
