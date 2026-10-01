@@ -456,6 +456,7 @@ CREATE TRIGGER catequizando_desliga_inscricao AFTER UPDATE OF estado ON catequiz
 ```
 - O relacionamento `User.designacoes` e `Catequizando.inscricoes` são adicionados só como campos de relação no schema, sem mudar colunas.
 - A reativação não restaura designações nem inscrições (4.6 e 6.5 dizem "remover" e "encerrar").
+- O encerramento da turma não encerra as designações (decisão de 2026-10-01). O catequista designado continua abrindo a turma encerrada pelo endereço direto, só para consulta (8.4), mas ela não aparece em "Minhas turmas" (9.1). As fichas seguem protegidas, porque `podeVerCatequizando` exige inscrição vigente.
 
 ## Error Handling
 - **Validação:** `errosCampos` e `valores`.
