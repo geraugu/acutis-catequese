@@ -105,7 +105,7 @@
   - _Depends: 4.1, 5.1, 5.4_
   - _Requirements: 1.2, 1.6, 2.1, 2.5, 2.7, 3.3, 3.4, 3.5, 8.2, 9.1, 9.3_
 
-- [ ] 6.2 Criar as páginas de encontros da turma
+- [x] 6.2 Criar as páginas de encontros da turma
   - Cronograma, `novo` e `[encontroId]/editar` em `/coordenacao/turmas/[id]/encontros` e `/catequista/turmas/[id]/encontros`, com `requireRole` no caminho exato, `podeVerTurma` (nega → `/acesso-negado`), `dadosDaTurma` (inexistente → `notFound()`), `ProgressoTurma`, estado vazio e ações só com a turma aberta. Estilos em `globals.css`.
   - Pronto quando: o build passa e um e2e temporário (rodado e apagado) mostra o catequista designado criando e marcando um encontro, o não designado vendo "Acesso negado" e uma turma encerrada sem ações.
   - _Depends: 4.2, 4.3, 5.2, 5.3, 5.4_
@@ -133,3 +133,4 @@
 - Tarefa 6.1 deve criar no globals.css as classes usadas pelos componentes do programa: cronograma*, selo, acoes-encontro, situacao-planejado/realizado/cancelado.
 - FormularioEncontro envia `confirmarTemaRepetido=1` pelo name/value do botão "Salvar mesmo assim" (não input hidden); o e2e (7.1) deve cobrir esse reenvio.
 - E2e: depois de ações que redirecionam/atualizam a lista (ex.: Subir), usar `expect.poll` ou asserções auto-retry antes de conferir a nova ordem.
+- Páginas de encontros: lógica comum aos dois papéis em `src/app/(interno)/_encontros/paginas.tsx` (pasta privada, fora do File Structure Plan original); as rotas só fazem requireRole e delegam.

@@ -1080,3 +1080,18 @@ main {
   font-size: 0.875rem;
   color: var(--cor-texto-suave);
 }
+
+/* Progresso da turma no programa (programa-catequese). */
+.progresso-turma {
+  margin: 0 0 1rem;
+}
+
+.progresso-resumo {
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+}
+
+.progresso-pendentes ol {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+}
