@@ -66,7 +66,7 @@
   - Pronto quando: os testes de integração mostram o catequista designado e a coordenação aceitos, o não designado redirecionado sem gravar, turma encerrada recusada, tema desativado recusado na criação e mantido na edição, tema repetido sem e com confirmação, conflito de horário, edição de realizado recusada e `base` inválida caindo na base da coordenação.
   - _Requirements: 1.3, 1.4, 1.5, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 5.7, 7.1_
 
-- [ ] 4.3 Implementar as mudanças de situação
+- [x] 4.3 Implementar as mudanças de situação
   - `marcarRealizadoAction`, `cancelarEncontroAction` (motivo) e `reabrirEncontroAction`, usando `TRANSICOES` e `mudarSituacao`, com as mesmas barreiras de acesso, turma encerrada e `base` de 4.2.
   - Pronto quando: os testes de integração mostram realizar com data futura recusado e com data passada aceito, cancelar com motivo, reabrir realizado e cancelado, reabrir com conflito recusado, transição inválida devolvendo `MSG_SITUACAO_MUDOU`, turma encerrada recusando as três e o não designado redirecionado.
   - _Requirements: 1.3, 1.4, 1.5, 5.1, 5.2, 5.3, 5.4, 5.8, 7.1_

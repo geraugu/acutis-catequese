@@ -3,13 +3,21 @@
 import { redirect } from "next/navigation";
 import type { z } from "zod";
 import { requireRole } from "@/modules/auth/dal";
-import { formatarData } from "@/modules/compartilhado/datas";
-import { baseValida, criarEncontroSchema, podeEditar } from "@/modules/programa/domain/encontro";
+import { type DataCivil, formatarData, hojeCivil } from "@/modules/compartilhado/datas";
+import {
+  baseValida,
+  criarEncontroSchema,
+  motivoSchema,
+  podeEditar,
+  TRANSICOES,
+  validarRealizacao,
+} from "@/modules/programa/domain/encontro";
 import { chaveDoTitulo, criarTemaSchema, vizinhoParaMover } from "@/modules/programa/domain/tema";
 import {
   type CodigoAviso,
   MSG_CONFLITO_HORARIO,
   MSG_ERRO_INESPERADO,
+  MSG_SITUACAO_MUDOU,
   MSG_SO_PLANEJADO,
   MSG_TEMA_EM_USO,
   MSG_TEMA_INDISPONIVEL,
@@ -25,6 +33,7 @@ import {
   criarTema,
   dadosDaTurma,
   encontroComMesmoTema,
+  mudarSituacao,
   obterEncontro,
   definirAtivo,
   excluirTema,
@@ -312,4 +321,103 @@ export async function editarEncontroAction(
     return { erro: MSG_ERRO_INESPERADO, valores };
   }
   redirect(`${destino}?aviso=alteracoes-salvas`);
+}
+
+// ---------------------------------------------------------------- situação
+
+type Transicao = keyof typeof TRANSICOES;
+
+/**
+ * Barreiras comuns e a transição (5.1-5.4, 5.8, 7.1). `antes` roda após as
+ * checagens de turma/encontro e pode recusar devolvendo um estado.
+ */
+async function transicionar(
+  turmaId: string,
+  encontroId: string,
+  base: string,
+  transicao: Transicao,
+  aviso: CodigoAviso,
+  antes?: (encontro: { data: DataCivil }) => EstadoPrograma | null,
+  motivoCancelamento?: string | null,
+): Promise<EstadoPrograma> {
+  await exigirAcessoATurma(turmaId);
+  const destino = baseValida(base, turmaId);
+  const { de, para } = TRANSICOES[transicao];
+
+  try {
+    const turma = await dadosDaTurma(turmaId);
+    if (!turma) return { erro: MSG_ERRO_INESPERADO };
+    if (turma.encerrada) return { erro: MSG_TURMA_ENCERRADA };
+    const atual = await obterEncontro(encontroId);
+    if (!atual || atual.turmaId !== turmaId) return { erro: MSG_ERRO_INESPERADO };
+    if (!de.includes(atual.situacao)) return { erro: MSG_SITUACAO_MUDOU };
+    const recusa = antes?.(atual);
+    if (recusa) return recusa;
+    if (!(await mudarSituacao(encontroId, de, para, { motivoCancelamento }))) {
+      return { erro: MSG_SITUACAO_MUDOU };
+    }
+  } catch (e) {
+    if (codigoPrisma(e) === "P2002") return { erro: MSG_CONFLITO_HORARIO };
+    console.error("[programa] falha ao mudar situação do encontro", {
+      turmaId,
+      encontroId,
+      transicao,
+      erro: nomeDoErro(e),
+    });
+    return { erro: MSG_ERRO_INESPERADO };
+  }
+  redirect(`${destino}?aviso=${aviso}`);
+}
+
+/** Realizar (5.1): só planejado com data até hoje. */
+export async function marcarRealizadoAction(
+  turmaId: string,
+  encontroId: string,
+  base: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- assinatura do useActionState
+  _anterior: EstadoPrograma,
+): Promise<EstadoPrograma> {
+  return transicionar(turmaId, encontroId, base, "realizar", "encontro-realizado", (e) => {
+    const erro = validarRealizacao(e.data, hojeCivil());
+    return erro ? { erro } : null;
+  });
+}
+
+/** Cancelar (5.2): motivo opcional, até 200 caracteres. */
+export async function cancelarEncontroAction(
+  turmaId: string,
+  encontroId: string,
+  base: string,
+  _anterior: EstadoPrograma,
+  dados: FormData,
+): Promise<EstadoPrograma> {
+  await exigirAcessoATurma(turmaId);
+  const bruto = dados.get("motivo");
+  const motivo = motivoSchema.safeParse(typeof bruto === "string" ? bruto : undefined);
+  if (!motivo.success) {
+    return {
+      errosCampos: { motivo: motivo.error.issues[0]?.message },
+      valores: valoresDoFormulario(dados),
+    };
+  }
+  return transicionar(
+    turmaId,
+    encontroId,
+    base,
+    "cancelar",
+    "encontro-cancelado",
+    undefined,
+    motivo.data ?? null,
+  );
+}
+
+/** Reabrir (5.3): volta a planejado e limpa o motivo; conflito de horário recusa. */
+export async function reabrirEncontroAction(
+  turmaId: string,
+  encontroId: string,
+  base: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- assinatura do useActionState
+  _anterior: EstadoPrograma,
+): Promise<EstadoPrograma> {
+  return transicionar(turmaId, encontroId, base, "reabrir", "encontro-reaberto");
 }
