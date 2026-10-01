@@ -28,7 +28,7 @@
   - _Boundary: turmas/domain/turma_
   - _Requirements: 2.2, 2.3, 2.6, 3.5, 10.4, 11.1, 11.2, 11.3, 11.4_
 
-- [ ] 2.2 (P) Implementar as regras de inscrição
+- [x] 2.2 (P) Implementar as regras de inscrição
   - Criar `MOTIVOS_SAIDA`, `ROTULO_MOTIVO`, `validarDataEntrada` e `validarDataSaida`, que devolvem "Data inválida" ou `null`.
   - Pronto quando: os testes unitários mostram a entrada futura ou anterior ao nascimento recusada, a saída futura ou anterior à entrada recusada e a mesma data aceita nos dois casos.
   - _Boundary: turmas/domain/inscricao_
