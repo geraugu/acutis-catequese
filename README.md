@@ -14,7 +14,7 @@ Este projeto é um trabalho da pós-graduação em Engenharia de Software e foi 
 - [x] Cadastro de catequizandos — v0.3.0
 - [x] Cadastro de catequistas e coordenação (equipe) — v0.2.0
 - [x] Turmas, catequistas responsáveis e inscrições — v0.4.0
-- [ ] Programa da catequese (encontros e temas)
+- [x] Programa da catequese (encontros e temas) — v0.5.0
 - [ ] Controle de presença dos catequizandos
 
 ## Tecnologias
@@ -33,9 +33,19 @@ Este projeto é um trabalho da pós-graduação em Engenharia de Software e foi 
 
 O desenvolvimento segue o fluxo do [Kiro](https://kiro.dev/), aplicado com o [cc-sdd](https://github.com/gotalab/cc-sdd) no Claude Code. Nenhuma funcionalidade é implementada antes de ter requisitos, design e tarefas aprovados.
 
+```mermaid
+flowchart LR
+    S[Steering] --> D[Discovery<br/>roadmap]
+    D --> R[Requirements<br/>EARS]
+    R --> De[Design]
+    De --> T[Tasks]
+    T --> I[Implementação<br/>+ testes]
+    I --> V{Validação<br/>GO?}
+    V -- sim --> Rel[Release]
+    V -- não --> I
 ```
-Steering → Discovery (roadmap) → Requirements → Design → Tasks → Implementação + testes → Release
-```
+
+Requisitos, design e tarefas só avançam com aprovação humana. Na implementação, cada tarefa passa por um implementador (TDD), uma revisão independente e um commit seletivo; ao final, a validação da feature decide GO ou NO-GO.
 
 ### Documentos do projeto (steering)
 
@@ -58,11 +68,38 @@ Cada spec fica em `.kiro/specs/<funcionalidade>/`, com os arquivos `brief.md`, `
 | 2 | [cadastro-catequistas](.kiro/specs/cadastro-catequistas/) | Gestão da equipe (catequistas e coordenação) com conta de acesso | 🚀 Entregue (v0.2.0) |
 | 3 | [cadastro-catequizandos](.kiro/specs/cadastro-catequizandos/) | Cadastro de catequizandos e situação sacramental | 🚀 Entregue (v0.3.0) |
 | 4 | [gestao-turmas](.kiro/specs/gestao-turmas/) | Turmas, catequistas responsáveis e inscrições | 🚀 Entregue (v0.4.0) |
-| 5 | [programa-catequese](.kiro/specs/programa-catequese/) | Encontros e temas de cada turma | 📝 Brief |
+| 5 | [programa-catequese](.kiro/specs/programa-catequese/) | Encontros e temas de cada turma | 🚀 Entregue (v0.5.0) |
 | 6 | [autocadastro-catequizandos](.kiro/specs/autocadastro-catequizandos/) | Link da turma para o adulto preencher a própria ficha (pendente até confirmação) | 📝 Brief |
 | 7 | [controle-presenca](.kiro/specs/controle-presenca/) | Chamada por encontro e frequência | 📝 Brief |
 
 Legenda: 📝 Brief · 📋 Requisitos · 📐 Design · ✅ Tarefas aprovadas · 🚧 Em implementação · 🚀 Entregue (release)
+
+## Modelo de domínio
+
+```mermaid
+erDiagram
+    MEMBRO_DA_EQUIPE ||--o{ DESIGNACAO : "é responsável por"
+    TURMA ||--o{ DESIGNACAO : tem
+    TURMA ||--o{ INSCRICAO : tem
+    CATEQUIZANDO ||--o{ INSCRICAO : "participa de"
+    CATEQUIZANDO ||--o{ SACRAMENTO_RECEBIDO : recebeu
+    TURMA ||--o{ ENCONTRO : "planeja"
+    TEMA |o--o{ ENCONTRO : "é trabalhado em"
+```
+
+- **Membro da equipe**: catequista ou coordenação, com conta de acesso.
+- **Turma**: grupo de catequizandos com dia, horário e catequistas responsáveis.
+- **Tema**: item do programa comum, na mesma ordem para todas as turmas.
+- **Encontro**: data de uma turma, com tema opcional e situação:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Planejado
+    Planejado --> Realizado: marcar como realizado
+    Planejado --> Cancelado: cancelar (com motivo)
+    Realizado --> Planejado: reabrir
+    Cancelado --> Planejado: reabrir
+```
 
 ## Pré-requisitos
 
