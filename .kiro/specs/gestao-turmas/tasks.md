@@ -71,7 +71,7 @@
 
 - [ ] 4. Server Actions de turmas
 
-- [ ] 4.1 Implementar criar, editar e encerrar turma
+- [x] 4.1 Implementar criar, editar e encerrar turma
   - `criarTurmaAction`, `editarTurmaAction` e `encerrarTurmaAction` com `requireRole(["coordenacao"])` primeiro, validação por `criarTurmaSchema`, `MSG_NOME_EM_USO` (inclusive via P2002), recusa com `MSG_TURMA_ENCERRADA` quando a turma já está encerrada, `redirect` fora do try/catch para `/coordenacao/turmas/{id}?aviso=…` e log só com ids e `e.name`. Reduzir as vagas abaixo dos inscritos é permitido.
   - Pronto quando: os testes de integração mostram o catequista rejeitado sem alterar dados, criação e edição com erros de campo e nome em uso, turma encerrada recusando edição e novo encerramento, vagas reduzidas salvas mantendo todos os inscritos, e o encerramento desligando todos.
   - _Requirements: 1.1, 1.4, 2.1, 2.3, 2.4, 2.5, 8.1, 8.3, 11.2, 11.7_
