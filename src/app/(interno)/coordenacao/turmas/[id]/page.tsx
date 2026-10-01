@@ -17,6 +17,9 @@ import {
 import { mensagemDeAviso } from "@/modules/turmas/mensagens";
 import { hojeCivil } from "@/modules/compartilhado/datas";
 import { Aviso } from "@/components/comum/aviso";
+import { listarEncontros } from "@/modules/programa/repositorio";
+import { proximoEncontro } from "@/modules/programa/domain/encontro";
+import { ProximoEncontro } from "@/components/programa/proximo-encontro";
 import { DadosTurma } from "@/components/turmas/dados-turma";
 import { DesignarCatequista } from "@/components/turmas/designar-catequista";
 import { EncerrarTurma, RemoverCatequista } from "@/components/turmas/acoes-turma";
@@ -57,6 +60,7 @@ export default async function TurmaPage({
         termo ? catequizandosParaInscricao(termo) : Promise.resolve([]),
       ])
     : [[], []];
+  const proximo = proximoEncontro(await listarEncontros(id), hoje);
 
   return (
     <>
@@ -69,6 +73,8 @@ export default async function TurmaPage({
       <Aviso mensagem={mensagemDeAviso(aviso)} />
 
       <DadosTurma turma={turma} />
+
+      <ProximoEncontro encontro={proximo} linkCronograma={`/coordenacao/turmas/${id}/encontros`} />
 
       {aberta ? (
         <div className="membro-acoes">

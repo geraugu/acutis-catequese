@@ -97,7 +97,7 @@
   - _Boundary: components/programa/progresso-turma, components/programa/proximo-encontro, components/programa/encontros-equivalentes_
   - _Requirements: 6.3, 6.4, 6.5, 8.2, 9.4_
 
-- [ ] 6. Páginas e integração
+- [x] 6. Páginas e integração
 
 - [x] 6.1 Criar as páginas do programa
   - `/coordenacao/programa` (aviso, "Novo tema", `ListaTemas` com gestão), `/novo`, `[temaId]` (dados, `AcoesTema`, equivalentes, oferta de desativação quando a exclusão é recusada) com `not-found` "Tema não encontrado", `[temaId]/editar` e `/catequista/programa` (consulta). Acrescentar "Programa" ao menu dos dois papéis, ajustando os testes do menu e do app-shell. Estilos em `globals.css`.
@@ -111,7 +111,7 @@
   - _Depends: 4.2, 4.3, 5.2, 5.3, 5.4_
   - _Requirements: 1.3, 1.4, 4.1, 4.8, 5.7, 6.1, 6.4, 6.5, 6.6, 6.7, 7.1, 7.2, 9.1, 9.3_
 
-- [ ] 6.3 Mostrar o próximo encontro nas páginas da turma
+- [x] 6.3 Mostrar o próximo encontro nas páginas da turma
   - Em `/coordenacao/turmas/[id]` e `/catequista/turmas/[id]`, acrescentar `ProximoEncontro` com link para o cronograma, compondo o repositório do programa na camada app.
   - Pronto quando: as duas páginas mostram o próximo encontro (ou "Nenhum encontro planejado") com o link certo para o cronograma do papel, sem mudar o restante, e o build e os e2e de turmas seguem verdes.
   - _Depends: 3.2, 5.4_

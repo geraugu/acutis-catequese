@@ -5,6 +5,9 @@ import { requireRole } from "@/modules/auth/dal";
 import { podeVerTurma } from "@/modules/turmas/acesso";
 import { obterTurma } from "@/modules/turmas/repositorio";
 import { hojeCivil } from "@/modules/compartilhado/datas";
+import { listarEncontros } from "@/modules/programa/repositorio";
+import { proximoEncontro } from "@/modules/programa/domain/encontro";
+import { ProximoEncontro } from "@/components/programa/proximo-encontro";
 import { DadosTurma } from "@/components/turmas/dados-turma";
 import { Inscritos } from "@/components/turmas/inscritos";
 
@@ -19,6 +22,8 @@ export default async function TurmaCatequistaPage({ params }: { params: Promise<
   if (!(await podeVerTurma(sessao, id))) redirect("/acesso-negado");
   const turma = await obterTurma(id);
   if (!turma) notFound();
+  const hoje = hojeCivil();
+  const proximo = proximoEncontro(await listarEncontros(id), hoje);
 
   return (
     <>
@@ -30,6 +35,8 @@ export default async function TurmaCatequistaPage({ params }: { params: Promise<
       </div>
 
       <DadosTurma turma={turma} />
+
+      <ProximoEncontro encontro={proximo} linkCronograma={`/catequista/turmas/${id}/encontros`} />
 
       <section className="turma-secao" aria-labelledby="turma-catequistas">
         <h2 id="turma-catequistas">Catequistas</h2>
@@ -51,7 +58,7 @@ export default async function TurmaCatequistaPage({ params }: { params: Promise<
         <Inscritos
           vigentes={turma.vigentes}
           anteriores={turma.anteriores}
-          hoje={hojeCivil()}
+          hoje={hoje}
           baseFicha="/catequista/catequizandos"
           turmaNome={turma.nome}
         />
