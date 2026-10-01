@@ -32,6 +32,7 @@ A definir com a stack.
 ## Princípios de Organização de Código
 
 - Cada módulo de domínio é autocontido e depende apenas de módulos compartilhados, nunca de outro módulo de domínio diretamente.
+  - Exceção (decisão de 2026-10-01): um módulo pode importar o arquivo `acesso.ts` publicado por um módulo upstream (por exemplo, `@/modules/turmas/acesso`), que é o contrato da regra de autorização. O restante do módulo upstream continua fora de alcance; dados dele, quando necessários, são lidos pelo repositório do próprio módulo.
 - As regras de negócio ficam separadas da camada de interface e da persistência, para permitir testes automatizados.
 
 ---
