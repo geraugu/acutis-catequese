@@ -48,7 +48,7 @@
 
 - [ ] 3. Repositório e acesso
 
-- [ ] 3.1 Implementar o repositório de turmas e designações
+- [x] 3.1 Implementar o repositório de turmas e designações
   - Implementar `listarTurmas`, `listarTurmasDoCatequista`, `obterTurma` (id não-UUID → `null`; vigentes e anteriores separados), `nomeEmUso` (sem diferenciar caixa, só entre abertas), `criarTurma`, `atualizarTurma`, `encerrarTurma` (transação que desliga todos os vigentes com motivo `encerramento` e devolve a quantidade), `catequistasElegiveis`, `designar`, `removerDesignacao` e `designadosVigentes`. As leituras consideram só designações vigentes.
   - Pronto quando: os testes de integração mostram `nomeEmUso` ignorando caixa e turmas encerradas, o índice parcial de nome e o de designação recusando duplicidade, `encerrarTurma` desligando todos com o motivo e a data corretos, e os elegíveis excluindo inativos, coordenação e já designados.
   - _Requirements: 2.1, 2.4, 2.5, 3.1, 4.1, 4.2, 4.3, 4.4, 7.1, 7.2, 8.1, 8.4, 9.1_
@@ -148,3 +148,4 @@
 
 ## Implementation Notes
 - Prisma 7: `migrate dev` não regenera o client; rodar `npm run db:generate` após migrar. Psql no container: usuário `acutis` (`docker compose exec postgres psql -U acutis -d acutis_test`).
+- Repositório: `encerrarTurma(id, hoje)` recebe a data do chamador — actions devem passar `hojeCivil()`; `atualizarTurma` lança P2025 para id inexistente e `designar` deixa P2002 subir.
