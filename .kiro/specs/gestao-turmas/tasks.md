@@ -115,7 +115,7 @@
 
 - [ ] 6. Páginas e integração
 
-- [ ] 6.1 Criar as páginas da coordenação: lista, nova e edição
+- [x] 6.1 Criar as páginas da coordenação: lista, nova e edição
   - `/coordenacao/turmas` com filtros validados (padrões `abertas` e `cicloPadrao`), aviso, "Nova turma" e estado vazio com "Limpar filtros"; `/nova` e `[id]/editar` com `FormularioTurma`, e a edição de turma encerrada em aviso somente leitura. `requireRole` com o caminho exato e títulos "… — Acutis Catequese". Estilos em `globals.css`.
   - Pronto quando: a coordenação acessa as três páginas no navegador, os filtros persistem na URL após recarregar, o estado vazio aparece com filtros sem resultado e o build passa.
   - _Depends: 4.1, 5.1, 5.2_
@@ -153,3 +153,4 @@
 - Fronteira: `src/modules/turmas` não importa `catequizandos` nem `equipe`; leituras da tabela `catequizando` ficam no repositório de turmas (ex.: `obterCatequizandoParaInscricao`). A composição com `catequizandos` só acontece na camada `app`.
 - Componentes de turmas usam classes próprias (`lista-turmas*`, `filtros-turmas`, ...) sem CSS; o estilo entra em `globals.css` na tarefa 6.1. Selos reaproveitam `.etiqueta` e `.situacao situacao-inativo`.
 - `Confirmacao` só exibe `estado.erro`; ações com campos extras (ex.: `DesligarCatequizando`) devem converter `errosCampos` em `erro` num wrapper do próprio componente.
+- Pendência (3.5): `listarTurmas` agrupa abertas antes das encerradas; com o filtro "todas" a ordem não é estritamente dia/horário/nome. Resolver na validação final (ordenar a lista inteira ou registrar no design).

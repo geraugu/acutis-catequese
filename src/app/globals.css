@@ -711,3 +711,160 @@ main {
 .catequizando-sacramento-detalhe {
   color: var(--cor-texto-suave);
 }
+
+/* Turmas (gestao-turmas): lista, filtros, edição somente leitura, inscrição e inscritos. */
+.lista-turmas,
+.inscritos-lista,
+.inscrever-candidatos,
+.inscritos-anteriores ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-cartao);
+  min-width: 0;
+}
+
+.lista-turmas-item,
+.inscritos-lista > li,
+.inscrever-candidatos > li,
+.inscritos-anteriores li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  padding: 0.75rem 1rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.lista-turmas-item + .lista-turmas-item,
+.inscritos-lista > li + li,
+.inscrever-candidatos > li + li,
+.inscritos-anteriores li + li {
+  border-top: 1px solid var(--cor-borda);
+}
+
+.lista-turmas-nome {
+  flex: 1 1 100%;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  padding-block: 0.5rem;
+}
+
+.lista-turmas-ciclo,
+.lista-turmas-encontro,
+.lista-turmas-local,
+.lista-turmas-catequistas,
+.lista-turmas-ocupacao,
+.inscritos-idade,
+.inscritos-telefone {
+  color: var(--cor-texto-suave);
+  font-size: 0.875rem;
+  min-width: 0;
+}
+
+.lista-turmas-ciclo {
+  font-weight: 600;
+}
+
+.filtros-turmas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  min-width: 0;
+}
+
+.filtros-turmas .campo {
+  flex: 1 1 9rem;
+  min-width: 0;
+}
+
+.filtros-turmas select {
+  width: 100%;
+}
+
+.turma-somente-leitura {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-campo);
+  background: var(--cor-superficie);
+  color: var(--cor-texto-suave);
+  overflow-wrap: anywhere;
+}
+
+.inscritos {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.inscritos-lista > li > a:first-child,
+.inscrever-candidatos > li > strong {
+  flex: 1 1 100%;
+  font-weight: 600;
+}
+
+.inscritos-anteriores h3 {
+  font-size: 1rem;
+  margin-block: 0 0.5rem;
+}
+
+.inscrever-catequizando {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-block: 1rem;
+  min-width: 0;
+}
+
+.inscrever-busca {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  min-width: 0;
+}
+
+.inscrever-busca label {
+  flex: 1 1 100%;
+  font-weight: 500;
+}
+
+.inscrever-busca input {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.inscrever-candidato {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.5rem 0.75rem;
+  flex: 1 1 100%;
+  min-width: 0;
+}
+
+.inscrever-candidato .campo {
+  min-width: 0;
+}
+
+.inscrever-confirmacao {
+  flex: 1 1 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-campo);
+  background: var(--cor-primaria-suave);
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 640px) {
+  .lista-turmas-nome {
+    flex: 1 1 auto;
+  }
+}
