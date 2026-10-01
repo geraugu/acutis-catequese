@@ -8,7 +8,7 @@
   - Pronto quando: a migração aplica nos bancos de dev e de teste, um teste de integração grava turma, designação e inscrição e lê `dataEntrada` sem deslocamento de dia, e a limpeza zera as três tabelas.
   - _Requirements: 2.1, 4.3, 5.1, 6.4, 11.1_
 
-- [ ] 1.2 (P) Estender o componente comum `Confirmacao` com `children`
+- [x] 1.2 (P) Estender o componente comum `Confirmacao` com `children`
   - Aceitar a prop opcional `children`, renderizada dentro do formulário do diálogo, para campos extras (a data de saída). Extensão compatível: os usos atuais não mudam.
   - Pronto quando: o teste de componente mostra um campo passado como filho dentro do formulário e enviado junto na confirmação, e os testes existentes de `Confirmacao`, da equipe e dos catequizandos seguem verdes.
   - _Boundary: components/comum_

@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { Aviso } from "@/components/comum/aviso";
-import { Confirmacao } from "@/components/comum/confirmacao";
+import { type AcaoConfirmacao, Confirmacao } from "@/components/comum/confirmacao";
 import { Paginacao } from "@/components/comum/paginacao";
 
 beforeAll(() => {
@@ -102,5 +102,33 @@ describe("Confirmacao", () => {
     fireEvent.click(screen.getByRole("button", { name: "Inativar" }));
     fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("renderiza filhos dentro do formulário e envia o valor junto na confirmação", async () => {
+    const acao = vi.fn<AcaoConfirmacao>(async () => ({}));
+    render(
+      <Confirmacao
+        rotuloAbrir="Registrar saída"
+        titulo="Registrar saída de Ana?"
+        texto="Ana deixa de compor a turma."
+        rotuloConfirmar="Confirmar saída"
+        acao={acao}
+      >
+        <label>
+          Data de saída
+          <input type="date" name="data_saida" defaultValue="2026-09-30" />
+        </label>
+      </Confirmacao>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Registrar saída" }));
+    const dialogo = screen.getByRole("dialog", { name: "Registrar saída de Ana?" });
+    const campo = within(dialogo).getByLabelText("Data de saída");
+    expect(campo.closest("form")).not.toBeNull();
+    fireEvent.change(campo, { target: { value: "2026-10-05" } });
+    fireEvent.click(within(dialogo).getByRole("button", { name: "Confirmar saída" }));
+    await waitFor(() => expect(acao).toHaveBeenCalledTimes(1));
+    const dados = acao.mock.calls[0][1];
+    expect(dados).toBeInstanceOf(FormData);
+    expect(dados?.get("data_saida")).toBe("2026-10-05");
   });
 });

@@ -1,14 +1,20 @@
 "use client";
 
-import { useActionState, useEffect, useId, useRef, useState } from "react";
+import { type ReactNode, useActionState, useEffect, useId, useRef, useState } from "react";
 import estilos from "./confirmacao.module.css";
 
 export interface EstadoConfirmacao {
   erro?: string;
 }
 
-/** Action já vinculada (via bind) executada ao confirmar. */
-export type AcaoConfirmacao = (anterior: EstadoConfirmacao) => Promise<EstadoConfirmacao>;
+/**
+ * Action já vinculada (via bind) executada ao confirmar. Recebe o FormData do
+ * formulário do diálogo — útil quando há campos extras passados como `children`.
+ */
+export type AcaoConfirmacao = (
+  anterior: EstadoConfirmacao,
+  dados: FormData,
+) => Promise<EstadoConfirmacao>;
 
 interface ConfirmacaoProps {
   rotuloAbrir: string;
@@ -17,6 +23,8 @@ interface ConfirmacaoProps {
   rotuloConfirmar: string;
   perigo?: boolean;
   acao: AcaoConfirmacao;
+  /** Campos extras renderizados dentro do formulário (enviados junto na confirmação). */
+  children?: ReactNode;
 }
 
 /** Botão que abre um <dialog> modal de confirmação; o erro da ação aparece como alerta. */
@@ -27,6 +35,7 @@ export function Confirmacao({
   rotuloConfirmar,
   perigo = false,
   acao,
+  children,
 }: ConfirmacaoProps) {
   const [estado, enviar, pendente] = useActionState(acao, {});
   const [aberto, setAberto] = useState(false);
@@ -62,6 +71,7 @@ export function Confirmacao({
               {titulo}
             </h2>
             <p className={estilos.texto}>{texto}</p>
+            {children}
             {estado.erro ? (
               <p role="alert" className={estilos.alerta}>
                 {estado.erro}
