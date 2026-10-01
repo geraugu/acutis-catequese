@@ -22,7 +22,7 @@
   - _Boundary: programa/domain/tema_
   - _Requirements: 2.2, 2.3, 2.4, 2.6, 2.7, 3.6_
 
-- [ ] 2.2 (P) Implementar as regras de encontro
+- [x] 2.2 (P) Implementar as regras de encontro
   - Criar `SITUACOES`, `ROTULO_SITUACAO`, `criarEncontroSchema`, `motivoSchema`, `TRANSICOES`, `podeEditar`, `validarRealizacao`, `aguardandoConfirmacao`, `ordenarEncontros` e `proximoEncontro`.
   - Pronto quando: os testes unitários cobrem data obrigatória, horários "7:30" e "24:00" recusados, `temaId` vazio como sem tema, observações e motivo longos, as três transições, edição só de planejado, realização com data futura, hoje e passada, "Aguardando confirmação" e o próximo encontro ignorando cancelados, realizados e datas passadas, desempatando pelo horário.
   - _Boundary: programa/domain/encontro_
@@ -127,3 +127,4 @@
 ## Implementation Notes
 - Prisma 7: rodar `npm run db:generate` depois de migrar; migração com SQL manual via `--create-only`. Psql: `docker compose exec postgres psql -U acutis -d acutis_test`.
 - Há arquivos de outra sessão em `.kiro/specs/autocadastro-catequizandos/`: nunca incluí-los nos commits desta spec.
+- `domain/encontro.ts` repete localmente o texto de `MSG_TEMA_INDISPONIVEL`; na 2.4, fazer o domínio e `mensagens.ts` usarem a mesma constante (mensagens.ts é puro).
