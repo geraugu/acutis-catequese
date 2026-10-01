@@ -107,7 +107,7 @@
   - _Depends: 1.2_
   - _Requirements: 4.1, 4.2, 4.4, 6.1, 6.2, 8.2_
 
-- [ ] 5.4 (P) Criar inscrição e lista de inscritos
+- [x] 5.4 (P) Criar inscrição e lista de inscritos
   - `InscreverCatequizando`: busca GET com `q`, candidatos com a turma atual, data de entrada (padrão hoje), "Inscrever", alerta de transferência com "Transferir para esta turma" e alerta de lotação com "Inscrever mesmo assim", ambos depois do botão principal, e confirmações já dadas como campos ocultos. `Inscritos({ vigentes, anteriores, hoje, baseFicha, acoes? })`: vigentes em ordem alfabética com idade e links `tel:` e WhatsApp; anteriores à parte com período e motivo; "Desligar" só com `acoes`.
   - Pronto quando: os testes de componente mostram os dois alertas com o botão de confirmação depois do principal, os campos ocultos no reenvio, a ordem alfabética, os links de contato, as datas dd/mm/aaaa e nenhuma ação sem `acoes`.
   - _Boundary: components/turmas/inscrever-catequizando, components/turmas/inscritos_
