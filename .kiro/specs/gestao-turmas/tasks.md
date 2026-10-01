@@ -14,7 +14,7 @@
   - _Boundary: components/comum_
   - _Requirements: 6.2_
 
-- [ ] 1.3 (P) Extrair o componente de leitura `FichaCatequizando`
+- [x] 1.3 (P) Extrair o componente de leitura `FichaCatequizando`
   - Extrair da página de detalhe da coordenação (`coordenacao/catequizandos/[id]`) a exibição somente leitura da ficha para `components/catequizandos/ficha-catequizando.tsx`, sem ações embutidas. A página da coordenação passa a usá-lo, mantendo as ações dela fora do componente.
   - Pronto quando: o teste de componente renderiza os dados da ficha sem nenhum botão de alteração, a página de detalhe da coordenação mostra o mesmo conteúdo de antes e os e2e dos catequizandos seguem verdes.
   - _Boundary: components/catequizandos, app/(interno)/coordenacao/catequizandos/[id]_
