@@ -23,6 +23,8 @@ export const MENSAGEM_AVISO: Record<CodigoAviso, string> = {
 
 export const MSG_NOME_EM_USO = "Já existe uma turma aberta com este nome neste ciclo.";
 export const MSG_TURMA_ENCERRADA = "Esta turma está encerrada e não pode ser alterada.";
+export const MSG_CATEQUISTA_INDISPONIVEL =
+  "Este catequista não pode ser designado para esta turma.";
 export const MSG_JA_INSCRITO = "Este catequizando já está inscrito nesta turma.";
 
 export function MSG_TRANSFERIR(turma: string): string {

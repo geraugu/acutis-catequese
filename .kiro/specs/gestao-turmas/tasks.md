@@ -76,7 +76,7 @@
   - Pronto quando: os testes de integração mostram o catequista rejeitado sem alterar dados, criação e edição com erros de campo e nome em uso, turma encerrada recusando edição e novo encerramento, vagas reduzidas salvas mantendo todos os inscritos, e o encerramento desligando todos.
   - _Requirements: 1.1, 1.4, 2.1, 2.3, 2.4, 2.5, 8.1, 8.3, 11.2, 11.7_
 
-- [ ] 4.2 Implementar designar e remover catequista
+- [x] 4.2 Implementar designar e remover catequista
   - `designarCatequistaAction` exige que o escolhido esteja em `catequistasElegiveis`; `removerCatequistaAction` encerra a designação. Ambas recusam turma encerrada e seguem o padrão das actions.
   - Pronto quando: os testes de integração mostram o catequista rejeitado, designação válida, não elegível recusado, duplicidade recusada, remoção com o aviso `catequista-removido` e turma encerrada recusando as duas.
   - _Requirements: 1.4, 4.1, 4.2, 4.3, 4.4, 8.3_

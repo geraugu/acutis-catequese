@@ -6,16 +6,20 @@ import { requireRole } from "@/modules/auth/dal";
 import { hojeCivil } from "@/modules/compartilhado/datas";
 import { criarTurmaSchema } from "@/modules/turmas/domain/turma";
 import {
+  MSG_CATEQUISTA_INDISPONIVEL,
   MSG_ERRO_INESPERADO,
   MSG_NOME_EM_USO,
   MSG_TURMA_ENCERRADA,
 } from "@/modules/turmas/mensagens";
 import {
   atualizarTurma,
+  catequistasElegiveis,
   criarTurma,
+  designar,
   encerrarTurma,
   nomeEmUso,
   obterTurma,
+  removerDesignacao,
 } from "@/modules/turmas/repositorio";
 
 export type EstadoTurma = {
@@ -143,4 +147,58 @@ export async function encerrarTurmaAction(
     return { erro: MSG_ERRO_INESPERADO };
   }
   redirect(`/coordenacao/turmas/${id}?aviso=turma-encerrada`);
+}
+
+/** Designação (4.1, 4.3, 4.4, 8.3): só catequistas elegíveis; duplicidade concorrente vira o mesmo erro. */
+export async function designarCatequistaAction(
+  turmaId: string,
+  _anterior: EstadoTurma,
+  dados: FormData,
+): Promise<EstadoTurma> {
+  await requireRole(["coordenacao"]); // 1.4
+
+  const bruto = dados.get("userId");
+  const userId = typeof bruto === "string" ? bruto : "";
+  try {
+    const atual = await obterTurma(turmaId);
+    if (!atual) return { erro: MSG_ERRO_INESPERADO };
+    if (atual.encerrada) return { erro: MSG_TURMA_ENCERRADA };
+    const elegiveis = await catequistasElegiveis(turmaId);
+    if (!userId || !elegiveis.some((c) => c.id === userId)) {
+      return { erro: MSG_CATEQUISTA_INDISPONIVEL };
+    }
+    await designar(turmaId, userId);
+  } catch (e) {
+    if (codigoPrisma(e) === "P2002") return { erro: MSG_CATEQUISTA_INDISPONIVEL };
+    console.error("[turmas] falha ao designar", {
+      turmaId,
+      erro: e instanceof Error ? e.name : "desconhecido",
+    });
+    return { erro: MSG_ERRO_INESPERADO };
+  }
+  redirect(`/coordenacao/turmas/${turmaId}?aviso=catequista-designado`);
+}
+
+/** Remoção de designação (4.2, 8.3): encerra a designação vigente, preservando o histórico. */
+export async function removerCatequistaAction(
+  turmaId: string,
+  userId: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- assinatura do useActionState
+  _anterior: EstadoTurma,
+): Promise<EstadoTurma> {
+  await requireRole(["coordenacao"]); // 1.4
+
+  try {
+    const atual = await obterTurma(turmaId);
+    if (!atual) return { erro: MSG_ERRO_INESPERADO };
+    if (atual.encerrada) return { erro: MSG_TURMA_ENCERRADA };
+    if (!(await removerDesignacao(turmaId, userId))) return { erro: MSG_ERRO_INESPERADO };
+  } catch (e) {
+    console.error("[turmas] falha ao remover designação", {
+      turmaId,
+      erro: e instanceof Error ? e.name : "desconhecido",
+    });
+    return { erro: MSG_ERRO_INESPERADO };
+  }
+  redirect(`/coordenacao/turmas/${turmaId}?aviso=catequista-removido`);
 }

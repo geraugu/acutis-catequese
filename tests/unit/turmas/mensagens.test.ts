@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  MSG_CATEQUISTA_INDISPONIVEL,
   MSG_ERRO_INESPERADO,
   MSG_JA_INSCRITO,
   MSG_LOTADA,
@@ -35,6 +36,9 @@ describe("mensagens de turmas", () => {
     expect(MSG_NOME_EM_USO).toBe("Já existe uma turma aberta com este nome neste ciclo.");
     expect(MSG_TURMA_ENCERRADA).toBe("Esta turma está encerrada e não pode ser alterada.");
     expect(MSG_JA_INSCRITO).toBe("Este catequizando já está inscrito nesta turma.");
+    expect(MSG_CATEQUISTA_INDISPONIVEL).toBe(
+      "Este catequista não pode ser designado para esta turma.",
+    );
     expect(MSG_ERRO_INESPERADO).toBe(
       "Não foi possível concluir agora. Tente novamente em instantes.",
     );
