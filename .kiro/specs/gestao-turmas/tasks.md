@@ -58,7 +58,7 @@
   - Pronto quando: os testes de integração mostram a busca por "jose" encontrando "José", inativos fora da lista, o índice de inscrição vigente única recusando a segunda inscrição, a transferência fechando e abrindo com a mesma data, o desligamento preservando a linha e o histórico em ordem.
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.6, 6.1, 6.4_
 
-- [ ] 3.3 Implementar o acesso por turma no servidor
+- [x] 3.3 Implementar o acesso por turma no servidor
   - Criar `podeVerTurma(sessao, turmaId)` e `podeVerCatequizando(sessao, catequizandoId)` compondo o repositório com a regra pura, reavaliados a cada chamada.
   - Pronto quando: os testes de integração mostram `true` para coordenação e catequista designado, `false` para catequista não designado, e `false` logo após a remoção da designação ou o desligamento do catequizando.
   - _Requirements: 1.2, 1.3, 9.3, 9.4_
