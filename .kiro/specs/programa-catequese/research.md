@@ -56,7 +56,7 @@
 
 ### Decision: dia da semana nas datas
 - **Context**: 9.4 pede a data com o dia da semana.
-- **Selected Approach**: acrescentar `formatarDataComDia(data)` em `compartilhado/datas` ("Sábado, 05/10/2026"), reutilizando o cálculo de dia da semana sem fuso.
+- **Selected Approach**: acrescentar `formatarDataComDia(data)` em `compartilhado/datas` ("Sábado, 03/10/2026"), reutilizando o cálculo de dia da semana sem fuso.
 - **Rationale**: é formatação genérica de data civil, útil também para `controle-presenca`.
 
 ### Build vs. adopt

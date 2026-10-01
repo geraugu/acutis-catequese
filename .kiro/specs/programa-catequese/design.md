@@ -404,7 +404,7 @@ CREATE UNIQUE INDEX encontro_horario_unico ON encontro ("turmaId", data, horario
 - **`tema`:** título vazio, curto e longo; descrição longa; `chaveDoTitulo("Batismo")` igual a `chaveDoTitulo("batísmo ")`; `numerarTemas` com desativado no meio (numeração contínua, desativados ao fim); `vizinhoParaMover` nos limites e pulando desativados.
 - **`encontro`:** schema (data obrigatória, horário "7:30" e "24:00" recusados, `temaId` vazio → sem tema, observações longas); `TRANSICOES`; `podeEditar`; `validarRealizacao` com data futura, hoje e passada; `aguardandoConfirmacao`; `proximoEncontro` ignorando cancelados, realizados e datas passadas, e escolhendo o mais cedo no mesmo dia pelo horário.
 - **`progresso`:** tema realizado duas vezes conta uma; encontro sem tema não conta; tema desativado fora do total; pendentes na ordem do programa.
-- **`datas`:** `formatarDataComDia` ("Sábado, 05/10/2026"), inclusive 29/02.
+- **`datas`:** `formatarDataComDia` ("Sábado, 03/10/2026"), inclusive 29/02.
 - **`mensagens`:** códigos conhecidos e desconhecidos; `MSG_TEMA_REPETIDO`.
 - **Componentes:** `ListaTemas` (numeração, "Desativado", botões desabilitados no limite, sem ações sem `gestao`); `FormularioEncontro` (alerta de tema repetido com o botão depois do principal, tema desativado em uso identificado); `Cronograma` (selos "Próximo encontro" e "Aguardando confirmação", "Sem tema do programa", motivo, ações conforme a situação e ausência sem `acoes`); `AcoesEncontro` (motivo enviado, erro como alerta); `ProgressoTurma`; `ProximoEncontro`; menu dos dois papéis.
 

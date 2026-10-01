@@ -5,6 +5,7 @@ import {
   compararDatas,
   dataCivilSchema,
   formatarData,
+  formatarDataComDia,
   hojeCivil,
 } from "@/modules/compartilhado/datas";
 
@@ -71,5 +72,22 @@ describe("hojeCivil", () => {
   });
   it("aceita outro fuso", () => {
     expect(hojeCivil(new Date("2026-10-01T02:30:00.000Z"), "UTC")).toBe("2026-10-01");
+  });
+});
+
+describe("formatarDataComDia", () => {
+  it.each([
+    ["2026-10-04", "Domingo, 04/10/2026"],
+    ["2026-10-05", "Segunda-feira, 05/10/2026"],
+    ["2026-10-06", "Terça-feira, 06/10/2026"],
+    ["2026-10-07", "Quarta-feira, 07/10/2026"],
+    ["2026-10-08", "Quinta-feira, 08/10/2026"],
+    ["2026-10-09", "Sexta-feira, 09/10/2026"],
+    ["2026-10-10", "Sábado, 10/10/2026"],
+    ["2028-02-29", "Terça-feira, 29/02/2028"],
+    ["2026-12-31", "Quinta-feira, 31/12/2026"],
+    ["2027-01-01", "Sexta-feira, 01/01/2027"],
+  ])("formata %s como %s", (texto, esperado) => {
+    expect(formatarDataComDia(d(texto))).toBe(esperado);
   });
 });

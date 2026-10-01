@@ -8,8 +8,8 @@
   - Pronto quando: a migração aplica nos bancos de dev e de teste; um teste de integração grava um tema e um encontro, lê a data sem deslocamento de dia, confirma que `tema_chave_unica` e `encontro_horario_unico` recusam duplicidade (e aceitam o segundo encontro quando o primeiro está cancelado), e a limpeza zera as tabelas.
   - _Requirements: 2.1, 2.4, 4.1, 4.7, 5.8_
 
-- [ ] 1.2 (P) Acrescentar `formatarDataComDia` às datas civis
-  - Em `compartilhado/datas`, criar `formatarDataComDia(data)` no formato "Sábado, 05/10/2026", calculando o dia da semana sem depender de fuso.
+- [x] 1.2 (P) Acrescentar `formatarDataComDia` às datas civis
+  - Em `compartilhado/datas`, criar `formatarDataComDia(data)` no formato "Sábado, 03/10/2026", calculando o dia da semana sem depender de fuso.
   - Pronto quando: os testes unitários de `compartilhado/datas` cobrem um dia de cada semana, 29/02 e a virada de ano, e os testes existentes seguem verdes.
   - _Boundary: compartilhado/datas_
   - _Requirements: 9.4_
