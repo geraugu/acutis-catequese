@@ -61,7 +61,7 @@
   - Pronto quando: os testes de integração mostram o catequista rejeitado em todas sem alterar dados, criar e editar com erros de campo e título em uso (acento e caixa diferentes), mover para cima e para baixo, desativar e reativar, e excluir em uso recusado e não usado excluído.
   - _Requirements: 1.1, 1.5, 2.1, 2.3, 2.4, 2.5, 2.6, 3.1, 3.2, 3.3, 3.4_
 
-- [ ] 4.2 Implementar criar e editar encontro
+- [x] 4.2 Implementar criar e editar encontro
   - `criarEncontroAction` e `editarEncontroAction` com `requireRole(["catequista"])`, `podeVerTurma` (nega → `/acesso-negado`), validação de `base`, turma inexistente ou encerrada, encontro de outra turma, tema ativo (ou o atual na edição), conflito de horário, tema repetido com `confirmarTemaRepetido=1` e edição só de planejado.
   - Pronto quando: os testes de integração mostram o catequista designado e a coordenação aceitos, o não designado redirecionado sem gravar, turma encerrada recusada, tema desativado recusado na criação e mantido na edição, tema repetido sem e com confirmação, conflito de horário, edição de realizado recusada e `base` inválida caindo na base da coordenação.
   - _Requirements: 1.3, 1.4, 1.5, 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 5.7, 7.1_
@@ -129,3 +129,4 @@
 - Há arquivos de outra sessão em `.kiro/specs/autocadastro-catequizandos/`: nunca incluí-los nos commits desta spec.
 - Repositório de temas: `atualizarTema` e `trocarPosicoes` lançam erro do Prisma com id inválido/inexistente — as actions (4.1) devem validar o id ou tratar o erro. `criarTema` pode gerar posições iguais sob concorrência; a ordem desempata por título.
 - Repositório de encontros: `criarEncontro` não valida o UUID da turma; as actions chamam `dadosDaTurma` antes. Updates de encontro são condicionais (`updateMany` com a situação no WHERE) e devolvem boolean.
+- Arquivos "use server" só exportam actions: toda função exportada vira endpoint público. Helpers puros (ex.: `baseValida`) ficam no domínio; helpers de servidor ficam internos ao arquivo.

@@ -6,6 +6,7 @@ import {
   type SituacaoEncontro,
   TRANSICOES,
   aguardandoConfirmacao,
+  baseValida,
   criarEncontroSchema,
   motivoSchema,
   ordenarEncontros,
@@ -188,5 +189,25 @@ describe("proximoEncontro", () => {
   it("devolve null quando não há planejado futuro", () => {
     expect(proximoEncontro([e("x", "realizado", "2026-10-10", "08:00")], hoje)).toBeNull();
     expect(proximoEncontro([], hoje)).toBeNull();
+  });
+});
+
+describe("baseValida", () => {
+  const t = "11111111-1111-4111-8111-111111111111";
+  it("aceita a base do catequista", () => {
+    expect(baseValida(`/catequista/turmas/${t}/encontros`, t)).toBe(
+      `/catequista/turmas/${t}/encontros`,
+    );
+  });
+  it("aceita a base da coordenação", () => {
+    expect(baseValida(`/coordenacao/turmas/${t}/encontros`, t)).toBe(
+      `/coordenacao/turmas/${t}/encontros`,
+    );
+  });
+  it("base arbitrária vira a base da coordenação", () => {
+    expect(baseValida("https://mal.example", t)).toBe(`/coordenacao/turmas/${t}/encontros`);
+    expect(baseValida("/catequista/turmas/outra/encontros", t)).toBe(
+      `/coordenacao/turmas/${t}/encontros`,
+    );
   });
 });

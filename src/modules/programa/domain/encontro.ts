@@ -112,3 +112,9 @@ export function proximoEncontro<
     ) ?? null
   );
 }
+
+/** Só as duas bases do cronograma desta turma; qualquer outro valor vira a base da coordenação. */
+export function baseValida(base: string, turmaId: string): string {
+  const catequista = `/catequista/turmas/${turmaId}/encontros`;
+  return base === catequista ? catequista : `/coordenacao/turmas/${turmaId}/encontros`;
+}
