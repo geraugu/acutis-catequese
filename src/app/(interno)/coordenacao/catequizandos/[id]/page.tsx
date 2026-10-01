@@ -13,6 +13,8 @@ import { Aviso } from "@/components/comum/aviso";
 import { mensagemDeAviso } from "@/modules/catequizandos/mensagens";
 import { AcoesEstado } from "@/components/catequizandos/acoes-estado";
 import { FichaCatequizando } from "@/components/catequizandos/ficha-catequizando";
+import { TurmaDoCatequizando } from "@/components/turmas/historico-turmas";
+import { historicoDoCatequizando } from "@/modules/turmas/repositorio";
 
 export const metadata: Metadata = {
   title: "Catequizando — Acutis Catequese",
@@ -30,9 +32,11 @@ export default async function CatequizandoPage({
   const { id } = await params;
   await requireRole(["coordenacao"], `/coordenacao/catequizandos/${id}`);
   const busca = await searchParams;
-  const catequizando = await obterCatequizando(id);
+  const [catequizando, historico] = await Promise.all([
+    obterCatequizando(id),
+    historicoDoCatequizando(id),
+  ]);
   if (!catequizando) notFound();
-
   const aviso = Array.isArray(busca.aviso) ? busca.aviso[0] : busca.aviso;
 
   return (
@@ -45,6 +49,7 @@ export default async function CatequizandoPage({
       </div>
       <Aviso mensagem={mensagemDeAviso(aviso)} />
       <FichaCatequizando catequizando={catequizando} />
+      <TurmaDoCatequizando historico={historico} baseTurma="/coordenacao/turmas" />
       <div className="membro-acoes">
         <Link href={`/coordenacao/catequizandos/${id}/editar`} className="botao botao-secundario">
           Editar

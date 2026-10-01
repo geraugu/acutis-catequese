@@ -133,7 +133,7 @@
   - _Depends: 1.3, 3.3, 5.1, 5.4_
   - _Requirements: 1.2, 1.3, 7.4, 9.1, 9.2, 9.3, 9.4_
 
-- [ ] 6.4 Integrar a seção "Turma" na página do catequizando e os menus
+- [x] 6.4 Integrar a seção "Turma" na página do catequizando e os menus
   - Em `/coordenacao/catequizandos/[id]`, acrescentar a seção "Turma" com a turma atual (link) e o histórico (turma, ciclo, período, motivo). Em `menu-por-papel`, acrescentar "Turmas" para a coordenação e "Minhas turmas" para o catequista, ajustando os testes do menu e do app-shell.
   - Pronto quando: a página do catequizando mostra a turma atual e o histórico, os testes unitários do menu confirmam os itens de cada papel e o build passa.
   - _Depends: 1.3, 3.2_
