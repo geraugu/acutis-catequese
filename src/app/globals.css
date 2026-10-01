@@ -908,3 +908,175 @@ main {
     flex: 1 1 auto;
   }
 }
+
+/* Programa de catequese: lista de temas, cronograma e encontros. */
+.lista-temas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-cartao);
+}
+
+.lista-temas-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+  padding: 0.75rem 1rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.lista-temas-item + .lista-temas-item {
+  border-top: 1px solid var(--cor-borda);
+}
+
+.lista-temas-numero {
+  font-weight: 700;
+  color: var(--cor-primaria);
+}
+
+.lista-temas-titulo {
+  flex: 1 1 12rem;
+  font-weight: 600;
+}
+
+.lista-temas-descricao {
+  flex: 1 1 100%;
+  margin: 0;
+  color: var(--cor-texto-suave);
+}
+
+.lista-temas-encontros {
+  font-size: 0.875rem;
+  color: var(--cor-texto-suave);
+}
+
+.lista-temas-acoes,
+.acoes-tema,
+.acoes-encontro,
+.cronograma-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lista-temas-acoes {
+  flex: 1 1 100%;
+}
+
+.lista-temas-acoes form,
+.acoes-tema form,
+.acoes-encontro form,
+.cronograma-acoes form {
+  margin: 0;
+}
+
+.cronograma {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-cartao);
+}
+
+.cronograma-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+  padding: 0.75rem 1rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.cronograma-item + .cronograma-item {
+  border-top: 1px solid var(--cor-borda);
+}
+
+.cronograma-data {
+  font-weight: 600;
+}
+
+.cronograma-horario,
+.cronograma-motivo {
+  color: var(--cor-texto-suave);
+}
+
+.cronograma-tema {
+  flex: 1 1 100%;
+}
+
+.cronograma-motivo {
+  flex: 1 1 100%;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.cronograma-acoes {
+  flex: 1 1 100%;
+}
+
+.selo {
+  display: inline-block;
+  font-size: 0.875rem;
+  padding: 0.125rem 0.625rem;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-campo);
+  color: var(--cor-texto-suave);
+}
+
+.situacao-planejado {
+  color: var(--cor-primaria);
+}
+
+.situacao-realizado {
+  color: var(--cor-sucesso);
+}
+
+.situacao-cancelado {
+  color: var(--cor-perigo);
+}
+
+.encontro-tema-repetido {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-campo);
+  background: var(--cor-primaria-suave);
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-cartao);
+  overflow-wrap: anywhere;
+}
+
+.tabela caption {
+  text-align: left;
+  font-size: 0.875rem;
+  color: var(--cor-texto-suave);
+  margin-bottom: 0.5rem;
+}
+
+.tabela th,
+.tabela td {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-top: 1px solid var(--cor-borda);
+}
+
+.tabela thead th {
+  border-top: 0;
+  font-size: 0.875rem;
+  color: var(--cor-texto-suave);
+}

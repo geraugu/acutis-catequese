@@ -35,7 +35,7 @@ describe("AppShell", () => {
     const link = within(nav).getByRole("link", { name: "Início" });
     expect(link).toHaveAttribute("href", "/coordenacao");
     expect(link).toHaveAttribute("aria-current", "page");
-    expect(within(nav).getAllByRole("link")).toHaveLength(4);
+    expect(within(nav).getAllByRole("link")).toHaveLength(5);
     expect(within(nav).getByRole("link", { name: "Equipe" })).toHaveAttribute(
       "href",
       "/coordenacao/equipe",
@@ -47,6 +47,10 @@ describe("AppShell", () => {
     expect(within(nav).getByRole("link", { name: "Turmas" })).toHaveAttribute(
       "href",
       "/coordenacao/turmas",
+    );
+    expect(within(nav).getByRole("link", { name: "Programa" })).toHaveAttribute(
+      "href",
+      "/coordenacao/programa",
     );
     expect(screen.getByRole("main")).toHaveAttribute("id", "conteudo");
     expect(screen.getByRole("main")).toHaveTextContent("conteúdo");
@@ -63,7 +67,11 @@ describe("AppShell", () => {
     const links = within(screen.getByRole("navigation", { name: "Principal" })).getAllByRole(
       "link",
     );
-    expect(links.map((l) => l.getAttribute("href"))).toEqual(["/catequista", "/catequista/turmas"]);
+    expect(links.map((l) => l.getAttribute("href"))).toEqual([
+      "/catequista",
+      "/catequista/turmas",
+      "/catequista/programa",
+    ]);
     expect(links[0]).not.toHaveAttribute("aria-current");
   });
 

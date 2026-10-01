@@ -99,7 +99,7 @@
 
 - [ ] 6. Páginas e integração
 
-- [ ] 6.1 Criar as páginas do programa
+- [x] 6.1 Criar as páginas do programa
   - `/coordenacao/programa` (aviso, "Novo tema", `ListaTemas` com gestão), `/novo`, `[temaId]` (dados, `AcoesTema`, equivalentes, oferta de desativação quando a exclusão é recusada) com `not-found` "Tema não encontrado", `[temaId]/editar` e `/catequista/programa` (consulta). Acrescentar "Programa" ao menu dos dois papéis, ajustando os testes do menu e do app-shell. Estilos em `globals.css`.
   - Pronto quando: o build passa, os testes do menu confirmam "Programa" nos dois papéis, e um e2e temporário (rodado e apagado) mostra a coordenação criando, reordenando e desativando temas, a página do tema com os equivalentes e o catequista vendo o programa sem ações.
   - _Depends: 4.1, 5.1, 5.4_
@@ -132,3 +132,4 @@
 - Arquivos "use server" só exportam actions: toda função exportada vira endpoint público. Helpers puros (ex.: `baseValida`) ficam no domínio; helpers de servidor ficam internos ao arquivo.
 - Tarefa 6.1 deve criar no globals.css as classes usadas pelos componentes do programa: cronograma*, selo, acoes-encontro, situacao-planejado/realizado/cancelado.
 - FormularioEncontro envia `confirmarTemaRepetido=1` pelo name/value do botão "Salvar mesmo assim" (não input hidden); o e2e (7.1) deve cobrir esse reenvio.
+- E2e: depois de ações que redirecionam/atualizam a lista (ex.: Subir), usar `expect.poll` ou asserções auto-retry antes de conferir a nova ordem.
