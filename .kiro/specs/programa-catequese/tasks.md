@@ -43,7 +43,7 @@
 
 - [ ] 3. Repositório do programa
 
-- [ ] 3.1 Implementar o repositório de temas
+- [x] 3.1 Implementar o repositório de temas
   - Implementar `listarTemas` (com contagem de encontros), `obterTema`, `chaveEmUso`, `criarTema` (no fim, em transação), `atualizarTema`, `trocarPosicoes` (transação), `definirAtivo`, `excluirTema` (devolve "excluido", "em-uso" ou "inexistente") e `temasParaSelecao` (ativos, mais o desativado em uso quando pedido).
   - Criar `tests/integration/programa/helpers.ts` para temas, turmas e encontros.
   - Pronto quando: os testes de integração mostram `chaveEmUso` e o índice recusando "Batismo" e "batismo", o tema novo no fim, a troca de posições, a exclusão recusada para tema usado e aceita para não usado, a contagem de encontros e a seleção com o desativado em uso só quando pedido.
@@ -127,3 +127,4 @@
 ## Implementation Notes
 - Prisma 7: rodar `npm run db:generate` depois de migrar; migração com SQL manual via `--create-only`. Psql: `docker compose exec postgres psql -U acutis -d acutis_test`.
 - Há arquivos de outra sessão em `.kiro/specs/autocadastro-catequizandos/`: nunca incluí-los nos commits desta spec.
+- Repositório de temas: `atualizarTema` e `trocarPosicoes` lançam erro do Prisma com id inválido/inexistente — as actions (4.1) devem validar o id ou tratar o erro. `criarTema` pode gerar posições iguais sob concorrência; a ordem desempata por título.
