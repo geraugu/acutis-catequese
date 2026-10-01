@@ -73,7 +73,7 @@
 
 - [ ] 5. Componentes de interface do programa
 
-- [ ] 5.1 (P) Criar a lista de temas, o formulário e as ações de tema
+- [x] 5.1 (P) Criar a lista de temas, o formulário e as ações de tema
   - `ListaTemas({ temas, gestao? })`, `FormularioTema` e `AcoesTema`, conforme o design.
   - Pronto quando: os testes de componente mostram a numeração, o selo "Desativado", "{n} encontros", os botões "Subir" e "Descer" desabilitados nos limites, nenhuma ação sem `gestao`, o excluir só para tema sem encontros, e os erros do formulário associados aos campos.
   - _Boundary: components/programa/lista-temas, components/programa/formulario-tema, components/programa/acoes-tema_
