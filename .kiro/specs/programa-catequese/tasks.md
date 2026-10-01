@@ -91,7 +91,7 @@
   - _Boundary: components/programa/formulario-encontro_
   - _Requirements: 4.2, 4.3, 4.4, 4.5, 4.6, 4.9, 9.2_
 
-- [ ] 5.4 (P) Criar progresso, próximo encontro e equivalentes
+- [x] 5.4 (P) Criar progresso, próximo encontro e equivalentes
   - `ProgressoTurma`, `ProximoEncontro` e `EncontrosEquivalentes`, conforme o design.
   - Pronto quando: os testes de componente mostram "{realizados} de {total} temas" com os pendentes em `<details>`, o próximo encontro com data com dia e link para o cronograma (ou "Nenhum encontro planejado"), e a tabela de equivalentes com link para a turma.
   - _Boundary: components/programa/progresso-turma, components/programa/proximo-encontro, components/programa/encontros-equivalentes_
