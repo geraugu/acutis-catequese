@@ -85,7 +85,7 @@
   - _Boundary: components/programa/cronograma, components/programa/acoes-encontro_
   - _Requirements: 5.1, 5.3, 5.4, 5.5, 5.6, 6.1, 6.2, 6.7, 9.4_
 
-- [ ] 5.3 (P) Criar o formulário de encontro
+- [x] 5.3 (P) Criar o formulário de encontro
   - `FormularioEncontro({ modo, acao, temas, valoresIniciais })` com data, horário, `select` de tema com "Sem tema do programa" e o desativado em uso identificado, observações e o alerta de tema repetido com "Salvar mesmo assim" depois do botão principal.
   - Pronto quando: os testes de componente mostram os campos rotulados, o horário inicial, o tema desativado identificado, o alerta e o campo oculto `confirmarTemaRepetido` no reenvio, e os erros associados aos campos.
   - _Boundary: components/programa/formulario-encontro_
@@ -131,3 +131,4 @@
 - Repositório de encontros: `criarEncontro` não valida o UUID da turma; as actions chamam `dadosDaTurma` antes. Updates de encontro são condicionais (`updateMany` com a situação no WHERE) e devolvem boolean.
 - Arquivos "use server" só exportam actions: toda função exportada vira endpoint público. Helpers puros (ex.: `baseValida`) ficam no domínio; helpers de servidor ficam internos ao arquivo.
 - Tarefa 6.1 deve criar no globals.css as classes usadas pelos componentes do programa: cronograma*, selo, acoes-encontro, situacao-planejado/realizado/cancelado.
+- FormularioEncontro envia `confirmarTemaRepetido=1` pelo name/value do botão "Salvar mesmo assim" (não input hidden); o e2e (7.1) deve cobrir esse reenvio.
