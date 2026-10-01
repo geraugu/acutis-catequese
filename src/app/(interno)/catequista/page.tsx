@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { requireRole } from "@/modules/auth/dal";
 
 export const metadata: Metadata = {
@@ -12,6 +13,11 @@ export default async function CatequistaPage() {
     <>
       <h1>Olá, {sessao.nome}</h1>
       <p>Bem-vindo(a) à área do catequista. Por aqui você acompanhará suas turmas e encontros.</p>
+      <p>
+        <Link href="/catequista/turmas" className="botao botao-primario">
+          Minhas turmas
+        </Link>
+      </p>
     </>
   );
 }

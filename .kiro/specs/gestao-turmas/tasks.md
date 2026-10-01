@@ -127,7 +127,7 @@
   - _Depends: 4.2, 4.3, 5.3, 5.4_
   - _Requirements: 4.5, 7.1, 7.2, 7.3, 7.5, 7.6, 8.4, 11.3, 11.4_
 
-- [ ] 6.3 Criar as páginas do catequista
+- [x] 6.3 Criar as páginas do catequista
   - `/catequista/turmas` com `listarTurmasDoCatequista` e o estado vazio "Você ainda não tem turmas designadas."; `/catequista/turmas/[id]` com `podeVerTurma` (nega → `/acesso-negado`) e os mesmos componentes sem ações; `/catequista/catequizandos/[id]` com `podeVerCatequizando` e `<FichaCatequizando>` sem ações. Link para "Minhas turmas" em `/catequista`.
   - Pronto quando: o catequista designado vê a turma e a ficha em modo leitura, o não designado é levado a "Acesso negado" nas duas páginas, e o build passa.
   - _Depends: 1.3, 3.3, 5.1, 5.4_
