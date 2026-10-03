@@ -8,6 +8,7 @@ import {
   SACRAMENTOS,
   campoDoFormulario,
   criarFichaSchema,
+  lerFichaDoFormulario,
 } from "@/modules/catequizandos/domain/ficha";
 import { estaLotada } from "@/modules/turmas/domain/turma";
 import { autorizarTurma } from "./autorizacao";
@@ -22,8 +23,10 @@ import {
   type CodigoAviso,
 } from "./mensagens";
 import {
+  atualizarFichaPendente,
   confirmarComInscricao,
   criarLink,
+  descartar,
   desativarLink,
   obterFichaLink,
   situacaoTurma,
@@ -213,4 +216,91 @@ export async function confirmarFichaLinkAction(
   const pagina = paginaDaTurma(sessao, turmaId);
   revalidatePath(pagina);
   redirect(`${pagina}?aviso=ficha-confirmada`);
+}
+
+/** Estado compatível com o `CamposFicha` (EstadoFicha de catequizandos). */
+export type EstadoRevisao = {
+  erro?: string;
+  errosCampos?: Partial<Record<string, string>>;
+  valores?: Record<string, string>;
+};
+
+function valoresDoFormulario(dados: FormData): Record<string, string> {
+  const valores: Record<string, string> = {};
+  for (const [campo, valor] of dados.entries()) {
+    if (typeof valor === "string" && !campo.startsWith("$")) valores[campo] = valor;
+  }
+  return valores;
+}
+
+/**
+ * Corrige a ficha pendente (5.5): exige turma aberta, valida com o schema upstream e
+ * mantém o estado pendente e a origem. Duplicatas não bloqueiam (6.4).
+ */
+export async function corrigirFichaLinkAction(
+  turmaId: string,
+  catequizandoId: string,
+  _anterior: EstadoRevisao,
+  dados: FormData,
+): Promise<EstadoRevisao> {
+  const sessao = await autorizarTurma(turmaId);
+  const valores = valoresDoFormulario(dados);
+  try {
+    const turma = await situacaoTurma(turmaId);
+    if (!turma) return { erro: MSG_ERRO_INESPERADO, valores };
+    if (turma.encerrada) return { erro: MSG_TURMA_ENCERRADA_FICHA, valores };
+    const validacao = criarFichaSchema({ hoje: hojeCivil() }).safeParse(
+      lerFichaDoFormulario(dados),
+    );
+    if (!validacao.success) {
+      const errosCampos: Partial<Record<string, string>> = {};
+      for (const issue of validacao.error.issues) {
+        const campo = campoDoFormulario(issue.path);
+        errosCampos[campo] ??= issue.message;
+      }
+      return { errosCampos, valores };
+    }
+    if ((await atualizarFichaPendente(catequizandoId, turmaId, validacao.data)) === "ja-revisada") {
+      return { erro: MSG_JA_REVISADA, valores };
+    }
+  } catch (e) {
+    console.error("[autocadastro] falha na correção da ficha", {
+      turmaId,
+      erro: e instanceof Error ? e.name : "desconhecido",
+    });
+    return { erro: MSG_ERRO_INESPERADO, valores };
+  }
+  const pagina = `${paginaDaTurma(sessao, turmaId)}/pendentes/${catequizandoId}`;
+  revalidatePath(pagina);
+  redirect(`${pagina}?aviso=ficha-corrigida`);
+}
+
+/**
+ * Descarta a ficha pendente do link (8.1–8.4), com a turma aberta ou encerrada.
+ * A confirmação explícita é da UI; o autor não é notificado (8.3).
+ */
+export async function descartarFichaLinkAction(
+  turmaId: string,
+  catequizandoId: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- assinatura do useActionState
+  _anterior: EstadoRevisao,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- assinatura do useActionState
+  _dados?: FormData,
+): Promise<EstadoRevisao> {
+  const sessao = await autorizarTurma(turmaId);
+  try {
+    if ((await descartar(catequizandoId, turmaId)) === "ja-revisada") {
+      return { erro: MSG_JA_REVISADA };
+    }
+  } catch (e) {
+    console.error("[autocadastro] falha no descarte da ficha", {
+      turmaId,
+      erro: e instanceof Error ? e.name : "desconhecido",
+    });
+    return { erro: MSG_ERRO_INESPERADO };
+  }
+  const pagina = `${paginaDaTurma(sessao, turmaId)}/pendentes`;
+  revalidatePath(pagina);
+  revalidatePath(paginaDaTurma(sessao, turmaId));
+  redirect(`${pagina}?aviso=ficha-descartada`);
 }

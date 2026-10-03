@@ -152,7 +152,7 @@
   - _Depends: 2.3, 3.3_
   - _Requirements: 6.4, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6_
 
-- [ ] 5.4 Implementar as actions de correção e descarte
+- [x] 5.4 Implementar as actions de correção e descarte
   - Corrigir valida com o schema upstream, mantém o estado pendente e exige turma aberta.
   - Descartar funciona com a turma aberta ou encerrada, só para fichas pendentes do link, e mostra o aviso "Ficha descartada", sem notificar o autor.
   - Pronto quando: os testes de integração mostram a correção com erro por campo e com sucesso, o descarte em turma encerrada funcionando, o descarte de ficha ativa recusado e o catequista de outra turma redirecionado.
@@ -197,3 +197,4 @@
 - 4.2: os rótulos dos sacramentos foram para `catequizandos/domain/sacramentos.ts` (sem zod), que `ficha.ts` reexporta. Componentes cliente não devem importar `domain/ficha` para não levar o zod ao bundle (com ele, a rota pública passava de 150 kB). `CamposFicha` ganhou as props opcionais `textoEnviar`, `dicaObservacoes` e `antesDoEnvio`.
 - 5.3: com ficha inválida, `confirmarFichaLinkAction` devolve `{erro, errosCampos}` sem `valores`, e a tela da 5.5 mostra os erros junto à ficha gravada. `situacaoTurma(turmaId)` traz encerrada, vagas e inscritos vigentes.
 - 5.2: um link expirado continua com `desativadoEm` nulo, ou seja, ainda é o link ativo no índice único. Por isso a tela oferece Regenerar, Desativar e editar a expiração, nunca Gerar. `SecaoLink` é componente cliente e recebe a situação já calculada no servidor.
+- 5.4: `corrigirFichaLinkAction` e `descartarFichaLinkAction` devolvem `EstadoRevisao` (no formato de `EstadoFicha`). O descarte não verifica a situação da turma (8.4), e a confirmação explícita fica na interface (`Confirmacao`).

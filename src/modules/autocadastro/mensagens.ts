@@ -16,6 +16,8 @@ export const CODIGOS_AVISO = [
   "link-regenerado",
   "expiracao-salva",
   "ficha-confirmada",
+  "ficha-corrigida",
+  "ficha-descartada",
 ] as const;
 
 export type CodigoAviso = (typeof CODIGOS_AVISO)[number];
@@ -26,6 +28,8 @@ export const MENSAGEM_AVISO: Record<CodigoAviso, string> = {
   "link-regenerado": "Novo link gerado",
   "expiracao-salva": "Expiração salva.",
   "ficha-confirmada": "Ficha confirmada e inscrita na turma",
+  "ficha-corrigida": "Ficha corrigida",
+  "ficha-descartada": "Ficha descartada",
 };
 
 function isCodigoAviso(valor: unknown): valor is CodigoAviso {
