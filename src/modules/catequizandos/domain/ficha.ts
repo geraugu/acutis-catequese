@@ -7,16 +7,11 @@ import {
   type DataCivil,
 } from "@/modules/compartilhado/datas";
 import { telefoneSchema } from "@/modules/compartilhado/telefone";
+import { SACRAMENTOS, type Sacramento } from "./sacramentos";
 
 export const IDADE_MINIMA_PADRAO = 16;
-export const SACRAMENTOS = ["batismo", "eucaristia", "crisma"] as const;
-export type Sacramento = (typeof SACRAMENTOS)[number];
 
-export const ROTULO_SACRAMENTO: Record<Sacramento, string> = {
-  batismo: "Batismo",
-  eucaristia: "Eucaristia",
-  crisma: "Crisma",
-};
+export { ROTULO_SACRAMENTO, SACRAMENTOS, type Sacramento } from "./sacramentos";
 
 export interface SacramentoFicha {
   recebido: boolean;

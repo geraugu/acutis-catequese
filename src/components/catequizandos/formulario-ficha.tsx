@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
-import { ROTULO_SACRAMENTO, SACRAMENTOS } from "@/modules/catequizandos/domain/ficha";
+import { useActionState, type ReactNode } from "react";
+import { ROTULO_SACRAMENTO, SACRAMENTOS } from "@/modules/catequizandos/domain/sacramentos";
 import type { EstadoFicha } from "@/modules/catequizandos/actions";
 import { MSG_POSSIVEL_DUPLICADO } from "@/modules/catequizandos/mensagens";
 
@@ -20,6 +20,12 @@ interface CamposFichaProps {
    * quando houver mais de um formulário de ficha na mesma página.
    */
   idPrefixo?: string;
+  /** Texto do botão de envio (padrão: pelo `modo`). */
+  textoEnviar?: string;
+  /** Dica sob as observações (padrão: orientação à equipe). */
+  dicaObservacoes?: string;
+  /** Conteúdo exibido logo antes do botão de envio (ex.: consentimento). */
+  antesDoEnvio?: ReactNode;
 }
 
 const PREFIXO_PADRAO = "ficha";
@@ -94,6 +100,9 @@ export function CamposFicha({
   estado,
   pendente,
   idPrefixo = PREFIXO_PADRAO,
+  textoEnviar,
+  dicaObservacoes = "Registre só o necessário para o acompanhamento pastoral.",
+  antesDoEnvio,
 }: CamposFichaProps) {
   const p = idPrefixo;
   const idDicaObs = `${p}-observacoes-dica`;
@@ -195,16 +204,19 @@ export function CamposFicha({
           }
         />
         <p id={idDicaObs} className="campo-dica">
-          Registre só o necessário para o acompanhamento pastoral.
+          {dicaObservacoes}
         </p>
         <MensagemErro prefixo={p} campo="observacoes" erro={erros.observacoes} />
       </div>
+      {antesDoEnvio}
       <button type="submit" className="botao botao-primario" disabled={pendente}>
         {pendente
           ? "Salvando…"
-          : modo === "criacao"
-            ? "Cadastrar catequizando"
-            : "Salvar alterações"}
+          : textoEnviar
+            ? textoEnviar
+            : modo === "criacao"
+              ? "Cadastrar catequizando"
+              : "Salvar alterações"}
       </button>
       {estado.duplicado ? (
         // Depois do botão principal: o envio implícito (Enter) nunca confirma duplicidade.

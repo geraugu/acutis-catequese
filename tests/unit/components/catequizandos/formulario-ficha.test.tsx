@@ -166,3 +166,21 @@ describe("FormularioFicha", () => {
     expect(screen.getByLabelText("Nome")).toHaveValue("Bia");
   });
 });
+
+describe("CamposFicha com textos personalizados", () => {
+  it("aceita o texto do botão e a dica das observações", () => {
+    render(
+      <CamposFicha
+        modo="criacao"
+        estado={{}}
+        pendente={false}
+        textoEnviar="Enviar ficha"
+        dicaObservacoes="Conte algo que ajude."
+      />,
+    );
+    expect(screen.getByRole("button", { name: "Enviar ficha" })).toBeEnabled();
+    const obs = screen.getByLabelText("Observações");
+    const dica = document.getElementById(obs.getAttribute("aria-describedby") ?? "");
+    expect(dica).toHaveTextContent("Conte algo que ajude.");
+  });
+});

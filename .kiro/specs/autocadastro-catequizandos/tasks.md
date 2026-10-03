@@ -109,7 +109,7 @@
   - _Boundary: autocadastro/actions-publicas_
   - _Requirements: 2.2, 3.1, 3.2, 3.4, 3.5, 3.6, 3.7, 4.1, 4.2, 4.4_
 
-- [ ] 4.2 Construir a página pública de autocadastro
+- [x] 4.2 Construir a página pública de autocadastro
   - Página em `/inscricao/[token]` fora do layout interno, no padrão "Acolhedor", mobile-first a partir de 320 px:
     - cabeçalho com os dados da turma;
     - `CamposFicha` com prefixo;
@@ -194,3 +194,4 @@
 - 3.4: `listarFila` não traz as coincidências; quem chama usa `buscarCoincidencias(email, telefone, ignorarId, revisor)` (com `visivel` por revisor). `contarPendentesPorTurma` omite as turmas com zero.
 - 4.1: `CAMPO_CONSENTIMENTO` ("consentimento") fica em `mensagens.ts`, porque um arquivo "use server" só exporta funções async. O estado `invalido` é compatível com `EstadoFicha`. Tokens fora do formato de 43 caracteres base64url voltam como indisponível sem consultar o banco, então os testes precisam de tokens reais (`randomBytes(32)`).
 - 5.1: as actions de link devolvem `EstadoLink {erro?}` e, no sucesso, redirecionam à página da turma do papel do chamador com `?aviso=`. As mensagens genéricas (`MSG_TURMA_ENCERRADA`, `MSG_ERRO_INESPERADO`) são copiadas em `autocadastro/mensagens.ts`, porque `turmas/mensagens` não é importável.
+- 4.2: os rótulos dos sacramentos foram para `catequizandos/domain/sacramentos.ts` (sem zod), que `ficha.ts` reexporta. Componentes cliente não devem importar `domain/ficha` para não levar o zod ao bundle (com ele, a rota pública passava de 150 kB). `CamposFicha` ganhou as props opcionais `textoEnviar`, `dicaObservacoes` e `antesDoEnvio`.
