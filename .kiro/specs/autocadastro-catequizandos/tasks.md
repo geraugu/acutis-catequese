@@ -50,7 +50,7 @@
 
 - [ ] 3. Infraestrutura e persistência do módulo
 
-- [ ] 3.1 Implementar o token, a origem da requisição e a autorização por turma
+- [x] 3.1 Implementar o token, a origem da requisição e a autorização por turma
   - Gerar o token com 32 bytes aleatórios em base64url e o hash HMAC-SHA256 do IP com `AUTOCADASTRO_SEGREDO`.
   - Ler o IP do primeiro valor de `x-forwarded-for`. Sem o cabeçalho, devolver "sem origem", e o limite por origem deixa de se aplicar.
   - Autorizar a turma: exigir sessão, permitir a coordenação ou o catequista para quem `podeVerTurma` for verdadeiro e, nos demais casos, redirecionar para `/acesso-negado`.
