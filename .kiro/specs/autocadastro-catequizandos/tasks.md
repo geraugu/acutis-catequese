@@ -28,7 +28,7 @@
 
 - [ ] 2. Domínio do autocadastro (regras puras)
 
-- [ ] 2.1 (P) Implementar a situação do link e a validação da expiração
+- [x] 2.1 (P) Implementar a situação do link e a validação da expiração
   - Calcular a situação do link (ativo, desativado ou expirado) a partir da desativação, da data de expiração e do encerramento da turma. O link continua ativo até o fim do dia de expiração, e com a turma encerrada a situação é "desativado".
   - Recusar data de expiração no passado com mensagem de data inválida.
   - Pronto quando: os testes unitários cobrem os casos ativo, desativado, expirado no dia seguinte, ativo no dia da expiração, turma encerrada e expiração ontem, hoje e amanhã.
