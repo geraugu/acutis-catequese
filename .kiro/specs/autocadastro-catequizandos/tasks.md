@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [ ] 1. Fundação: steering, banco, configuração e reuso de componentes
+- [x] 1. Fundação: steering, banco, configuração e reuso de componentes
 
 - [x] 1.1 Registrar a ampliação da exceção de imports no steering
   - Ampliar em `.kiro/steering/structure.md` a exceção de 2026-10-01: um módulo também pode importar arquivos puros `domain/*.ts` de módulos upstream, que não têm dependência de framework nem de persistência. Citar como exemplos `catequizandos/domain/ficha` e `turmas/domain/turma`.
@@ -26,7 +26,7 @@
   - _Boundary: components/catequizandos_
   - _Requirements: 3.1, 5.5_
 
-- [ ] 2. Domínio do autocadastro (regras puras)
+- [x] 2. Domínio do autocadastro (regras puras)
 
 - [x] 2.1 (P) Implementar a situação do link e a validação da expiração
   - Calcular a situação do link (ativo, desativado ou expirado) a partir da desativação, da data de expiração e do encerramento da turma. O link continua ativo até o fim do dia de expiração, e com a turma encerrada a situação é "desativado".
@@ -48,7 +48,7 @@
   - _Boundary: autocadastro/domain/avisos, autocadastro/domain/consentimento_
   - _Requirements: 3.3, 6.1, 6.2, 6.3, 7.2_
 
-- [ ] 3. Infraestrutura e persistência do módulo
+- [x] 3. Infraestrutura e persistência do módulo
 
 - [x] 3.1 Implementar o token, a origem da requisição e a autorização por turma
   - Gerar o token com 32 bytes aleatórios em base64url e o hash HMAC-SHA256 do IP com `AUTOCADASTRO_SEGREDO`.
@@ -95,7 +95,7 @@
   - _Depends: 2.3_
   - _Requirements: 5.1, 5.2, 5.3, 6.1, 6.2, 6.3_
 
-- [ ] 4. Envio público
+- [x] 4. Envio público
 
 - [x] 4.1 Implementar a action de envio público
   - Sequência: (1) carregar o link pelo token; se estiver indisponível, devolver o estado único de indisponível. (2) Registrar a tentativa por origem (quando houver) e por link; se exceder o limite, devolver "Muitas tentativas" sem gravar a ficha. (3) Validar a ficha com `criarFichaSchema` e o consentimento. (4) Criar a ficha pendente. (5) Devolver "recebida", sem dados.
@@ -124,7 +124,7 @@
   - _Depends: 1.4, 4.1_
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 3.3, 3.6_
 
-- [ ] 5. Gestão do link e revisão (interno)
+- [x] 5. Gestão do link e revisão (interno)
 
 - [x] 5.1 Implementar as actions de gestão do link
   - Gerar (recusa quando já há link ativo), desativar, regenerar e salvar a expiração, sempre com autorização por turma e com a turma aberta, e redirecionar com os avisos "Link desativado" e "Novo link gerado".
@@ -169,7 +169,7 @@
   - _Depends: 1.4, 3.4, 5.3, 5.4_
   - _Requirements: 5.1, 5.2, 5.4, 6.1, 6.2, 6.3, 7.2, 7.6_
 
-- [ ] 6. Integração e validação
+- [x] 6. Integração e validação
 
 - [x] 6.1 Integração: exibir as pendentes em "Minhas turmas"
   - Mostrar a quantidade de fichas pendentes por turma na lista "Minhas turmas" do catequista (a página de cada turma já recebe a contagem em 5.2).
