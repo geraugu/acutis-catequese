@@ -414,3 +414,9 @@ export async function contarPendentesPorTurma(turmaIds: string[]): Promise<Map<s
   });
   return new Map(grupos.map((g) => [g.turmaId, g._count._all]));
 }
+
+/** Situação da turma para a gestão do link: null se não existe. */
+export async function turmaAberta(turmaId: string): Promise<boolean | null> {
+  const t = await prisma.turma.findUnique({ where: { id: turmaId }, select: { encerradaEm: true } });
+  return t ? t.encerradaEm === null : null;
+}

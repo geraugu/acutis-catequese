@@ -126,7 +126,7 @@
 
 - [ ] 5. Gestão do link e revisão (interno)
 
-- [ ] 5.1 Implementar as actions de gestão do link
+- [x] 5.1 Implementar as actions de gestão do link
   - Gerar (recusa quando já há link ativo), desativar, regenerar e salvar a expiração, sempre com autorização por turma e com a turma aberta, e redirecionar com os avisos "Link desativado" e "Novo link gerado".
   - Pronto quando: os testes de integração mostram as ações da coordenação e do catequista responsável funcionando, o catequista de outra turma redirecionado para acesso negado e a expiração passada recusada.
   - _Boundary: autocadastro/actions (link)_
@@ -193,3 +193,4 @@
 - 3.3: o mapeamento ficha→colunas (`dadosDaFicha`, `sacramentosDaFicha`, `paraDate`) está duplicado do repositório de catequizandos, por causa da regra de imports; se os campos da ficha mudarem, atualize os dois.
 - 3.4: `listarFila` não traz as coincidências; quem chama usa `buscarCoincidencias(email, telefone, ignorarId, revisor)` (com `visivel` por revisor). `contarPendentesPorTurma` omite as turmas com zero.
 - 4.1: `CAMPO_CONSENTIMENTO` ("consentimento") fica em `mensagens.ts`, porque um arquivo "use server" só exporta funções async. O estado `invalido` é compatível com `EstadoFicha`. Tokens fora do formato de 43 caracteres base64url voltam como indisponível sem consultar o banco, então os testes precisam de tokens reais (`randomBytes(32)`).
+- 5.1: as actions de link devolvem `EstadoLink {erro?}` e, no sucesso, redirecionam à página da turma do papel do chamador com `?aviso=`. As mensagens genéricas (`MSG_TURMA_ENCERRADA`, `MSG_ERRO_INESPERADO`) são copiadas em `autocadastro/mensagens.ts`, porque `turmas/mensagens` não é importável.
