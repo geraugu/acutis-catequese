@@ -143,6 +143,7 @@ model Catequizando {
   updatedAt      DateTime             @updatedAt
   sacramentos    SacramentoRecebido[]
   inscricoes     Inscricao[]
+  autocadastro   FichaAutocadastro?
 
   @@index([estado])
   @@map("catequizando")
@@ -181,20 +182,22 @@ enum MotivoSaida {
 }
 
 model Turma {
-  id          String       @id @default(uuid())
-  nome        String
-  ciclo       Int
-  diaSemana   DiaSemana
-  horario     String // "HH:MM"
-  local       String?
-  observacoes String?
-  vagas       Int?
-  encerradaEm DateTime?    @db.Date
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  designacoes Designacao[]
-  inscricoes  Inscricao[]
-  encontros   Encontro[]
+  id                 String              @id @default(uuid())
+  nome               String
+  ciclo              Int
+  diaSemana          DiaSemana
+  horario            String // "HH:MM"
+  local              String?
+  observacoes        String?
+  vagas              Int?
+  encerradaEm        DateTime?           @db.Date
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  designacoes        Designacao[]
+  inscricoes         Inscricao[]
+  encontros          Encontro[]
+  linksAutocadastro  LinkAutocadastro[]
+  fichasAutocadastro FichaAutocadastro[]
 
   @@index([ciclo])
   @@map("turma")
@@ -268,4 +271,45 @@ model Encontro {
   @@index([turmaId, data])
   @@index([temaId])
   @@map("encontro")
+}
+
+// Autocadastro: link público por turma, ficha recebida e limite de tentativas.
+// Índice único parcial `link_ativo_unico` (um link não desativado por turma) na migração SQL.
+model LinkAutocadastro {
+  id           String              @id @default(uuid())
+  turmaId      String
+  token        String              @unique
+  expiraEm     DateTime?           @db.Date
+  desativadoEm DateTime?
+  criadoPorId  String
+  createdAt    DateTime            @default(now())
+  turma        Turma               @relation(fields: [turmaId], references: [id], onDelete: Restrict)
+  fichas       FichaAutocadastro[]
+
+  @@index([turmaId])
+  @@map("link_autocadastro")
+}
+
+model FichaAutocadastro {
+  catequizandoId      String           @id
+  turmaId             String
+  linkId              String
+  consentidoEm        DateTime
+  versaoConsentimento String
+  recebidaEm          DateTime         @default(now())
+  revisadaEm          DateTime?
+  catequizando        Catequizando     @relation(fields: [catequizandoId], references: [id], onDelete: Restrict)
+  turma               Turma            @relation(fields: [turmaId], references: [id], onDelete: Restrict)
+  link                LinkAutocadastro @relation(fields: [linkId], references: [id], onDelete: Restrict)
+
+  @@index([turmaId, revisadaEm])
+  @@map("ficha_autocadastro")
+}
+
+model LimiteAutocadastro {
+  chave        String   @id // "origem:<hmac>" ou "link:<uuid>"
+  contagem     Int
+  janelaInicio DateTime
+
+  @@map("limite_autocadastro")
 }

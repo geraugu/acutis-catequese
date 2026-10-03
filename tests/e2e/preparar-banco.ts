@@ -23,6 +23,9 @@ const TABELAS = [
   "inscricao",
   "tema",
   "encontro",
+  "ficha_autocadastro",
+  "link_autocadastro",
+  "limite_autocadastro",
 ];
 
 async function main() {

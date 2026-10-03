@@ -16,6 +16,9 @@ const TABELAS = [
   "inscricao",
   "tema",
   "encontro",
+  "ficha_autocadastro",
+  "link_autocadastro",
+  "limite_autocadastro",
 ];
 
 const url = process.env.DATABASE_URL ?? "";

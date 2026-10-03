@@ -7,7 +7,7 @@
   - Pronto quando: `structure.md` descreve a regra ampliada com a data da decisão, e a regra original de `acesso.ts` continua intacta.
   - _Requirements: 3.1, 7.2_
 
-- [ ] 1.2 Criar as tabelas do autocadastro
+- [x] 1.2 Criar as tabelas do autocadastro
   - Criar os modelos `LinkAutocadastro`, `FichaAutocadastro` e `LimiteAutocadastro`, com as relações inversas em `Turma` e `Catequizando`, e a migração `*_autocadastro` com o índice único parcial `link_ativo_unico` (um link não desativado por turma). Rodar `prisma generate`.
   - Incluir as três tabelas na limpeza de `tests/integration/setup.ts` e `tests/e2e/preparar-banco.ts`, na ordem certa das FKs.
   - Pronto quando: a migração aplica nos bancos de dev e de teste, um teste de integração prova que um segundo link ativo na mesma turma é recusado pelo banco e a limpeza zera as tabelas novas.
@@ -183,3 +183,6 @@
   - O descarte com confirmação faz a ficha sumir da fila.
   - Pronto quando: `tests/e2e/autocadastro.spec.ts` passa no CI junto com a suíte existente, e o lint e o typecheck ficam verdes.
   - _Requirements: 1.1, 1.2, 1.4, 2.1, 2.2, 2.4, 2.5, 3.5, 3.6, 5.1, 7.1, 8.1_
+
+## Implementation Notes
+- 1.2: os ids do schema são TEXT e as colunas camelCase (sem `@db.Uuid` nem nomes snake_case); só as tabelas usam `@@map` snake_case. SQL manual deve citar colunas entre aspas ("turmaId").

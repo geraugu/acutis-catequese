@@ -332,7 +332,7 @@ model LimiteAutocadastro {
   @@map("limite_autocadastro")
 }
 ```
-- Índice único parcial na migração SQL: `CREATE UNIQUE INDEX link_ativo_unico ON link_autocadastro(turma_id) WHERE desativado_em IS NULL` (1.3).
+- Índice único parcial na migração SQL: `CREATE UNIQUE INDEX link_ativo_unico ON link_autocadastro("turmaId") WHERE "desativadoEm" IS NULL` (1.3).
 - O IP nunca é armazenado em claro: a chave guarda o HMAC-SHA256 com `AUTOCADASTRO_SEGREDO`.
 - As fichas confirmadas mantêm `FichaAutocadastro` como prova do consentimento (LGPD).
 
