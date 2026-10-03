@@ -41,7 +41,7 @@
   - _Boundary: autocadastro/domain/limites_
   - _Requirements: 4.1, 4.2, 4.3_
 
-- [ ] 2.3 (P) Implementar os avisos da revisão e o consentimento
+- [x] 2.3 (P) Implementar os avisos da revisão e o consentimento
   - Montar os avisos de possível duplicata (com coincidentes visíveis ou ocultos) e de lotação, usando `estaLotada` e `formatarOcupacao` de `turmas/domain/turma`, e normalizar e-mail e telefone para a comparação.
   - Definir o texto do consentimento e sua versão (`2026-10-01`).
   - Pronto quando: os testes unitários cobrem duplicata visível e oculta, ausência de avisos, turma lotada, vagas nulas e normalização ("A@B.com " igual a "a@b.com", "(11) 9 8888-7777" igual a "11988887777").
@@ -187,3 +187,4 @@
 ## Implementation Notes
 - 1.2: os ids do schema são TEXT e as colunas camelCase (sem `@db.Uuid` nem nomes snake_case); só as tabelas usam `@@map` snake_case. SQL manual deve citar colunas entre aspas ("turmaId").
 - 1.3: não há `APP_URL`; a URL base dos links é `env.BETTER_AUTH_URL`. `AUTOCADASTRO_SEGREDO` (mín. 32) precisa ser configurada na Vercel antes do deploy.
+- 2.3: `textoDoAviso` monta o texto dos avisos (coincidente oculto mostra só "Possível duplicata"); `normalizarEmail` devolve null para e-mail vazio, então e-mail em branco nunca coincide.
