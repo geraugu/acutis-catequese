@@ -35,7 +35,7 @@
   - _Boundary: autocadastro/domain/link_
   - _Requirements: 1.6, 1.7, 1.8, 1.9, 2.2_
 
-- [ ] 2.2 (P) Implementar a política de limites de envio
+- [x] 2.2 (P) Implementar a política de limites de envio
   - Política de janela fixa: 5 envios por origem e 60 por link, por hora. A avaliação devolve se o envio é permitido e a próxima contagem.
   - Pronto quando: os testes unitários cobrem abaixo do limite, exatamente no limite, acima do limite e janela vencida que reinicia a contagem. 30 envios de origens diferentes no mesmo link em uma hora são permitidos.
   - _Boundary: autocadastro/domain/limites_
