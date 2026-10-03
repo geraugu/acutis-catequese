@@ -33,6 +33,7 @@ A definir com a stack.
 
 - Cada módulo de domínio é autocontido e depende apenas de módulos compartilhados, nunca de outro módulo de domínio diretamente.
   - Exceção (decisão de 2026-10-01): um módulo pode importar o arquivo `acesso.ts` publicado por um módulo upstream (por exemplo, `@/modules/turmas/acesso`), que é o contrato da regra de autorização. O restante do módulo upstream continua fora de alcance; dados dele, quando necessários, são lidos pelo repositório do próprio módulo.
+  - Exceção (decisão de 2026-10-03, spec `autocadastro-catequizandos`): um módulo também pode importar arquivos **puros** `domain/*.ts` de um módulo upstream — sem dependência de framework, de `server-only` nem de persistência — para reaproveitar schemas e regras sem duplicá-los (por exemplo, `@/modules/catequizandos/domain/ficha` e `@/modules/turmas/domain/turma`). Repositórios, actions e demais arquivos do upstream continuam fora de alcance.
 - As regras de negócio ficam separadas da camada de interface e da persistência, para permitir testes automatizados.
 
 ---

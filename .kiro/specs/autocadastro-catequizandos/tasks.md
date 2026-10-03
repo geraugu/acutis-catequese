@@ -2,7 +2,7 @@
 
 - [ ] 1. Fundação: steering, banco, configuração e reuso de componentes
 
-- [ ] 1.1 Registrar a ampliação da exceção de imports no steering
+- [x] 1.1 Registrar a ampliação da exceção de imports no steering
   - Ampliar em `.kiro/steering/structure.md` a exceção de 2026-10-01: um módulo também pode importar arquivos puros `domain/*.ts` de módulos upstream, que não têm dependência de framework nem de persistência. Citar como exemplos `catequizandos/domain/ficha` e `turmas/domain/turma`.
   - Pronto quando: `structure.md` descreve a regra ampliada com a data da decisão, e a regra original de `acesso.ts` continua intacta.
   - _Requirements: 3.1, 7.2_
