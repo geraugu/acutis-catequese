@@ -160,7 +160,7 @@
   - _Depends: 3.3_
   - _Requirements: 5.5, 6.4, 8.1, 8.2, 8.3, 8.4_
 
-- [ ] 5.5 Construir a fila e a página de revisão
+- [x] 5.5 Construir a fila e a página de revisão
   - Rotas `.../turmas/[id]/pendentes` e `.../pendentes/[fichaId]` para a coordenação e para o catequista, acessíveis também em turma encerrada (só para consulta e descarte).
   - A lista mostra nome, data de envio e avisos. O detalhe mostra todos os dados, a data e a versão do consentimento e os avisos de duplicata: com nome e link para a coordenação, e só "Possível duplicata" para o catequista quando o coincidente estiver oculto.
   - O detalhe traz a correção com `CamposFicha`, o botão confirmar com "Confirmar mesmo assim" e o descarte com `Confirmacao`.
@@ -198,3 +198,4 @@
 - 5.3: com ficha inválida, `confirmarFichaLinkAction` devolve `{erro, errosCampos}` sem `valores`, e a tela da 5.5 mostra os erros junto à ficha gravada. `situacaoTurma(turmaId)` traz encerrada, vagas e inscritos vigentes.
 - 5.2: um link expirado continua com `desativadoEm` nulo, ou seja, ainda é o link ativo no índice único. Por isso a tela oferece Regenerar, Desativar e editar a expiração, nunca Gerar. `SecaoLink` é componente cliente e recebe a situação já calculada no servidor.
 - 5.4: `corrigirFichaLinkAction` e `descartarFichaLinkAction` devolvem `EstadoRevisao` (no formato de `EstadoFicha`). O descarte não verifica a situação da turma (8.4), e a confirmação explícita fica na interface (`Confirmacao`).
+- 5.5: as rotas de pendentes das duas áreas usam o código comum em `src/app/(interno)/_pendentes/paginas.tsx`. Com a turma encerrada, só aparecem consulta e descarte. Datas e telefones chegam já formatados do servidor.
