@@ -171,7 +171,7 @@
 
 - [ ] 6. Integração e validação
 
-- [ ] 6.1 Integração: exibir as pendentes em "Minhas turmas"
+- [x] 6.1 Integração: exibir as pendentes em "Minhas turmas"
   - Mostrar a quantidade de fichas pendentes por turma na lista "Minhas turmas" do catequista (a página de cada turma já recebe a contagem em 5.2).
   - Pronto quando: com uma ficha pendente, "Minhas turmas" mostra "1 ficha pendente" na turma certa, e as turmas sem pendências não mostram nada.
   - _Depends: 3.4_

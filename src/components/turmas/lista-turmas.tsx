@@ -13,8 +13,25 @@ function ocupacao(t: TurmaResumo): string {
   return t.inscritosVigentes === 1 ? "1 inscrito" : `${t.inscritosVigentes} inscritos`;
 }
 
-/** Lista de turmas; `base` define o destino do link (coordenação ou catequista). */
-export function ListaTurmas({ turmas, base }: { turmas: readonly TurmaResumo[]; base: string }) {
+/** Destaque extra exibido num item da lista (ex.: pendências), com link próprio. */
+export interface DestaqueTurma {
+  texto: string;
+  href: string;
+}
+
+/**
+ * Lista de turmas; `base` define o destino do link (coordenação ou catequista).
+ * `destaques` (opcional) mapeia o id da turma para um destaque extra.
+ */
+export function ListaTurmas({
+  turmas,
+  base,
+  destaques,
+}: {
+  turmas: readonly TurmaResumo[];
+  base: string;
+  destaques?: Readonly<Record<string, DestaqueTurma>>;
+}) {
   return (
     <ul className="lista-turmas">
       {turmas.map((t) => (
@@ -37,6 +54,11 @@ export function ListaTurmas({ turmas, base }: { turmas: readonly TurmaResumo[]; 
           <span className="lista-turmas-ocupacao">{ocupacao(t)}</span>
           {estaLotada(t.inscritosVigentes, t.vagas) && <span className="etiqueta">Lotada</span>}
           {t.encerrada && <span className="situacao situacao-inativo">Encerrada</span>}
+          {destaques?.[t.id] && (
+            <Link href={destaques[t.id].href} className="etiqueta">
+              {destaques[t.id].texto}
+            </Link>
+          )}
         </li>
       ))}
     </ul>
