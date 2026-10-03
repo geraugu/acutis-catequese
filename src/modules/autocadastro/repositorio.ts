@@ -1,9 +1,16 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { DataCivil } from "@/modules/compartilhado/datas";
-import { SACRAMENTOS, type FichaDados } from "@/modules/catequizandos/domain/ficha";
+import {
+  SACRAMENTOS,
+  type FichaDados,
+  type Sacramento,
+  type SacramentoFicha,
+} from "@/modules/catequizandos/domain/ficha";
+import type { Papel } from "@/modules/auth/domain/papeis";
 import type { DiaSemana } from "@/modules/turmas/domain/turma";
 import { avaliarLimite, type PoliticaLimite } from "./domain/limites";
+import { normalizarEmail, normalizarTelefone, type Coincidente } from "./domain/avisos";
 
 export interface LinkResumo {
   id: string;
@@ -253,4 +260,157 @@ export async function descartar(
     await tx.catequizando.delete({ where: { id: catequizandoId } });
     return "ok";
   });
+}
+
+// ---------------------------------------------------------------------------
+// Leituras da revisão (5.1, 5.2, 5.3, 6.1–6.3). Nenhuma filtra turma aberta: a fila e o
+// detalhe continuam legíveis em turma encerrada (8.4).
+// ---------------------------------------------------------------------------
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Pendentes do link na turma: origem nesta turma, não revisada, catequizando pendente. */
+const pendentesDaTurma = (turmaId: string) => ({
+  turmaId,
+  revisadaEm: null,
+  catequizando: { estado: "pendente" as const },
+});
+
+/**
+ * Item da fila. Traz e-mail e telefone para quem chama calcular as coincidências com
+ * `buscarCoincidencias` (que depende do revisor); a fila em si não as inclui.
+ */
+export interface ItemFila {
+  catequizandoId: string;
+  nome: string;
+  recebidaEm: Date;
+  email: string | null;
+  telefone: string;
+}
+
+export interface FichaLinkDetalhe {
+  catequizandoId: string;
+  nome: string;
+  dataNascimento: DataCivil;
+  telefone: string;
+  email: string | null;
+  endereco: string | null;
+  observacoes: string | null;
+  sacramentos: Record<Sacramento, SacramentoFicha>;
+  consentidoEm: Date;
+  versaoConsentimento: string;
+  recebidaEm: Date;
+}
+
+export interface Revisor {
+  papel: Papel;
+  userId: string;
+}
+
+/** Fila da turma, da mais antiga para a mais recente (5.1). */
+export async function listarFila(turmaId: string): Promise<ItemFila[]> {
+  const linhas = await prisma.fichaAutocadastro.findMany({
+    where: pendentesDaTurma(turmaId),
+    orderBy: [{ recebidaEm: "asc" }, { catequizandoId: "asc" }],
+    select: {
+      catequizandoId: true,
+      recebidaEm: true,
+      catequizando: { select: { nome: true, email: true, telefone: true } },
+    },
+  });
+  return linhas.map(({ catequizando, ...l }) => ({ ...l, ...catequizando }));
+}
+
+/** Ficha completa com o consentimento, ou null se não for pendente do link desta turma (5.2). */
+export async function obterFichaLink(
+  turmaId: string,
+  catequizandoId: string,
+): Promise<FichaLinkDetalhe | null> {
+  if (!UUID.test(catequizandoId)) return null;
+  const l = await prisma.fichaAutocadastro.findFirst({
+    where: { catequizandoId, ...pendentesDaTurma(turmaId) },
+    select: {
+      consentidoEm: true,
+      versaoConsentimento: true,
+      recebidaEm: true,
+      catequizando: { include: { sacramentos: true } },
+    },
+  });
+  if (!l) return null;
+  const c = l.catequizando;
+  const sacramentos = {} as Record<Sacramento, SacramentoFicha>;
+  for (const s of SACRAMENTOS) {
+    const r = c.sacramentos.find((x) => x.sacramento === s);
+    const sf: SacramentoFicha = { recebido: Boolean(r) };
+    if (r?.data) sf.data = paraDataCivil(r.data);
+    if (r?.paroquia) sf.paroquia = r.paroquia;
+    sacramentos[s] = sf;
+  }
+  return {
+    catequizandoId: c.id,
+    nome: c.nome,
+    dataNascimento: paraDataCivil(c.dataNascimento),
+    telefone: c.telefone,
+    email: c.email,
+    endereco: c.endereco,
+    observacoes: c.observacoes,
+    sacramentos,
+    consentidoEm: l.consentidoEm,
+    versaoConsentimento: l.versaoConsentimento,
+    recebidaEm: l.recebidaEm,
+  };
+}
+
+/**
+ * Catequizandos em qualquer estado com o mesmo e-mail ou telefone normalizados (6.1).
+ * O telefone pode estar gravado formatado, então a normalização é feita no SQL com as
+ * mesmas regras de `normalizarEmail`/`normalizarTelefone` (minúsculas sem espaços; só dígitos).
+ * `visivel`: sempre para a coordenação; para o catequista, só se o coincidente tem inscrição
+ * vigente numa turma em que ele tem designação vigente (6.2, 6.3).
+ */
+export async function buscarCoincidencias(
+  email: string | null,
+  telefone: string,
+  ignorarId: string,
+  revisor: Revisor,
+): Promise<Coincidente[]> {
+  const emailNorm = normalizarEmail(email);
+  const telNorm = normalizarTelefone(telefone);
+  if (emailNorm === null && telNorm === "") return [];
+  const linhas = await prisma.$queryRaw<{ id: string; nome: string }[]>`
+    SELECT "id", "nome" FROM "catequizando"
+    WHERE "id" <> ${ignorarId}
+      AND (
+        (${emailNorm}::text IS NOT NULL
+          AND lower(regexp_replace(coalesce("email", ''), '[[:space:]]', '', 'g')) = ${emailNorm}::text)
+        OR (${telNorm}::text <> '' AND regexp_replace("telefone", '[^0-9]', '', 'g') = ${telNorm}::text)
+      )
+    ORDER BY "nome", "id"`;
+  if (linhas.length === 0) return [];
+  if (revisor.papel === "coordenacao") return linhas.map((l) => ({ ...l, visivel: true }));
+  const visiveis = await prisma.inscricao.findMany({
+    where: {
+      catequizandoId: { in: linhas.map((l) => l.id) },
+      dataSaida: null,
+      turma: { designacoes: { some: { userId: revisor.userId, removidoEm: null } } },
+    },
+    select: { catequizandoId: true },
+  });
+  const ids = new Set(visiveis.map((v) => v.catequizandoId));
+  return linhas.map((l) => ({ ...l, visivel: ids.has(l.id) }));
+}
+
+/** Pendentes por turma; turmas sem pendências ficam fora do mapa (5.3). */
+export async function contarPendentesPorTurma(turmaIds: string[]): Promise<Map<string, number>> {
+  if (turmaIds.length === 0) return new Map();
+  const grupos = await prisma.fichaAutocadastro.groupBy({
+    by: ["turmaId"],
+    where: {
+      turmaId: { in: turmaIds },
+      revisadaEm: null,
+      catequizando: { estado: "pendente" },
+    },
+    _count: { _all: true },
+  });
+  return new Map(grupos.map((g) => [g.turmaId, g._count._all]));
 }

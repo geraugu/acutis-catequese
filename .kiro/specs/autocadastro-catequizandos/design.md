@@ -263,7 +263,7 @@ export function registrarTentativa(chave: string, politica: PoliticaLimite, agor
 export function criarFichaPendente(f: FichaDados, linkId: string, turmaId: string, consentimento: { em: Date; versao: string }): Promise<void>;
 export function listarFila(turmaId: string): Promise<ItemFila[]>;
 export function obterFichaLink(turmaId: string, catequizandoId: string): Promise<FichaLinkDetalhe | null>;
-export function buscarCoincidencias(email: string | null, telefone: string, ignorarId: string): Promise<Coincidencia[]>;
+export function buscarCoincidencias(email: string | null, telefone: string, ignorarId: string, revisor: { papel: Papel; userId: string }): Promise<Coincidente[]>;
 export function contarPendentesPorTurma(turmaIds: string[]): Promise<Map<string, number>>;
 export function confirmarComInscricao(catequizandoId: string, turmaId: string, entrada: DataCivil): Promise<"ok" | "ja-revisada">;
 export function descartar(catequizandoId: string, turmaId: string): Promise<"ok" | "ja-revisada">;

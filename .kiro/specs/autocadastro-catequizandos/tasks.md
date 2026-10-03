@@ -84,7 +84,7 @@
   - _Boundary: autocadastro/repositorio (fichas: escrita)_
   - _Requirements: 3.5, 5.5, 7.1, 7.5, 8.1, 8.2_
 
-- [ ] 3.4 Implementar as leituras da revisão no repositório
+- [x] 3.4 Implementar as leituras da revisão no repositório
   - Listar a fila da turma da mais antiga para a mais recente, obter o detalhe da ficha com o consentimento, buscar coincidências por e-mail ou telefone normalizados (com o indicador de visibilidade para o catequista) e contar as pendentes por turma.
   - Pronto quando: os testes de integração mostram:
     - a fila ordenada;
@@ -191,3 +191,4 @@
 - 1.4: `CamposFicha` (com `idPrefixo`) recebe `EstadoFicha` (`errosCampos`, `valores`, `erro`; deixar `duplicado` vazio) e já traz o botão de envio com texto fixo pelo `modo`, e a dica de observações é voltada à equipe. A 4.2 vai precisar de uma prop para o texto do botão (ou para omiti-lo).
 - 3.2: `criarLink` lança P2002 se já houver link ativo (a action trata); `obterLinkDaTurma` devolve o link ativo ou, sem ele, o desativado mais recente.
 - 3.3: o mapeamento ficha→colunas (`dadosDaFicha`, `sacramentosDaFicha`, `paraDate`) está duplicado do repositório de catequizandos, por causa da regra de imports; se os campos da ficha mudarem, atualize os dois.
+- 3.4: `listarFila` não traz as coincidências; quem chama usa `buscarCoincidencias(email, telefone, ignorarId, revisor)` (com `visivel` por revisor). `contarPendentesPorTurma` omite as turmas com zero.
