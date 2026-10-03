@@ -1,6 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { DataCivil } from "@/modules/compartilhado/datas";
+import { SACRAMENTOS, type FichaDados } from "@/modules/catequizandos/domain/ficha";
 import type { DiaSemana } from "@/modules/turmas/domain/turma";
 import { avaliarLimite, type PoliticaLimite } from "./domain/limites";
 
@@ -128,5 +129,128 @@ export async function registrarTentativa(
       });
     }
     return permitido;
+  });
+}
+
+export type ResultadoTransicao = "ok" | "ja-revisada";
+
+export interface Consentimento {
+  em: Date;
+  versao: string;
+}
+
+function dadosDaFicha(ficha: FichaDados) {
+  return {
+    nome: ficha.nome,
+    dataNascimento: paraDate(ficha.dataNascimento),
+    telefone: ficha.telefone,
+    email: ficha.email ?? null,
+    endereco: ficha.endereco ?? null,
+    observacoes: ficha.observacoes ?? null,
+  };
+}
+
+function sacramentosDaFicha(ficha: FichaDados) {
+  return SACRAMENTOS.filter((s) => ficha.sacramentos[s].recebido).map((s) => {
+    const { data, paroquia } = ficha.sacramentos[s];
+    return { sacramento: s, data: data ? paraDate(data) : null, paroquia: paroquia ?? null };
+  });
+}
+
+/** Ficha ainda em revisão: catequizando pendente com origem nesta turma e não revisada. */
+const emRevisao = (catequizandoId: string, turmaId: string) => ({
+  id: catequizandoId,
+  estado: "pendente" as const,
+  autocadastro: { is: { turmaId, revisadaEm: null } },
+});
+
+/** Cria catequizando pendente, sacramentos e origem numa única transação (3.5, 7.1). */
+export async function criarFichaPendente(
+  ficha: FichaDados,
+  linkId: string,
+  turmaId: string,
+  consentimento: Consentimento,
+): Promise<string> {
+  const criado = await prisma.catequizando.create({
+    data: {
+      ...dadosDaFicha(ficha),
+      estado: "pendente",
+      sacramentos: { create: sacramentosDaFicha(ficha) },
+      autocadastro: {
+        create: {
+          turmaId,
+          linkId,
+          consentidoEm: consentimento.em,
+          versaoConsentimento: consentimento.versao,
+        },
+      },
+    },
+    select: { id: true },
+  });
+  return criado.id;
+}
+
+/**
+ * `pendente → ativo` condicional (trava a linha do catequizando), inscrição com a entrada
+ * informada e marca de revisão, tudo numa transação (5.5, 8.1). Concorrência: só uma vence.
+ */
+export async function confirmarComInscricao(
+  catequizandoId: string,
+  turmaId: string,
+  entrada: DataCivil,
+): Promise<ResultadoTransicao> {
+  return prisma.$transaction(async (tx) => {
+    const { count } = await tx.catequizando.updateMany({
+      where: emRevisao(catequizandoId, turmaId),
+      data: { estado: "ativo" },
+    });
+    if (count === 0) return "ja-revisada";
+    await tx.inscricao.create({
+      data: { turmaId, catequizandoId, dataEntrada: paraDate(entrada) },
+    });
+    await tx.fichaAutocadastro.update({
+      where: { catequizandoId },
+      data: { revisadaEm: new Date() },
+    });
+    return "ok";
+  });
+}
+
+/** Corrige dados e sacramentos da ficha pendente, mantendo estado e origem (7.5). */
+export async function atualizarFichaPendente(
+  catequizandoId: string,
+  turmaId: string,
+  ficha: FichaDados,
+): Promise<ResultadoTransicao> {
+  return prisma.$transaction(async (tx) => {
+    const { count } = await tx.catequizando.updateMany({
+      where: emRevisao(catequizandoId, turmaId),
+      data: dadosDaFicha(ficha),
+    });
+    if (count === 0) return "ja-revisada";
+    await tx.sacramentoRecebido.deleteMany({ where: { catequizandoId } });
+    await tx.sacramentoRecebido.createMany({
+      data: sacramentosDaFicha(ficha).map((s) => ({ ...s, catequizandoId })),
+    });
+    return "ok";
+  });
+}
+
+/** Exclui sacramentos, origem e catequizando de uma ficha pendente desta turma (8.1, 8.2). */
+export async function descartar(
+  catequizandoId: string,
+  turmaId: string,
+): Promise<ResultadoTransicao> {
+  return prisma.$transaction(async (tx) => {
+    // Trava a linha do catequizando primeiro (mesma ordem da confirmação) e valida a condição.
+    const { count } = await tx.catequizando.updateMany({
+      where: emRevisao(catequizandoId, turmaId),
+      data: { estado: "pendente" },
+    });
+    if (count === 0) return "ja-revisada";
+    await tx.sacramentoRecebido.deleteMany({ where: { catequizandoId } });
+    await tx.fichaAutocadastro.delete({ where: { catequizandoId } });
+    await tx.catequizando.delete({ where: { id: catequizandoId } });
+    return "ok";
   });
 }

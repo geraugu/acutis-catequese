@@ -69,7 +69,7 @@
   - _Boundary: autocadastro/repositorio (link e limites)_
   - _Requirements: 1.1, 1.3, 1.4, 1.5, 1.6, 1.8, 2.1, 2.3, 4.1, 4.2_
 
-- [ ] 3.3 Implementar as transições da ficha no repositório
+- [x] 3.3 Implementar as transições da ficha no repositório
   - Criar a ficha pendente com sacramentos e origem (turma, link, consentimento e versão) numa transação.
   - Confirmar com inscrição numa transação: a passagem `pendente → ativo` é condicional e a inscrição tem a entrada na data informada.
   - Corrigir a ficha pendente, mantendo o estado e a origem.
@@ -190,3 +190,4 @@
 - 2.3: `textoDoAviso` monta o texto dos avisos (coincidente oculto mostra só "Possível duplicata"); `normalizarEmail` devolve null para e-mail vazio, então e-mail em branco nunca coincide.
 - 1.4: `CamposFicha` (com `idPrefixo`) recebe `EstadoFicha` (`errosCampos`, `valores`, `erro`; deixar `duplicado` vazio) e já traz o botão de envio com texto fixo pelo `modo`, e a dica de observações é voltada à equipe. A 4.2 vai precisar de uma prop para o texto do botão (ou para omiti-lo).
 - 3.2: `criarLink` lança P2002 se já houver link ativo (a action trata); `obterLinkDaTurma` devolve o link ativo ou, sem ele, o desativado mais recente.
+- 3.3: o mapeamento ficha→colunas (`dadosDaFicha`, `sacramentosDaFicha`, `paraDate`) está duplicado do repositório de catequizandos, por causa da regra de imports; se os campos da ficha mudarem, atualize os dois.
