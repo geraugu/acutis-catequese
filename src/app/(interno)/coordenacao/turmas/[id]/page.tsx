@@ -17,6 +17,17 @@ import {
 import { mensagemDeAviso } from "@/modules/turmas/mensagens";
 import { hojeCivil } from "@/modules/compartilhado/datas";
 import { Aviso } from "@/components/comum/aviso";
+import { env } from "@/lib/env";
+import { obterLinkDaTurma } from "@/modules/autocadastro/repositorio";
+import { situacaoDoLink } from "@/modules/autocadastro/domain/link";
+import { mensagemDeAviso as mensagemDeAvisoLink } from "@/modules/autocadastro/mensagens";
+import {
+  desativarLinkAction,
+  gerarLinkAction,
+  regenerarLinkAction,
+  salvarExpiracaoAction,
+} from "@/modules/autocadastro/actions";
+import { SecaoLink } from "@/components/autocadastro/secao-link";
 import { listarEncontros } from "@/modules/programa/repositorio";
 import { proximoEncontro } from "@/modules/programa/domain/encontro";
 import { ProximoEncontro } from "@/components/programa/proximo-encontro";
@@ -61,6 +72,7 @@ export default async function TurmaPage({
       ])
     : [[], []];
   const proximo = proximoEncontro(await listarEncontros(id), hoje);
+  const link = await obterLinkDaTurma(id);
 
   return (
     <>
@@ -70,7 +82,7 @@ export default async function TurmaPage({
       <div className="pagina-cabecalho">
         <h1>{turma.nome}</h1>
       </div>
-      <Aviso mensagem={mensagemDeAviso(aviso)} />
+      <Aviso mensagem={mensagemDeAviso(aviso) ?? mensagemDeAvisoLink(aviso)} />
 
       <DadosTurma turma={turma} />
 
@@ -88,6 +100,21 @@ export default async function TurmaPage({
           />
         </div>
       ) : null}
+
+      <SecaoLink
+        situacao={link ? situacaoDoLink(link, turma.encerrada, hoje) : null}
+        expiraEm={link?.expiraEm ?? null}
+        url={link && !link.desativadoEm ? `${env.BETTER_AUTH_URL}/inscricao/${link.token}` : null}
+        pendentes={link?.pendentes ?? 0}
+        linkPendentes={`/coordenacao/turmas/${id}/pendentes`}
+        encerrada={turma.encerrada}
+        acoes={{
+          gerar: gerarLinkAction.bind(null, id),
+          desativar: desativarLinkAction.bind(null, id),
+          regenerar: regenerarLinkAction.bind(null, id),
+          salvarExpiracao: salvarExpiracaoAction.bind(null, id),
+        }}
+      />
 
       <section className="turma-secao" aria-labelledby="turma-catequistas">
         <h2 id="turma-catequistas">Catequistas</h2>

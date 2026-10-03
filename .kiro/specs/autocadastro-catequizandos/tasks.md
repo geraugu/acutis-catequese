@@ -132,7 +132,7 @@
   - _Boundary: autocadastro/actions (link)_
   - _Requirements: 1.1, 1.4, 1.5, 1.6, 1.7, 1.10_
 
-- [ ] 5.2 Construir a seção do link na página da turma
+- [x] 5.2 Construir a seção do link na página da turma
   - Componente com a situação, a expiração, a contagem de pendentes, o link completo, o botão "Copiar link" (Clipboard API com o aviso "Link copiado") e as ações gerar, desativar, regenerar (com `Confirmacao`) e editar expiração.
   - Incluí-lo nas páginas de turma da coordenação e do catequista, com o atalho para a fila.
   - Pronto quando: o teste de componente mostra "Link copiado" após copiar, o diálogo de confirmação antes de regenerar, a contagem de pendentes com o atalho, e a situação "Desativado" em turma encerrada, sem as ações.
@@ -196,3 +196,4 @@
 - 5.1: as actions de link devolvem `EstadoLink {erro?}` e, no sucesso, redirecionam à página da turma do papel do chamador com `?aviso=`. As mensagens genéricas (`MSG_TURMA_ENCERRADA`, `MSG_ERRO_INESPERADO`) são copiadas em `autocadastro/mensagens.ts`, porque `turmas/mensagens` não é importável.
 - 4.2: os rótulos dos sacramentos foram para `catequizandos/domain/sacramentos.ts` (sem zod), que `ficha.ts` reexporta. Componentes cliente não devem importar `domain/ficha` para não levar o zod ao bundle (com ele, a rota pública passava de 150 kB). `CamposFicha` ganhou as props opcionais `textoEnviar`, `dicaObservacoes` e `antesDoEnvio`.
 - 5.3: com ficha inválida, `confirmarFichaLinkAction` devolve `{erro, errosCampos}` sem `valores`, e a tela da 5.5 mostra os erros junto à ficha gravada. `situacaoTurma(turmaId)` traz encerrada, vagas e inscritos vigentes.
+- 5.2: um link expirado continua com `desativadoEm` nulo, ou seja, ainda é o link ativo no índice único. Por isso a tela oferece Regenerar, Desativar e editar a expiração, nunca Gerar. `SecaoLink` é componente cliente e recebe a situação já calculada no servidor.
