@@ -97,7 +97,7 @@
 
 - [ ] 4. Envio público
 
-- [ ] 4.1 Implementar a action de envio público
+- [x] 4.1 Implementar a action de envio público
   - Sequência: (1) carregar o link pelo token; se estiver indisponível, devolver o estado único de indisponível. (2) Registrar a tentativa por origem (quando houver) e por link; se exceder o limite, devolver "Muitas tentativas" sem gravar a ficha. (3) Validar a ficha com `criarFichaSchema` e o consentimento. (4) Criar a ficha pendente. (5) Devolver "recebida", sem dados.
   - Em caso de erro inesperado, registrar o log sem dados pessoais e devolver o estado de indisponível.
   - Pronto quando: os testes de integração mostram:
@@ -192,3 +192,4 @@
 - 3.2: `criarLink` lança P2002 se já houver link ativo (a action trata); `obterLinkDaTurma` devolve o link ativo ou, sem ele, o desativado mais recente.
 - 3.3: o mapeamento ficha→colunas (`dadosDaFicha`, `sacramentosDaFicha`, `paraDate`) está duplicado do repositório de catequizandos, por causa da regra de imports; se os campos da ficha mudarem, atualize os dois.
 - 3.4: `listarFila` não traz as coincidências; quem chama usa `buscarCoincidencias(email, telefone, ignorarId, revisor)` (com `visivel` por revisor). `contarPendentesPorTurma` omite as turmas com zero.
+- 4.1: `CAMPO_CONSENTIMENTO` ("consentimento") fica em `mensagens.ts`, porque um arquivo "use server" só exporta funções async. O estado `invalido` é compatível com `EstadoFicha`. Tokens fora do formato de 43 caracteres base64url voltam como indisponível sem consultar o banco, então os testes precisam de tokens reais (`randomBytes(32)`).
