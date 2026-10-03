@@ -177,7 +177,7 @@
   - _Depends: 3.4_
   - _Requirements: 5.3_
 
-- [ ] 6.2 Integração: testes e2e do fluxo completo
+- [x] 6.2 Integração: testes e2e do fluxo completo
   - O catequista gera e copia o link. Um contexto anônimo, em viewport de 360 px e com rede limitada a 3G, abre o link em menos de 3 s, envia a ficha com consentimento e vê "Recebemos sua ficha!". O catequista vê a pendente, confirma, e o catequizando aparece nos inscritos.
   - A coordenação desativa o link e o contexto anônimo vê a mensagem de indisponível.
   - O descarte com confirmação faz a ficha sumir da fila.
@@ -199,3 +199,4 @@
 - 5.2: um link expirado continua com `desativadoEm` nulo, ou seja, ainda é o link ativo no índice único. Por isso a tela oferece Regenerar, Desativar e editar a expiração, nunca Gerar. `SecaoLink` é componente cliente e recebe a situação já calculada no servidor.
 - 5.4: `corrigirFichaLinkAction` e `descartarFichaLinkAction` devolvem `EstadoRevisao` (no formato de `EstadoFicha`). O descarte não verifica a situação da turma (8.4), e a confirmação explícita fica na interface (`Confirmacao`).
 - 5.5: as rotas de pendentes das duas áreas usam o código comum em `src/app/(interno)/_pendentes/paginas.tsx`. Com a turma encerrada, só aparecem consulta e descarte. Datas e telefones chegam já formatados do servidor.
+- 6.2: com `referrer: "no-referrer"`, a página pública faz o Chrome mandar `Origin: null` e o Next recusa a Server Action. A política agora é `same-origin`.

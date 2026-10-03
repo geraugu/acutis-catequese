@@ -12,7 +12,9 @@ import estilos from "./inscricao.module.css";
 export const metadata: Metadata = {
   title: "Ficha de inscrição — Acutis Catequese",
   robots: { index: false, follow: false },
-  referrer: "no-referrer",
+  // "no-referrer" faz o Chrome enviar `Origin: null` no POST da Server Action, que o Next recusa.
+  // "same-origin" ainda não vaza o token para outros sites.
+  referrer: "same-origin",
 };
 
 /** Tokens têm 43 caracteres base64url; qualquer outra coisa nem chega ao banco. */

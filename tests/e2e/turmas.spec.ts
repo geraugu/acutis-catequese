@@ -107,7 +107,8 @@ test.describe("coordenação", () => {
     await expect(cat.getByRole("heading", { level: 1 })).toHaveText("Minhas turmas");
     await cat.getByRole("link", { name: turma }).click();
     await expect(cat.getByRole("heading", { level: 1 })).toHaveText(turma);
-    await expect(cat.locator("main").getByRole("button")).toHaveCount(0);
+    // Única ação do catequista na turma: gerar o link de autocadastro (autocadastro 1.1).
+    await expect(cat.locator("main").getByRole("button")).toHaveText(["Gerar link"]);
     await cat.getByRole("link", { name: nome }).click();
     await expect(cat).toHaveURL(new RegExp(`/catequista/catequizandos/${catequizandoId}$`));
     await expect(cat.getByRole("heading", { level: 1 })).toHaveText(nome);
