@@ -63,7 +63,7 @@
   - _Depends: 1.3_
   - _Requirements: 1.1, 1.10, 4.1, 4.3, 5.4_
 
-- [ ] 3.2 Implementar o repositório do link e dos limites
+- [x] 3.2 Implementar o repositório do link e dos limites
   - Operações de obter o link da turma (com a contagem de pendentes), criar, desativar, regenerar em transação (desativa o anterior e cria o novo), salvar a expiração, obter os dados públicos pelo token (só nome, dia, horário e local da turma) e registrar tentativa com bloqueio de linha.
   - Pronto quando: os testes de integração mostram que regenerar invalida o token anterior, que a projeção pública não traz nenhum campo além dos quatro da turma, e que tentativas concorrentes não ultrapassam o limite.
   - _Boundary: autocadastro/repositorio (link e limites)_
@@ -189,3 +189,4 @@
 - 1.3: não há `APP_URL`; a URL base dos links é `env.BETTER_AUTH_URL`. `AUTOCADASTRO_SEGREDO` (mín. 32) precisa ser configurada na Vercel antes do deploy.
 - 2.3: `textoDoAviso` monta o texto dos avisos (coincidente oculto mostra só "Possível duplicata"); `normalizarEmail` devolve null para e-mail vazio, então e-mail em branco nunca coincide.
 - 1.4: `CamposFicha` (com `idPrefixo`) recebe `EstadoFicha` (`errosCampos`, `valores`, `erro`; deixar `duplicado` vazio) e já traz o botão de envio com texto fixo pelo `modo`, e a dica de observações é voltada à equipe. A 4.2 vai precisar de uma prop para o texto do botão (ou para omiti-lo).
+- 3.2: `criarLink` lança P2002 se já houver link ativo (a action trata); `obterLinkDaTurma` devolve o link ativo ou, sem ele, o desativado mais recente.
