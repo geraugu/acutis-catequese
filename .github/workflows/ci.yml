@@ -15,6 +15,7 @@ env:
   DATABASE_URL_TEST: postgresql://acutis:acutis@localhost:5432/acutis_test
   BETTER_AUTH_SECRET: ci-segredo-de-teste-nao-usar-em-producao-000
   BETTER_AUTH_URL: http://localhost:3000
+  AUTOCADASTRO_SEGREDO: ci-segredo-autocadastro-nao-usar-em-producao
   AUTH_RATE_LIMIT: "off"
   SEED_COORDENACAO_EMAIL: coordenacao@exemplo.com
   SEED_COORDENACAO_SENHA: senha-de-teste-ci-123

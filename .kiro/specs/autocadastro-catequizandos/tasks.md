@@ -13,7 +13,7 @@
   - Pronto quando: a migração aplica nos bancos de dev e de teste, um teste de integração prova que um segundo link ativo na mesma turma é recusado pelo banco e a limpeza zera as tabelas novas.
   - _Requirements: 1.3, 3.5_
 
-- [ ] 1.3 (P) Configurar as variáveis de ambiente e a rota pública
+- [x] 1.3 (P) Configurar as variáveis de ambiente e a rota pública
   - Adicionar `AUTOCADASTRO_SEGREDO` (obrigatória) e `APP_URL` (se ainda não existir) em `src/lib/env.ts` e no `.env.example`, e preencher os valores de teste no CI.
   - Incluir o segmento `inscricao` nas exclusões do `matcher` de `src/proxy.ts`.
   - Pronto quando: `tests/unit/auth/rota-protegida.test.ts` mostra `/inscricao/abc` como pública e `/coordenacao` ainda protegida, e a aplicação falha ao iniciar sem `AUTOCADASTRO_SEGREDO`.
@@ -186,3 +186,4 @@
 
 ## Implementation Notes
 - 1.2: os ids do schema são TEXT e as colunas camelCase (sem `@db.Uuid` nem nomes snake_case); só as tabelas usam `@@map` snake_case. SQL manual deve citar colunas entre aspas ("turmaId").
+- 1.3: não há `APP_URL`; a URL base dos links é `env.BETTER_AUTH_URL`. `AUTOCADASTRO_SEGREDO` (mín. 32) precisa ser configurada na Vercel antes do deploy.

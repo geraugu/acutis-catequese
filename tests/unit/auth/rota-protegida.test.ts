@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { config } from "@/proxy";
 import { HEADER_CAMINHO, urlDeLogin } from "@/modules/auth/domain/rota-protegida";
 
 describe("urlDeLogin", () => {
@@ -15,5 +16,22 @@ describe("urlDeLogin", () => {
   });
   it("expõe o nome do header do caminho atual", () => {
     expect(HEADER_CAMINHO).toBe("x-caminho");
+  });
+});
+
+describe("matcher do proxy", () => {
+  const padrao = new RegExp(`^${config.matcher[0]}$`);
+  const protegida = (caminho: string) => padrao.test(caminho);
+
+  it("deixa a página pública de inscrição fora da proteção", () => {
+    expect(protegida("/inscricao/abc")).toBe(false);
+    expect(protegida("/inscricao")).toBe(false);
+  });
+  it("mantém as áreas autenticadas protegidas", () => {
+    expect(protegida("/coordenacao")).toBe(true);
+    expect(protegida("/catequista/turmas")).toBe(true);
+  });
+  it("não confunde rotas que apenas começam com 'inscricao'", () => {
+    expect(protegida("/inscricoes")).toBe(true);
   });
 });

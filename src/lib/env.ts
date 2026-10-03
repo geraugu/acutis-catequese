@@ -4,6 +4,8 @@ export const envSchema = z.object({
   DATABASE_URL: z.url(),
   BETTER_AUTH_SECRET: z.string().min(32),
   BETTER_AUTH_URL: z.url(),
+  // Chave do HMAC do IP no rate limit do autocadastro. A URL base dos links usa BETTER_AUTH_URL.
+  AUTOCADASTRO_SEGREDO: z.string().min(32),
   SEED_COORDENACAO_EMAIL: z.email().optional(),
   SEED_COORDENACAO_SENHA: z.string().optional(),
   SEED_COORDENACAO_NOME: z.string().optional(),
