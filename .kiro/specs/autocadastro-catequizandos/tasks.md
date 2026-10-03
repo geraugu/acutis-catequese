@@ -140,7 +140,7 @@
   - _Depends: 3.2, 5.1_
   - _Requirements: 1.2, 1.5, 1.8, 1.9, 5.3_
 
-- [ ] 5.3 Implementar a action de confirmação
+- [x] 5.3 Implementar a action de confirmação
   - Fluxo:
     - revalida a ficha;
     - bloqueia turma encerrada;
@@ -195,3 +195,4 @@
 - 4.1: `CAMPO_CONSENTIMENTO` ("consentimento") fica em `mensagens.ts`, porque um arquivo "use server" só exporta funções async. O estado `invalido` é compatível com `EstadoFicha`. Tokens fora do formato de 43 caracteres base64url voltam como indisponível sem consultar o banco, então os testes precisam de tokens reais (`randomBytes(32)`).
 - 5.1: as actions de link devolvem `EstadoLink {erro?}` e, no sucesso, redirecionam à página da turma do papel do chamador com `?aviso=`. As mensagens genéricas (`MSG_TURMA_ENCERRADA`, `MSG_ERRO_INESPERADO`) são copiadas em `autocadastro/mensagens.ts`, porque `turmas/mensagens` não é importável.
 - 4.2: os rótulos dos sacramentos foram para `catequizandos/domain/sacramentos.ts` (sem zod), que `ficha.ts` reexporta. Componentes cliente não devem importar `domain/ficha` para não levar o zod ao bundle (com ele, a rota pública passava de 150 kB). `CamposFicha` ganhou as props opcionais `textoEnviar`, `dicaObservacoes` e `antesDoEnvio`.
+- 5.3: com ficha inválida, `confirmarFichaLinkAction` devolve `{erro, errosCampos}` sem `valores`, e a tela da 5.5 mostra os erros junto à ficha gravada. `situacaoTurma(turmaId)` traz encerrada, vagas e inscritos vigentes.

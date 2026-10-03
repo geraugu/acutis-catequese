@@ -4,17 +4,30 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { SessaoUsuario } from "@/modules/auth/dal";
 import { dataCivilSchema, hojeCivil, type DataCivil } from "@/modules/compartilhado/datas";
+import {
+  SACRAMENTOS,
+  campoDoFormulario,
+  criarFichaSchema,
+} from "@/modules/catequizandos/domain/ficha";
+import { estaLotada } from "@/modules/turmas/domain/turma";
 import { autorizarTurma } from "./autorizacao";
 import { validarExpiracao } from "./domain/link";
 import {
   MSG_ERRO_INESPERADO,
+  MSG_FICHA_INVALIDA,
+  MSG_JA_REVISADA,
   MSG_LINK_JA_ATIVO,
+  MSG_TURMA_ENCERRADA_FICHA,
   MSG_TURMA_ENCERRADA,
   type CodigoAviso,
 } from "./mensagens";
 import {
+  confirmarComInscricao,
   criarLink,
   desativarLink,
+  obterFichaLink,
+  situacaoTurma,
+  type FichaLinkDetalhe,
   regenerarLink,
   salvarExpiracao,
   turmaAberta,
@@ -130,4 +143,74 @@ export async function salvarExpiracaoAction(
     if (!v.ok) return { erro: v.erro };
     return (await salvarExpiracao(turmaId, expiraEm)) ? undefined : { erro: MSG_SEM_LINK_ATIVO };
   });
+}
+
+export type EstadoConfirmacao = {
+  erro?: string;
+  errosCampos?: Record<string, string>;
+  lotada?: { inscritos: number; vagas: number };
+};
+
+/** Ficha gravada na forma de entrada de `criarFichaSchema` (campos vazios como ""). */
+function entradaDaFicha(f: FichaLinkDetalhe): unknown {
+  const sacramentos: Record<string, { recebido: boolean; data: string; paroquia: string }> = {};
+  for (const s of SACRAMENTOS) {
+    const sf = f.sacramentos[s];
+    sacramentos[s] = { recebido: sf.recebido, data: sf.data ?? "", paroquia: sf.paroquia ?? "" };
+  }
+  return {
+    nome: f.nome,
+    dataNascimento: f.dataNascimento,
+    telefone: f.telefone,
+    email: f.email ?? "",
+    endereco: f.endereco ?? "",
+    observacoes: f.observacoes ?? "",
+    sacramentos,
+  };
+}
+
+/**
+ * Confirma a ficha do link (7.1–7.6): revalida com o schema upstream, bloqueia turma
+ * encerrada, pede confirmação de lotação (`confirmarLotacao=1`) e ativa + inscreve com a
+ * data de hoje numa transação. Avisos de duplicata nunca bloqueiam (6.4).
+ */
+export async function confirmarFichaLinkAction(
+  turmaId: string,
+  catequizandoId: string,
+  _anterior: EstadoConfirmacao,
+  dados: FormData,
+): Promise<EstadoConfirmacao> {
+  const sessao = await autorizarTurma(turmaId);
+  try {
+    const ficha = await obterFichaLink(turmaId, catequizandoId);
+    if (!ficha) return { erro: MSG_JA_REVISADA };
+    const hoje = hojeCivil();
+    const validacao = criarFichaSchema({ hoje }).safeParse(entradaDaFicha(ficha));
+    if (!validacao.success) {
+      const errosCampos: Record<string, string> = {};
+      for (const issue of validacao.error.issues) {
+        const campo = campoDoFormulario(issue.path);
+        errosCampos[campo] ??= issue.message;
+      }
+      return { erro: MSG_FICHA_INVALIDA, errosCampos };
+    }
+    const turma = await situacaoTurma(turmaId);
+    if (!turma) return { erro: MSG_ERRO_INESPERADO };
+    if (turma.encerrada) return { erro: MSG_TURMA_ENCERRADA_FICHA };
+    if (estaLotada(turma.inscritosVigentes, turma.vagas) && dados.get("confirmarLotacao") !== "1") {
+      return { lotada: { inscritos: turma.inscritosVigentes, vagas: turma.vagas ?? 0 } };
+    }
+    if ((await confirmarComInscricao(catequizandoId, turmaId, hoje)) === "ja-revisada") {
+      return { erro: MSG_JA_REVISADA };
+    }
+  } catch (e) {
+    console.error("[autocadastro] falha na confirmação da ficha", {
+      turmaId,
+      erro: e instanceof Error ? e.name : "desconhecido",
+    });
+    return { erro: MSG_ERRO_INESPERADO };
+  }
+  const pagina = paginaDaTurma(sessao, turmaId);
+  revalidatePath(pagina);
+  redirect(`${pagina}?aviso=ficha-confirmada`);
 }

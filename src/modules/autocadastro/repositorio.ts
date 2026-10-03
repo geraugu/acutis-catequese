@@ -420,3 +420,23 @@ export async function turmaAberta(turmaId: string): Promise<boolean | null> {
   const t = await prisma.turma.findUnique({ where: { id: turmaId }, select: { encerradaEm: true } });
   return t ? t.encerradaEm === null : null;
 }
+
+export interface SituacaoTurma {
+  encerrada: boolean;
+  vagas: number | null;
+  inscritosVigentes: number;
+}
+
+/** Encerramento, vagas e inscritos vigentes da turma (7.3, 7.4); null se não existe. */
+export async function situacaoTurma(turmaId: string): Promise<SituacaoTurma | null> {
+  const t = await prisma.turma.findUnique({
+    where: { id: turmaId },
+    select: {
+      encerradaEm: true,
+      vagas: true,
+      _count: { select: { inscricoes: { where: { dataSaida: null } } } },
+    },
+  });
+  if (!t) return null;
+  return { encerrada: t.encerradaEm !== null, vagas: t.vagas, inscritosVigentes: t._count.inscricoes };
+}
