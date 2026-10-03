@@ -20,7 +20,7 @@
   - _Boundary: lib/env, proxy_
   - _Requirements: 2.1_
 
-- [ ] 1.4 (P) Tornar os campos da ficha reutilizáveis
+- [x] 1.4 (P) Tornar os campos da ficha reutilizáveis
   - Exportar `CamposFicha` de `components/catequizandos/formulario-ficha.tsx`, com a prop opcional `idPrefixo`, sem mudar o comportamento das telas atuais.
   - Pronto quando: os testes de componente e os e2e de catequizandos seguem verdes e um teste novo renderiza `CamposFicha` com um prefixo de id.
   - _Boundary: components/catequizandos_
@@ -188,3 +188,4 @@
 - 1.2: os ids do schema são TEXT e as colunas camelCase (sem `@db.Uuid` nem nomes snake_case); só as tabelas usam `@@map` snake_case. SQL manual deve citar colunas entre aspas ("turmaId").
 - 1.3: não há `APP_URL`; a URL base dos links é `env.BETTER_AUTH_URL`. `AUTOCADASTRO_SEGREDO` (mín. 32) precisa ser configurada na Vercel antes do deploy.
 - 2.3: `textoDoAviso` monta o texto dos avisos (coincidente oculto mostra só "Possível duplicata"); `normalizarEmail` devolve null para e-mail vazio, então e-mail em branco nunca coincide.
+- 1.4: `CamposFicha` (com `idPrefixo`) recebe `EstadoFicha` (`errosCampos`, `valores`, `erro`; deixar `duplicado` vazio) e já traz o botão de envio com texto fixo pelo `modo`, e a dica de observações é voltada à equipe. A 4.2 vai precisar de uma prop para o texto do botão (ou para omiti-lo).

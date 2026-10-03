@@ -56,6 +56,39 @@ describe("CamposFicha", () => {
     );
   });
 
+  it("mantém os ids padrão (prefixo 'ficha') sem idPrefixo", () => {
+    render(<CamposFicha modo="criacao" estado={{ errosCampos: { nome: "x" } }} pendente={false} />);
+    expect(screen.getByLabelText("Nome")).toHaveAttribute("id", "ficha-nome");
+    expect(screen.getByLabelText("Nome")).toHaveAttribute("aria-describedby", "ficha-nome-erro");
+    expect(screen.getByLabelText("Observações")).toHaveAttribute("id", "ficha-observacoes");
+  });
+
+  it("aplica idPrefixo a ids e referências aria; dois formulários não colidem", () => {
+    const estado = { errosCampos: { nome: "Informe o nome.", observacoes: "Longo demais." } };
+    const { container } = render(
+      <>
+        <CamposFicha modo="criacao" estado={estado} pendente={false} />
+        <CamposFicha modo="criacao" estado={estado} pendente={false} idPrefixo="publico" />
+      </>,
+    );
+    const ids = [...container.querySelectorAll("[id]")].map((e) => e.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    const [, nome] = screen.getAllByLabelText("Nome");
+    expect(nome).toHaveAttribute("id", "publico-nome");
+    expect(document.getElementById(nome.getAttribute("aria-describedby")!)).toHaveTextContent(
+      "Informe o nome.",
+    );
+    const [, obs] = screen.getAllByLabelText("Observações");
+    expect(obs).toHaveAttribute("id", "publico-observacoes");
+    expect(obs).toHaveAttribute(
+      "aria-describedby",
+      "publico-observacoes-dica publico-observacoes-erro",
+    );
+    expect(screen.getAllByRole("group", { name: "Crisma" })[1]).toBeInTheDocument();
+    const recebidos = container.querySelectorAll('input[name="crismaRecebido"]');
+    expect(recebidos[1]).toHaveAttribute("id", "publico-crismaRecebido");
+  });
+
   it("reapresenta valores, inclusive checkbox marcado", () => {
     render(
       <CamposFicha

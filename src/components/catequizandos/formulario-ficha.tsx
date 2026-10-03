@@ -15,32 +15,40 @@ interface CamposFichaProps {
   modo: Modo;
   estado: EstadoFicha;
   pendente: boolean;
+  /**
+   * Prefixo dos ids e referências aria (padrão `"ficha"`). Use um valor distinto
+   * quando houver mais de um formulário de ficha na mesma página.
+   */
+  idPrefixo?: string;
 }
 
-function idCampo(campo: string) {
-  return `ficha-${campo}`;
+const PREFIXO_PADRAO = "ficha";
+
+function idCampo(prefixo: string, campo: string) {
+  return `${prefixo}-${campo}`;
 }
 
-function idErro(campo: string) {
-  return `ficha-${campo}-erro`;
+function idErro(prefixo: string, campo: string) {
+  return `${prefixo}-${campo}-erro`;
 }
 
-function ariaErro(erro: string | undefined, campo: string) {
+function ariaErro(prefixo: string, erro: string | undefined, campo: string) {
   return {
     "aria-invalid": erro ? true : undefined,
-    "aria-describedby": erro ? idErro(campo) : undefined,
+    "aria-describedby": erro ? idErro(prefixo, campo) : undefined,
   } as const;
 }
 
-function MensagemErro({ campo, erro }: { campo: string; erro?: string }) {
+function MensagemErro({ prefixo, campo, erro }: { prefixo: string; campo: string; erro?: string }) {
   return erro ? (
-    <p id={idErro(campo)} className="campo-erro">
+    <p id={idErro(prefixo, campo)} className="campo-erro">
       {erro}
     </p>
   ) : null;
 }
 
 interface CampoTextoProps {
+  prefixo: string;
   campo: string;
   rotulo: string;
   tipo?: string;
@@ -51,6 +59,7 @@ interface CampoTextoProps {
 }
 
 function CampoTexto({
+  prefixo,
   campo,
   rotulo,
   tipo = "text",
@@ -61,17 +70,17 @@ function CampoTexto({
 }: CampoTextoProps) {
   return (
     <div className="campo">
-      <label htmlFor={idCampo(campo)}>{rotulo}</label>
+      <label htmlFor={idCampo(prefixo, campo)}>{rotulo}</label>
       <input
-        id={idCampo(campo)}
+        id={idCampo(prefixo, campo)}
         name={campo}
         type={tipo}
         autoComplete={autoComplete}
         aria-required={obrigatorio ? "true" : undefined}
         defaultValue={valores[campo] ?? ""}
-        {...ariaErro(erros[campo], campo)}
+        {...ariaErro(prefixo, erros[campo], campo)}
       />
-      <MensagemErro campo={campo} erro={erros[campo]} />
+      <MensagemErro prefixo={prefixo} campo={campo} erro={erros[campo]} />
     </div>
   );
 }
@@ -80,7 +89,14 @@ function CampoTexto({
  * Campos da ficha (presentacional). Sem JavaScript, data e paróquia de cada
  * sacramento ficam sempre visíveis; o servidor descarta quando não recebido.
  */
-export function CamposFicha({ modo, estado, pendente }: CamposFichaProps) {
+export function CamposFicha({
+  modo,
+  estado,
+  pendente,
+  idPrefixo = PREFIXO_PADRAO,
+}: CamposFichaProps) {
+  const p = idPrefixo;
+  const idDicaObs = `${p}-observacoes-dica`;
   const erros = estado.errosCampos ?? {};
   const v: Valores = estado.valores ?? {};
   return (
@@ -102,6 +118,7 @@ export function CamposFicha({ modo, estado, pendente }: CamposFichaProps) {
         </div>
       ) : null}
       <CampoTexto
+        prefixo={p}
         campo="nome"
         rotulo="Nome"
         valores={v}
@@ -110,6 +127,7 @@ export function CamposFicha({ modo, estado, pendente }: CamposFichaProps) {
         autoComplete="name"
       />
       <CampoTexto
+        prefixo={p}
         campo="dataNascimento"
         rotulo="Data de nascimento"
         tipo="date"
@@ -117,44 +135,69 @@ export function CamposFicha({ modo, estado, pendente }: CamposFichaProps) {
         erros={erros}
         obrigatorio
       />
-      <CampoTexto campo="telefone" rotulo="Telefone" tipo="tel" valores={v} erros={erros} />
-      <CampoTexto campo="email" rotulo="E-mail" tipo="email" valores={v} erros={erros} />
-      <CampoTexto campo="endereco" rotulo="Endereço" valores={v} erros={erros} />
+      <CampoTexto
+        prefixo={p}
+        campo="telefone"
+        rotulo="Telefone"
+        tipo="tel"
+        valores={v}
+        erros={erros}
+      />
+      <CampoTexto
+        prefixo={p}
+        campo="email"
+        rotulo="E-mail"
+        tipo="email"
+        valores={v}
+        erros={erros}
+      />
+      <CampoTexto prefixo={p} campo="endereco" rotulo="Endereço" valores={v} erros={erros} />
       {SACRAMENTOS.map((s) => (
         <fieldset key={s} className="ficha-sacramento">
           <legend>{ROTULO_SACRAMENTO[s]}</legend>
-          <label htmlFor={idCampo(`${s}Recebido`)} className="ficha-sacramento-recebido">
+          <label htmlFor={idCampo(p, `${s}Recebido`)} className="ficha-sacramento-recebido">
             <input
-              id={idCampo(`${s}Recebido`)}
+              id={idCampo(p, `${s}Recebido`)}
               type="checkbox"
               name={`${s}Recebido`}
               defaultChecked={v[`${s}Recebido`] === "on"}
-              {...ariaErro(erros[`${s}Recebido`], `${s}Recebido`)}
+              {...ariaErro(p, erros[`${s}Recebido`], `${s}Recebido`)}
             />
             Recebido
           </label>
-          <MensagemErro campo={`${s}Recebido`} erro={erros[`${s}Recebido`]} />
-          <CampoTexto campo={`${s}Data`} rotulo="Data" tipo="date" valores={v} erros={erros} />
-          <CampoTexto campo={`${s}Paroquia`} rotulo="Paróquia" valores={v} erros={erros} />
+          <MensagemErro prefixo={p} campo={`${s}Recebido`} erro={erros[`${s}Recebido`]} />
+          <CampoTexto
+            prefixo={p}
+            campo={`${s}Data`}
+            rotulo="Data"
+            tipo="date"
+            valores={v}
+            erros={erros}
+          />
+          <CampoTexto
+            prefixo={p}
+            campo={`${s}Paroquia`}
+            rotulo="Paróquia"
+            valores={v}
+            erros={erros}
+          />
         </fieldset>
       ))}
       <div className="campo">
-        <label htmlFor="ficha-observacoes">Observações</label>
+        <label htmlFor={idCampo(p, "observacoes")}>Observações</label>
         <textarea
-          id="ficha-observacoes"
+          id={idCampo(p, "observacoes")}
           name="observacoes"
           defaultValue={v.observacoes ?? ""}
           aria-invalid={erros.observacoes ? true : undefined}
           aria-describedby={
-            erros.observacoes
-              ? `ficha-observacoes-dica ${idErro("observacoes")}`
-              : "ficha-observacoes-dica"
+            erros.observacoes ? `${idDicaObs} ${idErro(p, "observacoes")}` : idDicaObs
           }
         />
-        <p id="ficha-observacoes-dica" className="campo-dica">
+        <p id={idDicaObs} className="campo-dica">
           Registre só o necessário para o acompanhamento pastoral.
         </p>
-        <MensagemErro campo="observacoes" erro={erros.observacoes} />
+        <MensagemErro prefixo={p} campo="observacoes" erro={erros.observacoes} />
       </div>
       <button type="submit" className="botao botao-primario" disabled={pendente}>
         {pendente
