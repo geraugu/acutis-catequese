@@ -10,7 +10,11 @@ import {
   MSG_TURMA_ENCERRADA_FICHA,
   mensagemDeAviso,
 } from "@/modules/autocadastro/mensagens";
-import { criarFichaPendente, criarLink, obterLinkDaTurma } from "@/modules/autocadastro/repositorio";
+import {
+  criarFichaPendente,
+  criarLink,
+  obterLinkDaTurma,
+} from "@/modules/autocadastro/repositorio";
 import { designar } from "@/modules/turmas/repositorio";
 import {
   capturarRedirect,

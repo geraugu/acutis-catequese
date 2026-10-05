@@ -93,7 +93,9 @@ describe("RevisaoFicha", () => {
   });
 
   it("duplicata oculta para o catequista: só 'Possível duplicata', sem nome", () => {
-    render(<RevisaoFicha {...props({ coincidentes: [{ id: "c1", nome: "Oculto", visivel: false }] })} />);
+    render(
+      <RevisaoFicha {...props({ coincidentes: [{ id: "c1", nome: "Oculto", visivel: false }] })} />,
+    );
     expect(screen.getByText("Possível duplicata")).toBeTruthy();
     expect(screen.queryByText(/Oculto/)).toBeNull();
   });
@@ -145,7 +147,9 @@ describe("RevisaoFicha", () => {
       erro: "A ficha tem campos inválidos.",
       errosCampos: { telefone: "Telefone inválido" },
     });
-    render(<RevisaoFicha {...props({ acoes: { confirmar, corrigir: vazia, descartar: vazia } })} />);
+    render(
+      <RevisaoFicha {...props({ acoes: { confirmar, corrigir: vazia, descartar: vazia } })} />,
+    );
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: "Confirmar e inscrever" }));
     });
@@ -157,7 +161,9 @@ describe("RevisaoFicha", () => {
     expect(screen.getByRole("button", { name: "Salvar correção" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Confirmar e inscrever" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Descartar ficha" }));
-    expect(within(screen.getByRole("dialog")).getByRole("button", { name: "Descartar" })).toBeTruthy();
+    expect(
+      within(screen.getByRole("dialog")).getByRole("button", { name: "Descartar" }),
+    ).toBeTruthy();
   });
 
   it("turma encerrada: só o descarte", () => {

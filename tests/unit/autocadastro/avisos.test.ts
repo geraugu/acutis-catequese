@@ -49,9 +49,10 @@ describe("avisosDaFicha", () => {
 
   it("junta duplicata e lotação, nessa ordem", () => {
     const coincidentes = [{ id: "c1", nome: "Ana", visivel: true }];
-    expect(
-      avisosDaFicha({ coincidentes, inscritos: 11, vagas: 10 }).map((a) => a.tipo),
-    ).toEqual(["duplicata", "lotada"]);
+    expect(avisosDaFicha({ coincidentes, inscritos: 11, vagas: 10 }).map((a) => a.tipo)).toEqual([
+      "duplicata",
+      "lotada",
+    ]);
   });
 });
 

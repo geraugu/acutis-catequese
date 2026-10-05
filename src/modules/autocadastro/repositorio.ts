@@ -77,7 +77,10 @@ export async function regenerarLink(turmaId: string, token: string, userId: stri
   });
 }
 
-export async function salvarExpiracao(turmaId: string, expiraEm: DataCivil | null): Promise<boolean> {
+export async function salvarExpiracao(
+  turmaId: string,
+  expiraEm: DataCivil | null,
+): Promise<boolean> {
   const r = await prisma.linkAutocadastro.updateMany({
     where: { turmaId, desativadoEm: null },
     data: { expiraEm: expiraEm ? paraDate(expiraEm) : null },
@@ -417,7 +420,10 @@ export async function contarPendentesPorTurma(turmaIds: string[]): Promise<Map<s
 
 /** Situação da turma para a gestão do link: null se não existe. */
 export async function turmaAberta(turmaId: string): Promise<boolean | null> {
-  const t = await prisma.turma.findUnique({ where: { id: turmaId }, select: { encerradaEm: true } });
+  const t = await prisma.turma.findUnique({
+    where: { id: turmaId },
+    select: { encerradaEm: true },
+  });
   return t ? t.encerradaEm === null : null;
 }
 
@@ -438,5 +444,9 @@ export async function situacaoTurma(turmaId: string): Promise<SituacaoTurma | nu
     },
   });
   if (!t) return null;
-  return { encerrada: t.encerradaEm !== null, vagas: t.vagas, inscritosVigentes: t._count.inscricoes };
+  return {
+    encerrada: t.encerradaEm !== null,
+    vagas: t.vagas,
+    inscritosVigentes: t._count.inscricoes,
+  };
 }

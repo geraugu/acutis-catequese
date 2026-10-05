@@ -14,7 +14,11 @@ import { criarTurmaDireta, criarUsuarioDireto, dia } from "../turmas/helpers";
 
 const codigo = (e: unknown) => (e as { code?: string }).code;
 
-async function fichaPendente(turmaId: string, linkId: string, opcoes: { revisada?: boolean; estado?: "pendente" | "ativo" } = {}) {
+async function fichaPendente(
+  turmaId: string,
+  linkId: string,
+  opcoes: { revisada?: boolean; estado?: "pendente" | "ativo" } = {},
+) {
   const c = await prisma.catequizando.create({
     data: {
       nome: "Ana",
@@ -44,14 +48,21 @@ describe("link da turma (1.1, 1.3, 1.4, 1.5, 1.6, 1.8)", () => {
 
     await criarLink(turmaId, "tok-1", userId);
     const link = await obterLinkDaTurma(turmaId);
-    expect(link).toMatchObject({ token: "tok-1", expiraEm: null, desativadoEm: null, pendentes: 0 });
+    expect(link).toMatchObject({
+      token: "tok-1",
+      expiraEm: null,
+      desativadoEm: null,
+      pendentes: 0,
+    });
 
     await fichaPendente(turmaId, link!.id);
     await fichaPendente(turmaId, link!.id);
     await fichaPendente(turmaId, link!.id, { revisada: true, estado: "ativo" });
     expect((await obterLinkDaTurma(turmaId))!.pendentes).toBe(2);
 
-    await expect(criarLink(turmaId, "tok-2", userId)).rejects.toSatisfy((e) => codigo(e) === "P2002");
+    await expect(criarLink(turmaId, "tok-2", userId)).rejects.toSatisfy(
+      (e) => codigo(e) === "P2002",
+    );
   });
 
   it("desativa, salva expiração e permite gerar novo depois", async () => {
@@ -118,7 +129,8 @@ describe("registrarTentativa (4.1, 4.2)", () => {
 
   it("permite até o máximo e reabre a janela depois", async () => {
     const agora = new Date("2026-10-03T12:00:00Z");
-    for (let i = 0; i < 5; i++) expect(await registrarTentativa("origem:x", politica, agora)).toBe(true);
+    for (let i = 0; i < 5; i++)
+      expect(await registrarTentativa("origem:x", politica, agora)).toBe(true);
     expect(await registrarTentativa("origem:x", politica, agora)).toBe(false);
     expect(await registrarTentativa("origem:y", politica, agora)).toBe(true);
     const depois = new Date(agora.getTime() + politica.janelaMs);

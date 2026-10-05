@@ -66,7 +66,11 @@ describe("confirmarComInscricao (5.5, 8.1)", () => {
     });
     expect(c.estado).toBe("ativo");
     expect(c.inscricoes).toHaveLength(1);
-    expect(c.inscricoes[0]).toMatchObject({ turmaId, dataEntrada: dia("2026-09-15"), dataSaida: null });
+    expect(c.inscricoes[0]).toMatchObject({
+      turmaId,
+      dataEntrada: dia("2026-09-15"),
+      dataSaida: null,
+    });
     expect(c.autocadastro!.revisadaEm).not.toBeNull();
 
     expect(await confirmarComInscricao(id, turmaId, "2026-09-15" as DataCivil)).toBe("ja-revisada");

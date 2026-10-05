@@ -8,7 +8,11 @@ import {
   MSG_TURMA_ENCERRADA_FICHA,
   mensagemDeAviso,
 } from "@/modules/autocadastro/mensagens";
-import { criarFichaPendente, criarLink, obterLinkDaTurma } from "@/modules/autocadastro/repositorio";
+import {
+  criarFichaPendente,
+  criarLink,
+  obterLinkDaTurma,
+} from "@/modules/autocadastro/repositorio";
 import { designar } from "@/modules/turmas/repositorio";
 import {
   capturarRedirect,
@@ -18,10 +22,7 @@ import {
   limparSessao,
   usarSessao,
 } from "../equipe/helpers";
-import {
-  criarTurmaDireta,
-  criarUsuarioDireto,
-} from "../turmas/helpers";
+import { criarTurmaDireta, criarUsuarioDireto } from "../turmas/helpers";
 
 vi.mock("next/headers", async () => (await import("../equipe/next-mocks")).nextHeadersMock);
 vi.mock("next/navigation", async () => (await import("../equipe/next-mocks")).nextNavigationMock);

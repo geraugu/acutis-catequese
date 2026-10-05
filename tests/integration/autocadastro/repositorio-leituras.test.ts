@@ -58,8 +58,18 @@ describe("listarFila (5.1)", () => {
   it("lista as pendentes da turma da mais antiga para a mais recente, sem revisadas nem de outra turma", async () => {
     const { turmaId, linkId } = await turmaComLink();
     const outra = await turmaComLink();
-    const nova = await enviar(linkId, turmaId, ficha({ nome: "Nova" }), new Date("2026-10-02T10:00:00Z"));
-    const velha = await enviar(linkId, turmaId, ficha({ nome: "Velha" }), new Date("2026-09-01T10:00:00Z"));
+    const nova = await enviar(
+      linkId,
+      turmaId,
+      ficha({ nome: "Nova" }),
+      new Date("2026-10-02T10:00:00Z"),
+    );
+    const velha = await enviar(
+      linkId,
+      turmaId,
+      ficha({ nome: "Velha" }),
+      new Date("2026-09-01T10:00:00Z"),
+    );
     const revisada = await enviar(linkId, turmaId, ficha({ nome: "Revisada" }));
     await confirmarComInscricao(revisada, turmaId, "2026-10-01" as DataCivil);
     await enviar(outra.linkId, outra.turmaId, ficha({ nome: "Outra" }));
@@ -125,7 +135,10 @@ describe("buscarCoincidencias (6.1, 6.2, 6.3)", () => {
     const existente = await criarCatequizandoDireto("Existente Tel", { telefone: formatado });
     const email = `x-${tel}@exemplo.com`;
     const porEmail = await criarCatequizandoDireto("Existente Email", { telefone: telUnico() });
-    await prisma.catequizando.update({ where: { id: porEmail }, data: { email: email.toUpperCase() } });
+    await prisma.catequizando.update({
+      where: { id: porEmail },
+      data: { email: email.toUpperCase() },
+    });
     const propria = await enviar(linkId, turmaId, ficha({ telefone: tel, email }));
 
     const coord = { papel: "coordenacao" as const, userId: "x" };
@@ -152,11 +165,20 @@ describe("buscarCoincidencias (6.1, 6.2, 6.3)", () => {
     });
 
     const ignorar = "00000000-0000-0000-0000-000000000000";
-    const [paraOutro] = await buscarCoincidencias(null, tel, ignorar, { papel: "catequista", userId: deOutra });
+    const [paraOutro] = await buscarCoincidencias(null, tel, ignorar, {
+      papel: "catequista",
+      userId: deOutra,
+    });
     expect(paraOutro).toMatchObject({ id: coincidente, visivel: false });
-    const [paraResp] = await buscarCoincidencias(null, tel, ignorar, { papel: "catequista", userId: responsavel });
+    const [paraResp] = await buscarCoincidencias(null, tel, ignorar, {
+      papel: "catequista",
+      userId: responsavel,
+    });
     expect(paraResp).toMatchObject({ id: coincidente, nome: "Coincidente", visivel: true });
-    const [paraRemovido] = await buscarCoincidencias(null, tel, ignorar, { papel: "catequista", userId: removido });
+    const [paraRemovido] = await buscarCoincidencias(null, tel, ignorar, {
+      papel: "catequista",
+      userId: removido,
+    });
     expect(paraRemovido!.visivel).toBe(false);
   });
 });

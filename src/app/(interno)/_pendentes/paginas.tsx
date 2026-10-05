@@ -61,7 +61,12 @@ export async function PaginaFila({
   const fila = await listarFila(turmaId);
   const itens = await Promise.all(
     fila.map(async (f) => {
-      const coincidentes = await buscarCoincidencias(f.email, f.telefone, f.catequizandoId, revisor);
+      const coincidentes = await buscarCoincidencias(
+        f.email,
+        f.telefone,
+        f.catequizandoId,
+        revisor,
+      );
       const avisos = avisosDaFicha({
         coincidentes,
         inscritos: situacao.inscritosVigentes,
