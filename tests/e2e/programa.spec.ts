@@ -359,6 +359,8 @@ test.describe("programa e encontros", () => {
       await page.keyboard.type(`${dia}${mes}${ano}`);
       // No Linux o Chromium segue o locale do sistema (en-US no CI): mês, dia e ano.
       if ((await campoData.inputValue()) !== data) {
+        // Sem o blur, o foco continua no segmento do ano; refocar volta ao primeiro segmento.
+        await campoData.blur();
         await campoData.focus();
         await page.keyboard.type(`${mes}${dia}${ano}`);
       }
