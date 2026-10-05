@@ -45,7 +45,7 @@
   - _Boundary: presenca/repositorio_
   - _Requirements: 2.1, 2.3, 3.2, 3.3, 3.4, 3.6, 4.2, 4.3, 4.5, 4.6, 4.7, 4.8, 9.2_
 
-- [ ] 3.2 Implementar os agregados de frequência e de progresso no repositório
+- [x] 3.2 Implementar os agregados de frequência e de progresso no repositório
   - Implementar `resumoPorEncontro`, `frequenciaDaTurma`, `frequenciaPorTurma`, `presencasDoCatequizando`, `cumpridosDoCatequizando`, `temasAtivosNumerados`, `inscritosSemOTema` e `alertasDeFrequencia`, sempre contando só encontros realizados e, na frequência, só quem não é visitante.
   - Pronto quando: os testes de integração mostram a frequência por catequizando e por turma sem visitantes e sem encontros reabertos, o catequizando que entrou depois contando só os encontros em que constava na chamada, a falta de origem continuando depois de uma reposição, o progresso contando só status presente (na turma ou como visitante), `inscritosSemOTema` listando só quem ainda não cumpriu, os alertas só de inscrição vigente em turma aberta e ordenados do menor para o maior percentual (restritos às turmas informadas), a frequência de turma encerrada e de catequizando desligado continuando consultável, e nenhuma presença removida ao desligar, transferir, inativar ou encerrar turma.
   - _Depends: 3.1_
@@ -200,3 +200,4 @@
 - 3.1: `adicionarVisitante` (repositório) não confere que o encontro pertence à turma nem se o catequizando já era inscrito na data; as ações 4.2 devem validar com `dadosDoEncontro` e `inscritosNaData` antes de chamá-lo.
 - 3.1: `salvarChamada` ignora marcações de quem já é visitante no encontro e não apaga presenças; em modo `nova` faz a transição condicional antes dos upserts, dentro da transação.
 - 3.1: o índice `inscricao_vigente_unica` permite uma só inscrição vigente por catequizando; nos testes, "já consta como inscrito" usa inscrição com saída posterior à data do encontro.
+- 3.2: `frequenciaDaTurma` em turma aberta lista só inscritos vigentes (contagem zerada se sem presença); em turma encerrada inclui quem teve inscrição ou presença não visitante na turma. A suíte de integração limpa o banco a cada teste (TRUNCATE no `beforeEach`) e roda sem paralelismo entre arquivos.

@@ -6,7 +6,13 @@ import type { DataCivil } from "@/modules/compartilhado/datas";
 import type { SituacaoEncontro } from "@/modules/programa/domain/encontro";
 import { numerarTemas } from "@/modules/programa/domain/tema";
 import type { ModoChamada } from "./domain/chamada";
-import type { StatusPresenca } from "./domain/frequencia";
+import type { TemaDoProgresso } from "@/modules/programa/domain/progresso";
+import {
+  contarPresencas,
+  emAlerta,
+  type ContagemFrequencia,
+  type StatusPresenca,
+} from "./domain/frequencia";
 
 export interface DadosDoEncontro {
   id: string;
@@ -39,6 +45,20 @@ export interface CandidatoVisitante {
   nome: string;
   turmaOrigemId: string;
   turmaOrigemNome: string;
+}
+
+export interface ContagemPorCatequizando {
+  catequizandoId: string;
+  nome: string;
+  contagem: ContagemFrequencia;
+}
+
+export interface Alerta {
+  catequizandoId: string;
+  nome: string;
+  turmaId: string;
+  turmaNome: string;
+  contagem: ContagemFrequencia;
 }
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -283,4 +303,288 @@ export async function removerVisitante(
     where: { encontroId, catequizandoId, visitante: true },
   });
   return count > 0;
+}
+
+const porNome = (a: { nome: string }, b: { nome: string }) => a.nome.localeCompare(b.nome, "pt-BR");
+
+/** Presença que conta na frequência: encontro realizado e não visitante (5.3, 8.7). */
+const PRESENCA_DE_FREQUENCIA = {
+  visitante: false,
+  encontro: { situacao: "realizado" },
+} satisfies Prisma.PresencaWhereInput;
+
+/** Contagem por encontro realizado da turma: inscritos e, à parte, o número de visitantes (6.3). */
+export async function resumoPorEncontro(
+  turmaId: string,
+): Promise<Map<string, ContagemFrequencia & { visitantes: number }>> {
+  const resumo = new Map<string, ContagemFrequencia & { visitantes: number }>();
+  if (!UUID.test(turmaId)) return resumo;
+  const linhas = await prisma.presenca.findMany({
+    where: { encontro: { turmaId, situacao: "realizado" } },
+    select: { encontroId: true, status: true, visitante: true },
+  });
+  const porEncontro = new Map<string, { status: StatusPresenca[]; visitantes: number }>();
+  for (const l of linhas) {
+    const acc = porEncontro.get(l.encontroId) ?? { status: [], visitantes: 0 };
+    if (l.visitante) acc.visitantes += 1;
+    else acc.status.push(l.status);
+    porEncontro.set(l.encontroId, acc);
+  }
+  for (const [encontroId, acc] of porEncontro) {
+    resumo.set(encontroId, { ...contarPresencas(acc.status), visitantes: acc.visitantes });
+  }
+  return resumo;
+}
+
+/**
+ * Frequência por catequizando da turma, por nome (6.1). Só conta presenças registradas na
+ * própria turma, então quem entrou depois só tem os encontros em que constava na chamada (5.2).
+ * Turma aberta: os inscritos vigentes, mesmo sem presenças (contagem zerada). Turma encerrada
+ * (consultável, 6.5): todos têm a inscrição encerrada, então entram os que tiveram inscrição
+ * ou presença de inscrito na turma.
+ */
+export async function frequenciaDaTurma(turmaId: string): Promise<ContagemPorCatequizando[]> {
+  if (!UUID.test(turmaId)) return [];
+  const turma = await prisma.turma.findUnique({
+    where: { id: turmaId },
+    select: { encerradaEm: true },
+  });
+  if (!turma) return [];
+  const encerrada = turma.encerradaEm !== null;
+  const [inscricoes, presencas] = await Promise.all([
+    prisma.inscricao.findMany({
+      where: { turmaId, ...(encerrada ? {} : { dataSaida: null }) },
+      select: { catequizandoId: true, catequizando: { select: { nome: true } } },
+    }),
+    prisma.presenca.findMany({
+      where: { turmaId, ...PRESENCA_DE_FREQUENCIA },
+      select: {
+        catequizandoId: true,
+        status: true,
+        catequizando: { select: { nome: true } },
+      },
+    }),
+  ]);
+  const nomes = new Map<string, string>();
+  for (const i of inscricoes) nomes.set(i.catequizandoId, i.catequizando.nome);
+  if (encerrada) for (const p of presencas) nomes.set(p.catequizandoId, p.catequizando.nome);
+  const status = new Map<string, StatusPresenca[]>();
+  for (const p of presencas) {
+    if (!nomes.has(p.catequizandoId)) continue;
+    status.set(p.catequizandoId, [...(status.get(p.catequizandoId) ?? []), p.status]);
+  }
+  return [...nomes]
+    .map(([catequizandoId, nome]) => ({
+      catequizandoId,
+      nome,
+      contagem: contarPresencas(status.get(catequizandoId) ?? []),
+    }))
+    .sort(porNome);
+}
+
+/** Uma entrada por turma com inscrição ou presença de inscrito; a atual primeiro, depois ciclo desc (5.6). */
+export async function frequenciaPorTurma(catequizandoId: string): Promise<
+  {
+    turmaId: string;
+    turmaNome: string;
+    ciclo: number;
+    atual: boolean;
+    contagem: ContagemFrequencia;
+  }[]
+> {
+  if (!UUID.test(catequizandoId)) return [];
+  const [inscricoes, presencas] = await Promise.all([
+    prisma.inscricao.findMany({
+      where: { catequizandoId },
+      select: {
+        turmaId: true,
+        dataSaida: true,
+        turma: { select: { nome: true, ciclo: true, encerradaEm: true } },
+      },
+    }),
+    prisma.presenca.findMany({
+      where: { catequizandoId, ...PRESENCA_DE_FREQUENCIA },
+      select: {
+        turmaId: true,
+        status: true,
+        turma: { select: { nome: true, ciclo: true } },
+      },
+    }),
+  ]);
+  const turmas = new Map<string, { turmaNome: string; ciclo: number; atual: boolean }>();
+  for (const i of inscricoes) {
+    const vigenteEmAberta = i.dataSaida === null && i.turma.encerradaEm === null;
+    const antes = turmas.get(i.turmaId);
+    turmas.set(i.turmaId, {
+      turmaNome: i.turma.nome,
+      ciclo: i.turma.ciclo,
+      atual: (antes?.atual ?? false) || vigenteEmAberta,
+    });
+  }
+  for (const p of presencas) {
+    if (!turmas.has(p.turmaId)) {
+      turmas.set(p.turmaId, { turmaNome: p.turma.nome, ciclo: p.turma.ciclo, atual: false });
+    }
+  }
+  return [...turmas]
+    .map(([turmaId, t]) => ({
+      turmaId,
+      ...t,
+      contagem: contarPresencas(
+        presencas.filter((p) => p.turmaId === turmaId).map((p) => p.status),
+      ),
+    }))
+    .sort((a, b) => Number(b.atual) - Number(a.atual) || b.ciclo - a.ciclo);
+}
+
+/** Presenças em encontros realizados, as mais recentes primeiro (5.7). */
+export async function presencasDoCatequizando(catequizandoId: string): Promise<
+  {
+    data: DataCivil;
+    turmaNome: string;
+    temaTitulo: string | null;
+    status: StatusPresenca;
+    visitante: boolean;
+  }[]
+> {
+  if (!UUID.test(catequizandoId)) return [];
+  const linhas = await prisma.presenca.findMany({
+    where: { catequizandoId, encontro: { situacao: "realizado" } },
+    orderBy: [{ encontro: { data: "desc" } }, { encontro: { horario: "desc" } }],
+    select: {
+      status: true,
+      visitante: true,
+      encontro: {
+        select: {
+          data: true,
+          turma: { select: { nome: true } },
+          tema: { select: { titulo: true } },
+        },
+      },
+    },
+  });
+  return linhas.map((l) => ({
+    data: paraCivil(l.encontro.data),
+    turmaNome: l.encontro.turma.nome,
+    temaTitulo: l.encontro.tema?.titulo ?? null,
+    status: l.status,
+    visitante: l.visitante,
+  }));
+}
+
+/** Presenças `presente` em encontro realizado com tema, como inscrito ou visitante (8.2, 8.4). */
+export async function cumpridosDoCatequizando(
+  catequizandoId: string,
+): Promise<{ temaId: string; turmaNome: string; data: DataCivil; visitante: boolean }[]> {
+  if (!UUID.test(catequizandoId)) return [];
+  const linhas = await prisma.presenca.findMany({
+    where: {
+      catequizandoId,
+      status: "presente",
+      encontro: { situacao: "realizado", temaId: { not: null } },
+    },
+    select: {
+      visitante: true,
+      encontro: {
+        select: { temaId: true, data: true, turma: { select: { nome: true } } },
+      },
+    },
+  });
+  return linhas.flatMap((l) =>
+    l.encontro.temaId
+      ? [
+          {
+            temaId: l.encontro.temaId,
+            turmaNome: l.encontro.turma.nome,
+            data: paraCivil(l.encontro.data),
+            visitante: l.visitante,
+          },
+        ]
+      : [],
+  );
+}
+
+/** Temas ativos na ordem do programa, com o número (8.2). */
+export async function temasAtivosNumerados(): Promise<TemaDoProgresso[]> {
+  const temas = await prisma.tema.findMany({
+    select: { id: true, titulo: true, ativo: true, posicao: true },
+  });
+  return numerarTemas(temas).flatMap((t) =>
+    t.numero === null ? [] : [{ id: t.id, titulo: t.titulo, numero: t.numero }],
+  );
+}
+
+/** Inscritos na data sem presença `presente` no tema, em qualquer turma, inclusive reposição (8.5). */
+export async function inscritosSemOTema(
+  turmaId: string,
+  data: DataCivil,
+  temaId: string,
+): Promise<Elegivel[]> {
+  if (!UUID.test(turmaId) || !UUID.test(temaId)) return [];
+  const inscritos = await inscritosNaData(turmaId, data);
+  if (inscritos.length === 0) return [];
+  const cumpriram = await prisma.presenca.findMany({
+    where: {
+      catequizandoId: { in: inscritos.map((i) => i.catequizandoId) },
+      status: "presente",
+      encontro: { situacao: "realizado", temaId },
+    },
+    select: { catequizandoId: true },
+  });
+  const ids = new Set(cumpriram.map((c) => c.catequizandoId));
+  return inscritos.filter((i) => !ids.has(i.catequizandoId));
+}
+
+/**
+ * Baixa frequência: só inscrição vigente em turma aberta, restrita a `turmaIds` quando informado,
+ * da menor frequência para a maior (7.6, 7.7, 9.3-9.5). Desligado ou inativado não aparece.
+ */
+export async function alertasDeFrequencia(
+  turmaIds: readonly string[] | "todas",
+  limite: number,
+): Promise<Alerta[]> {
+  const ids = turmaIds === "todas" ? null : turmaIds.filter((t) => UUID.test(t));
+  if (ids && ids.length === 0) return [];
+  const inscricoes = await prisma.inscricao.findMany({
+    where: {
+      dataSaida: null,
+      turma: { encerradaEm: null },
+      catequizando: { estado: "ativo" },
+      ...(ids ? { turmaId: { in: ids } } : {}),
+    },
+    select: {
+      catequizandoId: true,
+      turmaId: true,
+      turma: { select: { nome: true } },
+      catequizando: { select: { nome: true } },
+    },
+  });
+  if (inscricoes.length === 0) return [];
+  const presencas = await prisma.presenca.findMany({
+    where: {
+      ...PRESENCA_DE_FREQUENCIA,
+      turmaId: { in: [...new Set(inscricoes.map((i) => i.turmaId))] },
+      catequizandoId: { in: [...new Set(inscricoes.map((i) => i.catequizandoId))] },
+    },
+    select: { turmaId: true, catequizandoId: true, status: true },
+  });
+  const status = new Map<string, StatusPresenca[]>();
+  for (const p of presencas) {
+    const chave = `${p.turmaId}:${p.catequizandoId}`;
+    status.set(chave, [...(status.get(chave) ?? []), p.status]);
+  }
+  return inscricoes
+    .map((i) => ({
+      catequizandoId: i.catequizandoId,
+      nome: i.catequizando.nome,
+      turmaId: i.turmaId,
+      turmaNome: i.turma.nome,
+      contagem: contarPresencas(status.get(`${i.turmaId}:${i.catequizandoId}`) ?? []),
+    }))
+    .filter((a) => emAlerta(a.contagem, limite))
+    .sort(
+      (a, b) =>
+        a.contagem.presentes / a.contagem.total - b.contagem.presentes / b.contagem.total ||
+        porNome(a, b),
+    );
 }
