@@ -1,5 +1,5 @@
 ---
-updated_at: 2026-09-29
+updated_at: 2026-10-05
 ---
 # Visão do Produto
 
@@ -9,14 +9,18 @@ O nome homenageia São Carlo Acutis, padroeiro dos informáticos. O projeto é u
 
 ## Capacidades Principais
 
+- **Acesso por perfil**: a coordenação gerencia tudo; o catequista acessa apenas as turmas pelas quais é responsável.
+- **Gestão da equipe**: catequistas e coordenação, cada um com sua conta de acesso.
 - **Cadastro de catequizandos**: dados pessoais, contato e situação sacramental dos adultos em formação.
-- **Cadastro de catequistas**: quem conduz os encontros e as turmas pelas quais é responsável.
+- **Turmas e inscrições**: turmas por ciclo, com catequistas responsáveis e catequizandos inscritos.
+- **Autocadastro de catequizandos**: o adulto preenche a própria ficha por um link público da turma, com consentimento LGPD. A ficha fica pendente até o catequista ou a coordenação confirmá-la.
 - **Programa da catequese**: cronograma de encontros e temas ao longo da caminhada.
-- **Controle de presença**: registro da frequência em cada encontro e acompanhamento da assiduidade.
+- **Controle de presença** _(em desenvolvimento)_: registro da frequência em cada encontro, acompanhamento da assiduidade e reposição de temas em outra turma (visitante).
 
 ## Casos de Uso Alvo
 
 - A coordenação abre uma nova turma, associa catequistas e inscreve catequizandos.
+- O adulto se inscreve sozinho pelo link da turma e o catequista confirma a ficha.
 - O catequista consulta o programa e registra a presença no encontro do dia.
 - A coordenação identifica catequizandos com baixa frequência para acompanhamento pastoral.
 
