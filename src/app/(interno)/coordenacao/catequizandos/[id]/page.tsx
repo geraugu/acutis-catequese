@@ -14,6 +14,7 @@ import { mensagemDeAviso } from "@/modules/catequizandos/mensagens";
 import { AcoesEstado } from "@/components/catequizandos/acoes-estado";
 import { FichaCatequizando } from "@/components/catequizandos/ficha-catequizando";
 import { TurmaDoCatequizando } from "@/components/turmas/historico-turmas";
+import { BlocoFrequenciaDoCatequizando } from "@/app/(interno)/_presenca/blocos";
 import { historicoDoCatequizando } from "@/modules/turmas/repositorio";
 
 export const metadata: Metadata = {
@@ -50,6 +51,7 @@ export default async function CatequizandoPage({
       <Aviso mensagem={mensagemDeAviso(aviso)} />
       <FichaCatequizando catequizando={catequizando} />
       <TurmaDoCatequizando historico={historico} baseTurma="/coordenacao/turmas" />
+      {await BlocoFrequenciaDoCatequizando({ catequizandoId: id })}
       <div className="membro-acoes">
         <Link href={`/coordenacao/catequizandos/${id}/editar`} className="botao botao-secundario">
           Editar

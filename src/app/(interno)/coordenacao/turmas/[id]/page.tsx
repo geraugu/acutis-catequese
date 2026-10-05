@@ -31,6 +31,7 @@ import { SecaoLink } from "@/components/autocadastro/secao-link";
 import { listarEncontros } from "@/modules/programa/repositorio";
 import { proximoEncontro } from "@/modules/programa/domain/encontro";
 import { ProximoEncontro } from "@/components/programa/proximo-encontro";
+import { BlocoFrequenciaDaTurma, ordemDaBusca } from "@/app/(interno)/_presenca/blocos";
 import { DadosTurma } from "@/components/turmas/dados-turma";
 import { DesignarCatequista } from "@/components/turmas/designar-catequista";
 import { EncerrarTurma, RemoverCatequista } from "@/components/turmas/acoes-turma";
@@ -71,7 +72,8 @@ export default async function TurmaPage({
         termo ? catequizandosParaInscricao(termo) : Promise.resolve([]),
       ])
     : [[], []];
-  const proximo = proximoEncontro(await listarEncontros(id), hoje);
+  const encontros = await listarEncontros(id);
+  const proximo = proximoEncontro(encontros, hoje);
   const link = await obterLinkDaTurma(id);
 
   return (
@@ -87,6 +89,14 @@ export default async function TurmaPage({
       <DadosTurma turma={turma} />
 
       <ProximoEncontro encontro={proximo} linkCronograma={`/coordenacao/turmas/${id}/encontros`} />
+
+      {await BlocoFrequenciaDaTurma({
+        papel: "coordenacao",
+        turmaId: id,
+        encerrada: turma.encerrada,
+        encontros,
+        ordem: ordemDaBusca(busca.ordem),
+      })}
 
       {aberta ? (
         <div className="membro-acoes">

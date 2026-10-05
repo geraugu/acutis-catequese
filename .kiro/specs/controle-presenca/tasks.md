@@ -132,7 +132,7 @@
   - _Boundary: components/presenca_
   - _Requirements: 7.2, 7.3, 7.6, 7.7, 7.8, 7.9, 7.10_
 
-- [ ] 6. Páginas e integração
+- [x] 6. Páginas e integração
 
 - [x] 6.1 Criar a página de chamada e as rotas dos dois papéis
   - Criar `PaginaChamada` em `_presenca/paginas.tsx` (turma, data com dia da semana, horário e tema no topo; formulário de chamada; visitantes; quem ainda não viu o tema; mensagem de indisponibilidade com o motivo) e as rotas `coordenacao` e `catequista` de `…/encontros/[encontroId]/chamada`, cada uma com `requireRole` e o caminho exato.
@@ -169,7 +169,7 @@
   - _Boundary: components/programa/cronograma, app/_encontros_
   - _Requirements: 2.8, 3.4, 6.3_
 
-- [ ] 6.6 Integrar a frequência às páginas da turma e à ficha do catequizando
+- [x] 6.6 Integrar a frequência às páginas da turma e à ficha do catequizando
   - Incluir `ChamadaDeHoje` e `FrequenciaTurma` nas páginas da turma de `coordenacao` e `catequista`, e `FrequenciaCatequizando` nas fichas de catequizando dos dois papéis, usando `autorizarCatequizando` na ficha.
   - Pronto quando: os testes de integração mostram a página da turma com o encontro de hoje destacado e a frequência da turma, a ordenação por `?ordem=`, a ficha com frequência por turma, presenças e progresso, o catequista vendo a ficha só de catequizando inscrito numa turma dele e "Acesso negado" nos demais casos.
   - _Depends: 5.5, 3.4_
@@ -215,3 +215,4 @@
 - 6.2: `PaginaVisitantes({sessao, papel, turmaId, encontroId, termo, aviso})` em `_presenca/paginas.tsx`; o formulário GET da busca não define `action` (volta à mesma URL com `?q=`, perdendo o `?aviso=`, o que é aceitável).
 - 6.3: `PaginaFrequencia({sessao, papel, aviso})` em `_presenca/paginas.tsx`; rotas `/coordenacao/frequencia` e `/catequista/frequencia` (a ação do limite redireciona para a primeira). O item de menu "Frequência" é da tarefa 6.4.
 - 6.5: `Cronograma` ganhou `complemento?: (encontro) => ReactNode` (contrato entre `programa` e `presenca`; sem a prop nada muda). Não existe papel "só consulta" no cronograma: coordenação e catequista responsável gerenciam; a turma encerrada é a única só de consulta.
+- 6.6: os blocos compartilhados ficam em `src/app/(interno)/_presenca/blocos.tsx` (`BlocoFrequenciaDaTurma`, `BlocoFrequenciaDoCatequizando`, funções async chamadas com `await` pelas 4 páginas); `hrefOrdenar` descarta `aviso` e `q`. Layout das telas ainda não conferido no navegador: fazer na validação final (7.x).

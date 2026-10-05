@@ -8,6 +8,7 @@ import { hojeCivil } from "@/modules/compartilhado/datas";
 import { listarEncontros } from "@/modules/programa/repositorio";
 import { proximoEncontro } from "@/modules/programa/domain/encontro";
 import { ProximoEncontro } from "@/components/programa/proximo-encontro";
+import { BlocoFrequenciaDaTurma, ordemDaBusca } from "@/app/(interno)/_presenca/blocos";
 import { DadosTurma } from "@/components/turmas/dados-turma";
 import { Inscritos } from "@/components/turmas/inscritos";
 import { Aviso } from "@/components/comum/aviso";
@@ -36,13 +37,14 @@ export default async function TurmaCatequistaPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { id } = await params;
-  const { aviso } = await searchParams;
+  const { aviso, ordem } = await searchParams;
   const sessao = await requireRole(["catequista"], `/catequista/turmas/${id}`);
   if (!(await podeVerTurma(sessao, id))) redirect("/acesso-negado");
   const turma = await obterTurma(id);
   if (!turma) notFound();
   const hoje = hojeCivil();
-  const proximo = proximoEncontro(await listarEncontros(id), hoje);
+  const encontros = await listarEncontros(id);
+  const proximo = proximoEncontro(encontros, hoje);
   const link = await obterLinkDaTurma(id);
 
   return (
@@ -58,6 +60,14 @@ export default async function TurmaCatequistaPage({
       <DadosTurma turma={turma} />
 
       <ProximoEncontro encontro={proximo} linkCronograma={`/catequista/turmas/${id}/encontros`} />
+
+      {await BlocoFrequenciaDaTurma({
+        papel: "catequista",
+        turmaId: id,
+        encerrada: turma.encerrada,
+        encontros,
+        ordem: ordemDaBusca(ordem),
+      })}
 
       <SecaoLink
         situacao={link ? situacaoDoLink(link, turma.encerrada, hoje) : null}

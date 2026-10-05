@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { requireRole } from "@/modules/auth/dal";
 import { podeVerCatequizando } from "@/modules/turmas/acesso";
 import { obterCatequizando } from "@/modules/catequizandos/repositorio";
+import { BlocoFrequenciaDoCatequizando } from "@/app/(interno)/_presenca/blocos";
 import { FichaCatequizando } from "@/components/catequizandos/ficha-catequizando";
 
 export const metadata: Metadata = {
@@ -31,6 +32,7 @@ export default async function CatequizandoCatequistaPage({
         <h1>{catequizando.nome}</h1>
       </div>
       <FichaCatequizando catequizando={catequizando} />
+      {await BlocoFrequenciaDoCatequizando({ catequizandoId: id })}
     </>
   );
 }
