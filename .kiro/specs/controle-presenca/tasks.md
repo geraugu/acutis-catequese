@@ -66,7 +66,7 @@
   - _Boundary: presenca/autorizacao_
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-- [ ] 4. Server Actions da presença
+- [x] 4. Server Actions da presença
 
 - [x] 4.1 Implementar a ação de salvar a chamada
   - `salvarChamadaAction`: autoriza, recalcula no servidor os inscritos na data, verifica disponibilidade e marcações, grava em transação e redireciona para a base validada com o aviso `chamada-salva` ou `chamada-atualizada`. Em erro, devolve as marcações já feitas e os faltantes; redirect fora do try/catch e log só com ids.
@@ -82,7 +82,7 @@
   - _Boundary: presenca/actions_
   - _Requirements: 4.1, 4.3, 4.4, 4.5, 4.6, 4.8, 9.1_
 
-- [ ] 4.3 Implementar a ação do limite de frequência
+- [x] 4.3 Implementar a ação do limite de frequência
   - `salvarLimiteAction`, só para a coordenação, validando com `limiteSchema` e redirecionando com o aviso `limite-salvo`.
   - Pronto quando: os testes de integração mostram o limite salvo e lido de volta, mensagens junto ao campo para vazio, não inteiro e fora de 1 a 100, o catequista rejeitado sem alterar o valor, e os alertas recalculados com o novo limite na leitura seguinte.
   - _Depends: 4.2_
@@ -204,3 +204,4 @@
 - 3.3: `turmasDoUsuario` (tarefa 3.4, em `autorizacao.ts`) deve usar `turmasAbertasDoCatequista(userId)` do repositório; ids de usuário do better-auth não são UUID e não devem ser validados como tal.
 - 4.1: arquivos `"use server"` só exportam funções async (tipos são permitidos); as ações 4.2 e 4.3 entram no mesmo `actions.ts`. `salvarChamadaAction` aceita só as marcações enviadas: num encontro reaberto, quem já tinha presença mas não veio no formulário conta como faltante (a tela vem pré-preenchida).
 - 4.2: as ações de visitante recebem a base do cronograma e redirecionam para `${base}/${encontroId}/chamada/visitantes?aviso=visitante-adicionado|visitante-removido`; a página 6.2 deve usar essa rota (`…/encontros/[encontroId]/chamada/visitantes`) e passar essa base. Visitante em encontro planejado só passa a contar no progresso depois que a chamada for salva (encontro realizado).
+- 4.3: `salvarLimiteAction` redireciona para `/coordenacao/frequencia?aviso=limite-salvo`; essa rota é criada na tarefa 6.3 (o formulário do limite envia o campo `percentual`).

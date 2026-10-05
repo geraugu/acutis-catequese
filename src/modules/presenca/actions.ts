@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { hojeCivil } from "@/modules/compartilhado/datas";
 import { baseValida } from "@/modules/programa/domain/encontro";
-import { autorizarTurma } from "./autorizacao";
+import { autorizarTurma, exigirCoordenacao } from "./autorizacao";
 import {
   disponibilidadeDaChamada,
   lerMarcacoes,
@@ -11,6 +11,7 @@ import {
   podeGerenciarVisitantes,
   validarMarcacoes,
 } from "./domain/chamada";
+import { limiteSchema } from "./domain/frequencia";
 import {
   MSG_ERRO_INESPERADO,
   MSG_FALTAM_MARCACOES,
@@ -29,6 +30,7 @@ import {
   presencasDoEncontro,
   removerVisitante,
   salvarChamada,
+  salvarLimite,
 } from "./repositorio";
 
 export type EstadoPresenca = {
@@ -198,4 +200,30 @@ export async function removerVisitanteAction(
         : { erro: MSG_VISITANTE_INDISPONIVEL },
     "remover o visitante",
   );
+}
+
+/** Salvar o limite de baixa frequência (1.3, 7.2, 7.3, 7.11): só a coordenação; os alertas são recalculados na leitura. */
+export async function salvarLimiteAction(
+  _anterior: EstadoPresenca,
+  dados: FormData,
+): Promise<EstadoPresenca> {
+  await exigirCoordenacao(); // 1.3: antes de qualquer leitura
+
+  const bruto = dados.get("percentual");
+  const valores = { percentual: typeof bruto === "string" ? bruto : "" };
+  const resultado = limiteSchema().safeParse(valores.percentual);
+  if (!resultado.success) {
+    return {
+      errosCampos: { percentual: resultado.error.issues[0]?.message ?? MSG_ERRO_INESPERADO },
+      valores,
+    };
+  }
+  try {
+    await salvarLimite(resultado.data);
+  } catch (e) {
+    console.error("[presenca] falha ao salvar o limite", { erro: nomeDoErro(e) });
+    return { erro: MSG_ERRO_INESPERADO, valores };
+  }
+  // Fora do try/catch: redirect lança NEXT_REDIRECT.
+  redirect("/coordenacao/frequencia?aviso=limite-salvo");
 }
