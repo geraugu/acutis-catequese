@@ -89,7 +89,7 @@
   - _Boundary: presenca/actions_
   - _Requirements: 1.3, 7.2, 7.3, 7.11_
 
-- [ ] 5. Componentes de interface
+- [x] 5. Componentes de interface
 
 - [x] 5.1 Criar os estilos e a tela de chamada
   - Seguir `.kiro/steering/design-system.md`. Criar em `globals.css` os estilos da chamada, dos alertas e dos blocos de frequência usados por todos os componentes de presença. Criar `status-presenca` (rótulo e ícone por status) e `chamada-form` (cliente): uma coluna de linhas, grupo de rádios nativos por inscrito, área de toque mínima de 44 px, "Marcar todos como presentes", totais por status atualizados ao marcar, faltantes destacados e marcações mantidas depois de erro.
@@ -125,7 +125,7 @@
   - _Boundary: components/presenca_
   - _Requirements: 5.6, 5.7, 8.2, 8.3, 10.5_
 
-- [ ] 5.6 Criar a lista de alertas e o formulário do limite
+- [x] 5.6 Criar a lista de alertas e o formulário do limite
   - `alertas-frequencia` (nome, turma, percentual, contagens, em ordem crescente, com estado vazio positivo e alerta por texto e ícone) e `formulario-limite` (campo do limite com erro junto ao campo).
   - Pronto quando: os testes de componente mostram a lista ordenada, a mensagem positiva quando ninguém está em alerta, o limite em vigor exibido, o erro do campo com valor inválido e o formulário ausente para quem não é coordenação.
   - _Depends: 5.5_
@@ -210,3 +210,4 @@
 - 5.3: `ResumoChamada({situacao, contagem})` exporta `ContagemChamada`; `ChamadaDeHoje({encontro, turmaEncerrada, hoje, hrefChamada})` só decide se exibe; a página (6.6) escolhe qual encontro é o de hoje.
 - 5.4: `FrequenciaTurma({itens, limite, ordem, hrefOrdenar})` calcula tudo pelo domínio; o helper `plural(n, singular, plural)` é exportado de `resumo-chamada.tsx` e deve ser reaproveitado pelos demais componentes que exibam contagens (use singular quando N=1).
 - 5.5: `FrequenciaCatequizando({turmas, limite, presencas, progresso})` exporta `TurmaDoCatequizando` e `PresencaDoCatequizando` (tipos estruturais, sem importar o repositório `server-only`); a turma atual usa `presenca-turma-atual` + selo "Turma atual". Opcional futuro: classe própria para esse selo (hoje reaproveita `presenca-selo-visitante`).
+- 5.6: `AlertasFrequencia({alertas, limite})` (puro) e `FormularioLimite({limiteAtual, salvarLimiteAction})` (cliente; exporta `AcaoLimite`); `SeloBaixaFrequencia` existe em arquivo próprio, mas `frequencia-turma.tsx` e `frequencia-catequizando.tsx` ainda têm uma cópia local do mesmo selo (unificação opcional, trivial).
