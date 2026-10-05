@@ -68,7 +68,7 @@
 
 - [ ] 4. Server Actions da presença
 
-- [ ] 4.1 Implementar a ação de salvar a chamada
+- [x] 4.1 Implementar a ação de salvar a chamada
   - `salvarChamadaAction`: autoriza, recalcula no servidor os inscritos na data, verifica disponibilidade e marcações, grava em transação e redireciona para a base validada com o aviso `chamada-salva` ou `chamada-atualizada`. Em erro, devolve as marcações já feitas e os faltantes; redirect fora do try/catch e log só com ids.
   - Pronto quando: os testes de integração mostram salvar com todos marcados registrando as presenças, marcando o encontro como realizado e redirecionando com o aviso; faltantes devolvidos sem gravar nada; recusa de data futura, encontro cancelado, turma encerrada e turma sem inscritos; correção de encontro realizado com o aviso de atualização; novo inscrito entrando na correção; encontro reaberto salvo de novo como nova chamada preenchida; ação direta por catequista de outra turma e por usuário sem papel rejeitada sem alterar dados; e falha inesperada devolvendo a mensagem padrão com as marcações preservadas.
   - _Depends: 2.2, 2.4, 3.4_
@@ -202,3 +202,4 @@
 - 3.1: o índice `inscricao_vigente_unica` permite uma só inscrição vigente por catequizando; nos testes, "já consta como inscrito" usa inscrição com saída posterior à data do encontro.
 - 3.2: `frequenciaDaTurma` em turma aberta lista só inscritos vigentes (contagem zerada se sem presença); em turma encerrada inclui quem teve inscrição ou presença não visitante na turma. A suíte de integração limpa o banco a cada teste (TRUNCATE no `beforeEach`) e roda sem paralelismo entre arquivos.
 - 3.3: `turmasDoUsuario` (tarefa 3.4, em `autorizacao.ts`) deve usar `turmasAbertasDoCatequista(userId)` do repositório; ids de usuário do better-auth não são UUID e não devem ser validados como tal.
+- 4.1: arquivos `"use server"` só exportam funções async (tipos são permitidos); as ações 4.2 e 4.3 entram no mesmo `actions.ts`. `salvarChamadaAction` aceita só as marcações enviadas: num encontro reaberto, quem já tinha presença mas não veio no formulário conta como faltante (a tela vem pré-preenchida).
