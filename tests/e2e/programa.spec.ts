@@ -357,6 +357,11 @@ test.describe("programa e encontros", () => {
       await campoData.focus();
       // Campo de data em pt-BR: dia, mês e ano, com avanço automático entre segmentos.
       await page.keyboard.type(`${dia}${mes}${ano}`);
+      // No Linux o Chromium segue o locale do sistema (en-US no CI): mês, dia e ano.
+      if ((await campoData.inputValue()) !== data) {
+        await campoData.focus();
+        await page.keyboard.type(`${mes}${dia}${ano}`);
+      }
       await expect(campoData).toHaveValue(data);
       const horario = page.getByLabel("Horário");
       for (
