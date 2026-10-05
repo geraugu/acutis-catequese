@@ -17,7 +17,7 @@
   - _Boundary: presenca/domain/frequencia_
   - _Requirements: 5.1, 5.3, 5.4, 5.8, 6.1, 6.4, 7.1, 7.3, 7.4, 7.5, 8.7_
 
-- [ ] 2.2 Implementar as regras da chamada
+- [x] 2.2 Implementar as regras da chamada
   - Criar `disponibilidadeDaChamada`, `inscritoNaData`, `montarLinhas`, `lerMarcacoes`, `validarMarcacoes` e `podeGerenciarVisitantes`, com as mensagens em pt-BR do design.
   - Pronto quando: os testes unitários cobrem cada motivo sem chamada (turma encerrada, cancelado, data futura) na ordem de precedência, planejado até hoje como `nova` e realizado como `correcao`; `inscritoNaData` com entrada e saída iguais à data do encontro (saída exclusiva) e com transferência no mesmo dia; `montarLinhas` com registro existente, inscrito novo sem status e visitante fora da lista; `validarMarcacoes` com faltantes, lista vazia e ids desconhecidos ignorados; e `podeGerenciarVisitantes` falso sem tema, com turma encerrada e sem chamada disponível.
   - _Depends: 2.1_
