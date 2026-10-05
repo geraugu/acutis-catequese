@@ -21,6 +21,7 @@ import {
   mensagemDeAviso,
 } from "@/modules/programa/mensagens";
 import { disponibilidadeDaChamada } from "@/modules/presenca/domain/chamada";
+import { mensagemDeAviso as mensagemDeAvisoPresenca } from "@/modules/presenca/mensagens";
 import { resumoPorEncontro } from "@/modules/presenca/repositorio";
 import { ResumoChamada } from "@/components/presenca/resumo-chamada";
 import { Aviso } from "@/components/comum/aviso";
@@ -103,7 +104,9 @@ export async function PaginaCronograma({
           </Link>
         ) : null}
       </div>
-      <Aviso mensagem={mensagemDeAviso(primeiro(aviso))} />
+      <Aviso
+        mensagem={mensagemDeAviso(primeiro(aviso)) ?? mensagemDeAvisoPresenca(primeiro(aviso))}
+      />
       {aberta ? null : (
         <p className="turma-somente-leitura" role="status">
           {MSG_TURMA_ENCERRADA}

@@ -35,8 +35,13 @@ function somaDias(data: string, n: number): string {
   return d.toISOString().slice(0, 10);
 }
 
-async function html(s: SessaoUsuario, papel: "coordenacao" | "catequista", turmaId: string) {
-  const el = await PaginaCronograma({ sessao: s, papel, turmaId, aviso: undefined });
+async function html(
+  s: SessaoUsuario,
+  papel: "coordenacao" | "catequista",
+  turmaId: string,
+  aviso?: string,
+) {
+  const el = await PaginaCronograma({ sessao: s, papel, turmaId, aviso });
   return renderToStaticMarkup(el);
 }
 
@@ -119,5 +124,29 @@ describe("PaginaCronograma — chamada (2.8, 3.4, 6.3)", () => {
     const h = await html(sessao(c.resp, "catequista"), "catequista", c.turmaId);
     expect(h).toContain("Fazer chamada");
     expect(h).not.toContain("presente ·");
+  });
+
+  describe("aviso do ?aviso= (2.3, 2.7)", () => {
+    async function comAviso(aviso: string) {
+      const c = await cenario();
+      return html(sessao(c.resp, "catequista"), "catequista", c.turmaId, aviso);
+    }
+
+    it("mostra 'Chamada salva.' para chamada-salva", async () => {
+      expect(await comAviso("chamada-salva")).toContain("Chamada salva.");
+    });
+
+    it("mostra 'Chamada atualizada.' para chamada-atualizada", async () => {
+      expect(await comAviso("chamada-atualizada")).toContain("Chamada atualizada.");
+    });
+
+    it("mantém o aviso do programa (encontro-criado)", async () => {
+      expect(await comAviso("encontro-criado")).toContain("Encontro criado.");
+    });
+
+    it("aviso desconhecido não renderiza mensagem de aviso", async () => {
+      const h = await comAviso("xyz");
+      expect(h).not.toContain('role="status"');
+    });
   });
 });

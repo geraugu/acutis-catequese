@@ -178,7 +178,7 @@
 
 - [ ] 7. Validação ponta a ponta
 
-- [ ] 7.1 Testar o fluxo da chamada no celular
+- [x] 7.1 Testar o fluxo da chamada no celular
   - Em `tests/e2e/presenca.spec.ts`, com viewport de 360 px e o catequista autenticado: abrir o encontro de hoje, "Marcar todos como presentes", ajustar dois status, salvar, ver "Chamada salva", o encontro realizado e a frequência na página da turma; depois corrigir um status e ver "Chamada atualizada".
   - Pronto quando: o teste passa em `npm run test:e2e`, sem rolagem horizontal, e a chamada é concluída só com teclado em um segundo caso.
   - _Depends: 6.6, 6.5_
@@ -216,3 +216,4 @@
 - 6.3: `PaginaFrequencia({sessao, papel, aviso})` em `_presenca/paginas.tsx`; rotas `/coordenacao/frequencia` e `/catequista/frequencia` (a ação do limite redireciona para a primeira). O item de menu "Frequência" é da tarefa 6.4.
 - 6.5: `Cronograma` ganhou `complemento?: (encontro) => ReactNode` (contrato entre `programa` e `presenca`; sem a prop nada muda). Não existe papel "só consulta" no cronograma: coordenação e catequista responsável gerenciam; a turma encerrada é a única só de consulta.
 - 6.6: os blocos compartilhados ficam em `src/app/(interno)/_presenca/blocos.tsx` (`BlocoFrequenciaDaTurma`, `BlocoFrequenciaDoCatequizando`, funções async chamadas com `await` pelas 4 páginas); `hrefOrdenar` descarta `aviso` e `q`. Layout das telas ainda não conferido no navegador: fazer na validação final (7.x).
+- 7.1: o e2e achou que o cronograma não exibia os avisos da presença (`chamada-salva`, `chamada-atualizada`); `PaginaCronograma` agora tenta o aviso do programa e depois o da presença (coberto por teste de integração). Os e2e criam dados por `tests/e2e/criar-chamada.ts` (script tsx, como `criar-ficha-pendente.ts`); `VERIFICACAO_VISUAL=<pasta>` grava screenshots 360 px. Observações de produto pendentes de decisão: o alerta de faltantes permanece depois de marcar tudo até o próximo envio, e quem só tem "justificado" aparece com 0% e em baixa frequência (regra decidida).
