@@ -75,7 +75,7 @@
   - _Boundary: presenca/actions_
   - _Requirements: 1.5, 2.3, 2.4, 2.5, 2.6, 3.2, 3.5, 9.1, 10.6_
 
-- [ ] 4.2 Implementar as ações de visitante
+- [x] 4.2 Implementar as ações de visitante
   - `adicionarVisitanteAction` e `removerVisitanteAction`, com a mesma autorização, a verificação de `podeGerenciarVisitantes` e os avisos `visitante-adicionado` e `visitante-removido`.
   - Pronto quando: os testes de integração mostram o visitante registrado como presente com a turma de origem e a inscrição dele intacta, a recusa sem tema, em turma encerrada, em encontro cancelado e duplicado, a remoção apagando só o registro de visitante e o progresso do catequizando recalculado, e a rejeição de ação direta sem permissão.
   - _Depends: 4.1_
@@ -203,3 +203,4 @@
 - 3.2: `frequenciaDaTurma` em turma aberta lista só inscritos vigentes (contagem zerada se sem presença); em turma encerrada inclui quem teve inscrição ou presença não visitante na turma. A suíte de integração limpa o banco a cada teste (TRUNCATE no `beforeEach`) e roda sem paralelismo entre arquivos.
 - 3.3: `turmasDoUsuario` (tarefa 3.4, em `autorizacao.ts`) deve usar `turmasAbertasDoCatequista(userId)` do repositório; ids de usuário do better-auth não são UUID e não devem ser validados como tal.
 - 4.1: arquivos `"use server"` só exportam funções async (tipos são permitidos); as ações 4.2 e 4.3 entram no mesmo `actions.ts`. `salvarChamadaAction` aceita só as marcações enviadas: num encontro reaberto, quem já tinha presença mas não veio no formulário conta como faltante (a tela vem pré-preenchida).
+- 4.2: as ações de visitante recebem a base do cronograma e redirecionam para `${base}/${encontroId}/chamada/visitantes?aviso=visitante-adicionado|visitante-removido`; a página 6.2 deve usar essa rota (`…/encontros/[encontroId]/chamada/visitantes`) e passar essa base. Visitante em encontro planejado só passa a contar no progresso depois que a chamada for salva (encontro realizado).

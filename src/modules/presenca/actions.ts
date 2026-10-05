@@ -8,6 +8,7 @@ import {
   disponibilidadeDaChamada,
   lerMarcacoes,
   montarLinhas,
+  podeGerenciarVisitantes,
   validarMarcacoes,
 } from "./domain/chamada";
 import {
@@ -16,11 +17,17 @@ import {
   MSG_SEM_INSCRITOS,
   MSG_SITUACAO_MUDOU,
   MSG_TURMA_ENCERRADA,
+  MSG_VISITANTE_DUPLICADO,
+  MSG_VISITANTE_INDISPONIVEL,
+  MSG_VISITANTE_SEM_TEMA,
 } from "./mensagens";
 import {
+  adicionarVisitante,
   dadosDoEncontro,
+  type DadosDoEncontro,
   inscritosNaData,
   presencasDoEncontro,
+  removerVisitante,
   salvarChamada,
 } from "./repositorio";
 
@@ -102,4 +109,93 @@ export async function salvarChamadaAction(
   }
   // Fora do try/catch: redirect lança NEXT_REDIRECT.
   redirect(`${destino}?aviso=${aviso}`);
+}
+
+/** Mensagem de recusa quando visitantes não podem ser gerenciados no encontro (4.1, 4.4). */
+function motivoSemVisitantes(encontro: DadosDoEncontro): string {
+  if (encontro.turmaEncerrada) return MSG_TURMA_ENCERRADA;
+  if (encontro.temaId === null) return MSG_VISITANTE_SEM_TEMA;
+  const disp = disponibilidadeDaChamada(encontro, { encerrada: false }, hojeCivil());
+  return disp.disponivel ? MSG_ERRO_INESPERADO : disp.mensagem;
+}
+
+/**
+ * Convenção de `base` nas ações de visitante: é a base do cronograma (a mesma da chamada);
+ * a volta é a página de visitantes do encontro, `${base}/${encontroId}/chamada/visitantes`.
+ */
+async function gerenciarVisitante(
+  turmaId: string,
+  encontroId: string,
+  base: string,
+  operacao: (encontro: DadosDoEncontro) => Promise<{ erro: string } | { aviso: string }>,
+  rotuloLog: string,
+): Promise<EstadoPresenca> {
+  await autorizarTurma(turmaId); // 1.5: antes de qualquer leitura
+
+  const destino = baseValida(base, turmaId);
+  let aviso: string;
+  try {
+    const encontro = await dadosDoEncontro(turmaId, encontroId);
+    if (!encontro) return { erro: MSG_ERRO_INESPERADO };
+    const podeGerenciar = podeGerenciarVisitantes(
+      encontro,
+      { encerrada: encontro.turmaEncerrada },
+      hojeCivil(),
+    );
+    if (!podeGerenciar) return { erro: motivoSemVisitantes(encontro) };
+
+    const resultado = await operacao(encontro);
+    if ("erro" in resultado) return { erro: resultado.erro };
+    aviso = resultado.aviso;
+  } catch (e) {
+    console.error(`[presenca] falha ao ${rotuloLog}`, { turmaId, encontroId, erro: nomeDoErro(e) });
+    return { erro: MSG_ERRO_INESPERADO };
+  }
+  // Fora do try/catch: redirect lança NEXT_REDIRECT.
+  redirect(`${destino}/${encontroId}/chamada/visitantes?aviso=${aviso}`);
+}
+
+/** Adicionar visitante (4.1, 4.3, 4.4, 4.5, 9.1): presente, com a turma de origem; inscrição intacta. */
+export async function adicionarVisitanteAction(
+  turmaId: string,
+  encontroId: string,
+  base: string,
+  catequizandoId: string,
+): Promise<EstadoPresenca> {
+  return gerenciarVisitante(
+    turmaId,
+    encontroId,
+    base,
+    async (encontro) => {
+      // O repositório não confere isto: quem era inscrito na data não é visitante (4.1).
+      const inscritos = await inscritosNaData(turmaId, encontro.data);
+      if (inscritos.some((i) => i.catequizandoId === catequizandoId)) {
+        return { erro: MSG_VISITANTE_INDISPONIVEL };
+      }
+      const resultado = await adicionarVisitante({ encontroId, turmaId }, catequizandoId);
+      if (resultado === "duplicado") return { erro: MSG_VISITANTE_DUPLICADO };
+      if (resultado === "indisponivel") return { erro: MSG_VISITANTE_INDISPONIVEL };
+      return { aviso: "visitante-adicionado" };
+    },
+    "adicionar o visitante",
+  );
+}
+
+/** Remover visitante (4.6, 4.8, 9.1): só apaga linha de visitante; o progresso é recalculado na leitura. */
+export async function removerVisitanteAction(
+  turmaId: string,
+  encontroId: string,
+  base: string,
+  catequizandoId: string,
+): Promise<EstadoPresenca> {
+  return gerenciarVisitante(
+    turmaId,
+    encontroId,
+    base,
+    async () =>
+      (await removerVisitante(encontroId, catequizandoId))
+        ? { aviso: "visitante-removido" }
+        : { erro: MSG_VISITANTE_INDISPONIVEL },
+    "remover o visitante",
+  );
 }
