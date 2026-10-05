@@ -141,7 +141,7 @@
   - _Boundary: app/_presenca, rotas de chamada_
   - _Requirements: 1.4, 2.1, 2.5, 2.7, 3.1, 3.5, 9.1, 10.1, 10.5_
 
-- [ ] 6.2 Criar a página de visitantes e as rotas dos dois papéis
+- [x] 6.2 Criar a página de visitantes e as rotas dos dois papéis
   - Criar `PaginaVisitantes` (busca, lista de visitantes e remoção) e as rotas de `…/chamada/visitantes`, ligadas à chamada por um link que só aparece quando a ação "Adicionar visitante" é permitida.
   - Pronto quando: os testes mostram a página recusando encontro sem tema e turma encerrada com a mensagem do motivo, o link na chamada aparecendo só com tema, a busca e o registro funcionando pelo formulário e o catequista sem acesso à turma enviado a "Acesso negado".
   - _Depends: 6.1, 4.2_
@@ -212,3 +212,4 @@
 - 5.5: `FrequenciaCatequizando({turmas, limite, presencas, progresso})` exporta `TurmaDoCatequizando` e `PresencaDoCatequizando` (tipos estruturais, sem importar o repositório `server-only`); a turma atual usa `presenca-turma-atual` + selo "Turma atual". Opcional futuro: classe própria para esse selo (hoje reaproveita `presenca-selo-visitante`).
 - 5.6: `AlertasFrequencia({alertas, limite})` (puro) e `FormularioLimite({limiteAtual, salvarLimiteAction})` (cliente; exporta `AcaoLimite`); `SeloBaixaFrequencia` existe em arquivo próprio, mas `frequencia-turma.tsx` e `frequencia-catequizando.tsx` ainda têm uma cópia local do mesmo selo (unificação opcional, trivial).
 - 6.1: `PaginaChamada({sessao, papel, turmaId, encontroId, aviso})` vive em `src/app/(interno)/_presenca/paginas.tsx` (as páginas 6.2 e 6.3 entram no mesmo arquivo); a página de visitantes deve usar a rota `…/encontros/[encontroId]/chamada/visitantes`, e o link "Adicionar visitante" já aponta para ela. A re-verificação da remediação de CSS (`presenca-encontro`) foi feita pelo controlador, sem novo revisor, por ser só acréscimo de CSS.
+- 6.2: `PaginaVisitantes({sessao, papel, turmaId, encontroId, termo, aviso})` em `_presenca/paginas.tsx`; o formulário GET da busca não define `action` (volta à mesma URL com `?q=`, perdendo o `?aviso=`, o que é aceitável).
