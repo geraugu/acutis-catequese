@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import type { SessaoUsuario } from "@/modules/auth/dal";
 import { podeVerTurma } from "@/modules/turmas/acesso";
+import { turmasDoUsuario } from "@/modules/presenca/autorizacao";
 import { formatarDataComDia, hojeCivil } from "@/modules/compartilhado/datas";
 import { ROTULO_SITUACAO } from "@/modules/programa/domain/encontro";
 import {
@@ -9,12 +10,15 @@ import {
   dadosDoEncontro,
   inscritosNaData,
   inscritosSemOTema,
+  alertasDeFrequencia,
+  obterLimite,
   presencasDoEncontro,
 } from "@/modules/presenca/repositorio";
 import {
   adicionarVisitanteAction,
   removerVisitanteAction,
   salvarChamadaAction,
+  salvarLimiteAction,
 } from "@/modules/presenca/actions";
 import {
   disponibilidadeDaChamada,
@@ -27,6 +31,8 @@ import {
   mensagemDeAviso,
 } from "@/modules/presenca/mensagens";
 import { Aviso } from "@/components/comum/aviso";
+import { AlertasFrequencia } from "@/components/presenca/alertas-frequencia";
+import { FormularioLimite } from "@/components/presenca/formulario-limite";
 import { BuscaVisitante } from "@/components/presenca/busca-visitante";
 import { ChamadaForm } from "@/components/presenca/chamada-form";
 import { ListaVisitantes } from "@/components/presenca/lista-visitantes";
@@ -279,6 +285,43 @@ export async function PaginaVisitantes({
           ) : null}
         </>
       )}
+    </>
+  );
+}
+
+/** Área "Frequência": alertas de baixa frequência e, só para a coordenação, o limite (1.2, 7.6, 7.7, 7.10, 7.11). */
+export async function PaginaFrequencia({
+  sessao,
+  papel,
+  aviso,
+}: {
+  sessao: SessaoUsuario;
+  papel: Papel;
+  aviso: string | string[] | undefined;
+}) {
+  const limite = await obterLimite();
+  const alertas = await alertasDeFrequencia(await turmasDoUsuario(sessao), limite);
+
+  return (
+    <>
+      <div className="pagina-cabecalho">
+        <h1>Frequência</h1>
+      </div>
+      <p>
+        Catequizandos com frequência abaixo do limite nas turmas abertas. A lista é recalculada a
+        cada visita.
+      </p>
+      <Aviso mensagem={mensagemDeAviso(primeiro(aviso))} />
+      <AlertasFrequencia
+        limite={limite}
+        alertas={alertas.map((a) => ({
+          ...a,
+          href: `/${papel}/catequizandos/${a.catequizandoId}`,
+        }))}
+      />
+      {papel === "coordenacao" ? (
+        <FormularioLimite limiteAtual={limite} salvarLimiteAction={salvarLimiteAction} />
+      ) : null}
     </>
   );
 }

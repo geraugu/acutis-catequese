@@ -148,7 +148,7 @@
   - _Boundary: app/_presenca, rotas de visitantes_
   - _Requirements: 4.1, 4.4, 4.9_
 
-- [ ] 6.3 Criar a área "Frequência" e as rotas dos dois papéis
+- [x] 6.3 Criar a área "Frequência" e as rotas dos dois papéis
   - Criar `PaginaFrequencia` com o limite em vigor, a lista de alertas (todas as turmas abertas para a coordenação; só as turmas do catequista) e, só para a coordenação, o formulário do limite; criar as rotas `coordenacao/frequencia` e `catequista/frequencia`.
   - Pronto quando: os testes mostram a coordenação vendo alertas de todas as turmas e o formulário, o catequista vendo só as suas turmas e nenhum formulário, e o limite alterado refletido nos alertas na mesma carga seguinte.
   - _Depends: 5.6, 4.3_
@@ -213,3 +213,4 @@
 - 5.6: `AlertasFrequencia({alertas, limite})` (puro) e `FormularioLimite({limiteAtual, salvarLimiteAction})` (cliente; exporta `AcaoLimite`); `SeloBaixaFrequencia` existe em arquivo próprio, mas `frequencia-turma.tsx` e `frequencia-catequizando.tsx` ainda têm uma cópia local do mesmo selo (unificação opcional, trivial).
 - 6.1: `PaginaChamada({sessao, papel, turmaId, encontroId, aviso})` vive em `src/app/(interno)/_presenca/paginas.tsx` (as páginas 6.2 e 6.3 entram no mesmo arquivo); a página de visitantes deve usar a rota `…/encontros/[encontroId]/chamada/visitantes`, e o link "Adicionar visitante" já aponta para ela. A re-verificação da remediação de CSS (`presenca-encontro`) foi feita pelo controlador, sem novo revisor, por ser só acréscimo de CSS.
 - 6.2: `PaginaVisitantes({sessao, papel, turmaId, encontroId, termo, aviso})` em `_presenca/paginas.tsx`; o formulário GET da busca não define `action` (volta à mesma URL com `?q=`, perdendo o `?aviso=`, o que é aceitável).
+- 6.3: `PaginaFrequencia({sessao, papel, aviso})` em `_presenca/paginas.tsx`; rotas `/coordenacao/frequencia` e `/catequista/frequencia` (a ação do limite redireciona para a primeira). O item de menu "Frequência" é da tarefa 6.4.
