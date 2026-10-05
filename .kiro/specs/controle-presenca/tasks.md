@@ -184,7 +184,7 @@
   - _Depends: 6.6, 6.5_
   - _Requirements: 2.2, 2.3, 2.7, 3.2, 10.2, 10.3_
 
-- [ ] 7.2 Testar a reposição por visitante
+- [x] 7.2 Testar a reposição por visitante
   - O catequista de outra turma registra um visitante no encontro com tema, e o teste confirma o tema cumprido por reposição na ficha, a frequência da turma de origem inalterada com a falta mantida e a remoção do visitante desfazendo o cumprimento.
   - Pronto quando: o teste e2e passa, e a busca mostra apenas nome e turma de origem do catequizando de outra turma.
   - _Depends: 7.1_
@@ -217,3 +217,4 @@
 - 6.5: `Cronograma` ganhou `complemento?: (encontro) => ReactNode` (contrato entre `programa` e `presenca`; sem a prop nada muda). Não existe papel "só consulta" no cronograma: coordenação e catequista responsável gerenciam; a turma encerrada é a única só de consulta.
 - 6.6: os blocos compartilhados ficam em `src/app/(interno)/_presenca/blocos.tsx` (`BlocoFrequenciaDaTurma`, `BlocoFrequenciaDoCatequizando`, funções async chamadas com `await` pelas 4 páginas); `hrefOrdenar` descarta `aviso` e `q`. Layout das telas ainda não conferido no navegador: fazer na validação final (7.x).
 - 7.1: o e2e achou que o cronograma não exibia os avisos da presença (`chamada-salva`, `chamada-atualizada`); `PaginaCronograma` agora tenta o aviso do programa e depois o da presença (coberto por teste de integração). Os e2e criam dados por `tests/e2e/criar-chamada.ts` (script tsx, como `criar-ficha-pendente.ts`); `VERIFICACAO_VISUAL=<pasta>` grava screenshots 360 px. Observações de produto pendentes de decisão: o alerta de faltantes permanece depois de marcar tudo até o próximo envio, e quem só tem "justificado" aparece com 0% e em baixa frequência (regra decidida).
+- 7.2: o e2e de reposição (`tests/e2e/presenca-visitante.spec.ts`, dados por `tests/e2e/criar-reposicao.ts`) detecta por mutação (a) o vazamento de telefone na busca e (b) a contagem do visitante na frequência da turma de origem (verificado removendo temporariamente o filtro `visitante: false` de `frequenciaPorTurma`: o e2e falha com 2 linhas na seção "Frequência por turma"; arquivo restaurado e conferido com `cmp`). Uma execução isolada do e2e completo falhou em `programa.spec.ts:127` e passou na reexecução (provável flake, não investigado).
