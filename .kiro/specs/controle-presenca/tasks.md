@@ -36,7 +36,7 @@
   - _Boundary: presenca/mensagens_
   - _Requirements: 2.3, 3.2, 4.3, 4.5, 4.6, 7.2_
 
-- [ ] 3. Persistência e autorização
+- [x] 3. Persistência e autorização
 
 - [x] 3.1 Implementar o repositório da chamada e dos visitantes
   - Implementar `dadosDoEncontro`, `inscritosNaData`, `presencasDoEncontro`, `salvarChamada` (transação com `upsert` das marcações e `updateMany` condicional de planejado para realizado em modo `nova`), `buscarVisitantes`, `adicionarVisitante` (lendo a inscrição vigente na mesma transação) e `removerVisitante`.
@@ -59,7 +59,7 @@
   - _Boundary: presenca/repositorio_
   - _Requirements: 1.2, 7.1, 7.2, 7.7, 7.11_
 
-- [ ] 3.4 Implementar a autorização do módulo
+- [x] 3.4 Implementar a autorização do módulo
   - Implementar `autorizarTurma`, `autorizarCatequizando` (usando `podeVerCatequizando`) e `exigirCoordenacao`, reavaliados a cada chamada, com `redirect("/acesso-negado")` antes de qualquer leitura de dados.
   - Pronto quando: os testes de integração mostram a coordenação passando em qualquer turma, o catequista responsável passando, o catequista de outra turma e o de turma que deixou de conduzir sendo enviados a "Acesso negado", id inválido negando sem lançar, e `exigirCoordenacao` recusando o catequista.
   - _Depends: 3.3_
