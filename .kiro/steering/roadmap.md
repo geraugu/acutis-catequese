@@ -1,6 +1,6 @@
 # Roadmap
 
-> Atualizado em 2026-09-30: incluída a spec `autocadastro-catequizandos` a pedido do autor.
+> Atualizado em 2026-10-05: `programa-catequese` e `autocadastro-catequizandos` marcadas como implementadas (release v0.6.0); `controle-presenca` em implementação (grupos 1 e 2 de 7 concluídos). Anteriormente (2026-09-30): incluída a spec `autocadastro-catequizandos` a pedido do autor.
 
 ## Visão Geral
 O acutis-catequese é um sistema web de gestão da catequese de adultos de uma paróquia. A coordenação gerencia catequistas, catequizandos, turmas e o programa de encontros. Os catequistas registram a presença nos encontros das suas turmas.
@@ -8,7 +8,7 @@ O acutis-catequese é um sistema web de gestão da catequese de adultos de uma p
 O projeto é acadêmico (pós-graduação em Engenharia de Software), com prazo curto (menos de 2 meses). Por isso o foco é um MVP enxuto, entregue em fatias verticais, cada uma com testes automatizados e uma release própria.
 
 ## Decisão de Abordagem
-- **Escolhida**: monolito full-stack TypeScript com **Next.js 16 (App Router + Server Actions)**, **Prisma 7 + PostgreSQL**, **Better Auth 1.x** (e-mail e senha, com papéis), **Vitest** (testes unitários e de integração) e **Playwright** (testes e2e). Deploy na Vercel com Postgres gerenciado (Neon ou Supabase).
+- **Escolhida**: monolito full-stack TypeScript com **Next.js 16 (App Router + Server Actions)**, **Prisma 7 + PostgreSQL**, **Better Auth 1.x** (e-mail e senha, com papéis), **Vitest** (testes unitários e de integração) e **Playwright** (testes e2e). Deploy na Vercel com Postgres gerenciado (Neon, conforme `tech.md`).
 - **Por quê**:
   - É uma base de código única, com um só `package.json`.
   - Tem pouca infraestrutura, o que combina com o prazo curto.
@@ -63,6 +63,6 @@ O projeto é acadêmico (pós-graduação em Engenharia de Software), com prazo 
 - [x] cadastro-catequistas -- Criar, listar, editar e inativar catequistas, com vínculo à conta de usuário. Dependências: fundacao-autenticacao
 - [x] cadastro-catequizandos -- Criar, listar, editar e inativar catequizandos, com dados pessoais e situação sacramental. Dependências: fundacao-autenticacao
 - [x] gestao-turmas -- Turmas por ciclo, catequistas responsáveis e inscrição de catequizandos. Dependências: cadastro-catequistas, cadastro-catequizandos
-- [ ] programa-catequese -- Encontros da turma com data, tema e descrição. Dependências: gestao-turmas
-- [ ] autocadastro-catequizandos -- Link público da turma para o adulto preencher a própria ficha, que fica pendente até o catequista ou a coordenação confirmar. Dependências: cadastro-catequizandos, gestao-turmas
-- [ ] controle-presenca -- Chamada por encontro e percentual de frequência por catequizando. Dependências: programa-catequese
+- [x] programa-catequese -- Encontros da turma com data, tema e descrição. Dependências: gestao-turmas
+- [x] autocadastro-catequizandos -- Link público da turma para o adulto preencher a própria ficha, que fica pendente até o catequista ou a coordenação confirmar. Dependências: cadastro-catequizandos, gestao-turmas
+- [ ] controle-presenca -- Chamada por encontro e percentual de frequência por catequizando. Dependências: programa-catequese. _Em implementação: base de dados e domínio concluídos; faltam persistência/autorização, actions, interface, páginas e e2e._
