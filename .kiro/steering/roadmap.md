@@ -1,6 +1,6 @@
 # Roadmap
 
-> Atualizado em 2026-10-05: `programa-catequese` e `autocadastro-catequizandos` marcadas como implementadas (release v0.6.0); `controle-presenca` em implementação (grupos 1 e 2 de 7 concluídos). Anteriormente (2026-09-30): incluída a spec `autocadastro-catequizandos` a pedido do autor.
+> Atualizado em 2026-10-05: `programa-catequese` e `autocadastro-catequizandos` marcadas como implementadas (release v0.6.0); `controle-presenca` implementada (27 tarefas, validação final GO). Anteriormente (2026-09-30): incluída a spec `autocadastro-catequizandos` a pedido do autor.
 
 ## Visão Geral
 O acutis-catequese é um sistema web de gestão da catequese de adultos de uma paróquia. A coordenação gerencia catequistas, catequizandos, turmas e o programa de encontros. Os catequistas registram a presença nos encontros das suas turmas.
@@ -65,4 +65,4 @@ O projeto é acadêmico (pós-graduação em Engenharia de Software), com prazo 
 - [x] gestao-turmas -- Turmas por ciclo, catequistas responsáveis e inscrição de catequizandos. Dependências: cadastro-catequistas, cadastro-catequizandos
 - [x] programa-catequese -- Encontros da turma com data, tema e descrição. Dependências: gestao-turmas
 - [x] autocadastro-catequizandos -- Link público da turma para o adulto preencher a própria ficha, que fica pendente até o catequista ou a coordenação confirmar. Dependências: cadastro-catequizandos, gestao-turmas
-- [ ] controle-presenca -- Chamada por encontro e percentual de frequência por catequizando. Dependências: programa-catequese. _Em implementação: base de dados e domínio concluídos; faltam persistência/autorização, actions, interface, páginas e e2e._
+- [x] controle-presenca -- Chamada por encontro e percentual de frequência por catequizando. Dependências: programa-catequese
