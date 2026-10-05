@@ -176,7 +176,7 @@
   - _Boundary: app/(interno) páginas de turma e de catequizando_
   - _Requirements: 2.8, 5.5, 5.6, 6.2, 8.2_
 
-- [ ] 7. Validação ponta a ponta
+- [x] 7. Validação ponta a ponta
 
 - [x] 7.1 Testar o fluxo da chamada no celular
   - Em `tests/e2e/presenca.spec.ts`, com viewport de 360 px e o catequista autenticado: abrir o encontro de hoje, "Marcar todos como presentes", ajustar dois status, salvar, ver "Chamada salva", o encontro realizado e a frequência na página da turma; depois corrigir um status e ver "Chamada atualizada".
@@ -190,7 +190,7 @@
   - _Depends: 7.1_
   - _Requirements: 4.2, 4.3, 4.6, 4.7, 8.1, 8.3, 8.7_
 
-- [ ] 7.3 Testar o limite, os alertas e o acesso
+- [x] 7.3 Testar o limite, os alertas e o acesso
   - A coordenação muda o limite para 100 e os catequizandos com qualquer falta aparecem em "Frequência" com "Baixa frequência"; o catequista vê só os alertas das suas turmas e recebe "Acesso negado" ao abrir a chamada de turma alheia; a turma encerrada permite consultar a frequência e não oferece chamada.
   - Pronto quando: o teste e2e passa cobrindo esses quatro comportamentos.
   - _Depends: 7.2_
@@ -218,3 +218,4 @@
 - 6.6: os blocos compartilhados ficam em `src/app/(interno)/_presenca/blocos.tsx` (`BlocoFrequenciaDaTurma`, `BlocoFrequenciaDoCatequizando`, funções async chamadas com `await` pelas 4 páginas); `hrefOrdenar` descarta `aviso` e `q`. Layout das telas ainda não conferido no navegador: fazer na validação final (7.x).
 - 7.1: o e2e achou que o cronograma não exibia os avisos da presença (`chamada-salva`, `chamada-atualizada`); `PaginaCronograma` agora tenta o aviso do programa e depois o da presença (coberto por teste de integração). Os e2e criam dados por `tests/e2e/criar-chamada.ts` (script tsx, como `criar-ficha-pendente.ts`); `VERIFICACAO_VISUAL=<pasta>` grava screenshots 360 px. Observações de produto pendentes de decisão: o alerta de faltantes permanece depois de marcar tudo até o próximo envio, e quem só tem "justificado" aparece com 0% e em baixa frequência (regra decidida).
 - 7.2: o e2e de reposição (`tests/e2e/presenca-visitante.spec.ts`, dados por `tests/e2e/criar-reposicao.ts`) detecta por mutação (a) o vazamento de telefone na busca e (b) a contagem do visitante na frequência da turma de origem (verificado removendo temporariamente o filtro `visitante: false` de `frequenciaPorTurma`: o e2e falha com 2 linhas na seção "Frequência por turma"; arquivo restaurado e conferido com `cmp`). Uma execução isolada do e2e completo falhou em `programa.spec.ts:127` e passou na reexecução (provável flake, não investigado).
+- 7.3: o limite de frequência é global, então `tests/e2e/presenca-limite.spec.ts` roda em série e restaura 75 num `finally` (pela tela e, se falhar, por `tests/e2e/restaurar-limite.ts`). Os helpers de e2e (`criar-chamada.ts`, `criar-reposicao.ts`, `criar-frequencia.ts`) criam o tema com posição negativa aleatória: com `fullyParallel`, um tema em `max+1` caía entre os 3 temas que `programa.spec.ts:127` exige adjacentes (esse era o flake). Mutações m1 (`<`→`<=` em `emAlerta`) e m2 (`turmasDoUsuario` devolvendo "todas" ao catequista) foram detectadas pelo e2e (evidência do implementador; a revisão independente não repetiu mutações).

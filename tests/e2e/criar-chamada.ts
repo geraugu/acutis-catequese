@@ -31,7 +31,8 @@ async function main() {
     data: {
       titulo: `Tema Chamada ${sufixo}`,
       chave: `tema chamada ${sufixo}`.toLowerCase(),
-      posicao: ((await prisma.tema.aggregate({ _max: { posicao: true } }))._max.posicao ?? 0) + 1,
+      // Posição negativa: nunca fica entre os temas que outros specs criam em sequência (max+1).
+      posicao: -1_000_000 - Math.floor(Math.random() * 1_000_000),
     },
     select: { id: true },
   });
