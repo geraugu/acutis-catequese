@@ -97,7 +97,7 @@
   - _Boundary: components/presenca, globals.css_
   - _Requirements: 2.2, 2.4, 2.7, 3.1, 4.9, 10.2, 10.3, 10.4, 10.6_
 
-- [ ] 5.2 Criar a lista de visitantes, a busca de visitante e a lista de quem ainda não viu o tema
+- [x] 5.2 Criar a lista de visitantes, a busca de visitante e a lista de quem ainda não viu o tema
   - `lista-visitantes` com a turma de origem e a remoção com `Confirmacao`, `busca-visitante` (formulário GET por nome com confirmação) e `sem-tema-do-encontro`.
   - Pronto quando: os testes de componente mostram o visitante identificado como "Visitante" com a turma de origem e separado dos inscritos, a busca exibindo só nome e turma de origem, o estado vazio da busca, a confirmação nomeando o visitante antes de remover e a lista dos inscritos que ainda não cumpriram o tema.
   - _Depends: 5.1_
@@ -206,3 +206,4 @@
 - 4.2: as ações de visitante recebem a base do cronograma e redirecionam para `${base}/${encontroId}/chamada/visitantes?aviso=visitante-adicionado|visitante-removido`; a página 6.2 deve usar essa rota (`…/encontros/[encontroId]/chamada/visitantes`) e passar essa base. Visitante em encontro planejado só passa a contar no progresso depois que a chamada for salva (encontro realizado).
 - 4.3: `salvarLimiteAction` redireciona para `/coordenacao/frequencia?aviso=limite-salvo`; essa rota é criada na tarefa 6.3 (o formulário do limite envia o campo `percentual`).
 - 5.1: `ChamadaForm` exporta `VisitanteDaChamada {catequizandoId, nome, turmaOrigemNome}` e `AcaoChamada`; a página 6.1 mapeia os `RegistroPresenca` com `visitante = true` para isso e liga `salvarChamadaAction` com `bind(turmaId, encontroId, base)`. Os estilos `presenca-*` de 5.2–5.6 já existem em `globals.css`. O layout ainda não foi conferido no navegador: conferir quando a página 6.1 existir.
+- 5.2: `ListaVisitantes` e `BuscaVisitante` são componentes cliente e recebem `AcaoVisitante = (catequizandoId) => Promise<EstadoPresenca>` (`removerVisitanteAction.bind(null, turmaId, encontroId, base)` e `adicionarVisitanteAction.bind(null, turmaId, encontroId, base)`); `BuscaVisitante({termo: string | null, candidatos, adicionar})` com `termo` nulo quando não houve busca; `SemTemaDoEncontro({tema, inscritos})`.
