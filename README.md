@@ -15,6 +15,7 @@ Este projeto é um trabalho da pós-graduação em Engenharia de Software e foi 
 - [x] Cadastro de catequistas e coordenação (equipe) — v0.2.0
 - [x] Turmas, catequistas responsáveis e inscrições — v0.4.0
 - [x] Programa da catequese (encontros e temas) — v0.5.0
+- [x] Autocadastro de catequizandos por link da turma — v0.6.0
 - [ ] Controle de presença dos catequizandos
 
 ## Tecnologias
@@ -69,7 +70,7 @@ Cada spec fica em `.kiro/specs/<funcionalidade>/`, com os arquivos `brief.md`, `
 | 3 | [cadastro-catequizandos](.kiro/specs/cadastro-catequizandos/) | Cadastro de catequizandos e situação sacramental | 🚀 Entregue (v0.3.0) |
 | 4 | [gestao-turmas](.kiro/specs/gestao-turmas/) | Turmas, catequistas responsáveis e inscrições | 🚀 Entregue (v0.4.0) |
 | 5 | [programa-catequese](.kiro/specs/programa-catequese/) | Encontros e temas de cada turma | 🚀 Entregue (v0.5.0) |
-| 6 | [autocadastro-catequizandos](.kiro/specs/autocadastro-catequizandos/) | Link da turma para o adulto preencher a própria ficha (pendente até confirmação) | 📝 Brief |
+| 6 | [autocadastro-catequizandos](.kiro/specs/autocadastro-catequizandos/) | Link da turma para o adulto preencher a própria ficha (pendente até confirmação) | 🚀 Entregue (v0.6.0) |
 | 7 | [controle-presenca](.kiro/specs/controle-presenca/) | Chamada por encontro e frequência | 📝 Brief |
 
 Legenda: 📝 Brief · 📋 Requisitos · 📐 Design · ✅ Tarefas aprovadas · 🚧 Em implementação · 🚀 Entregue (release)
@@ -85,11 +86,16 @@ erDiagram
     CATEQUIZANDO ||--o{ SACRAMENTO_RECEBIDO : recebeu
     TURMA ||--o{ ENCONTRO : "planeja"
     TEMA |o--o{ ENCONTRO : "é trabalhado em"
+    TURMA ||--o{ LINK_AUTOCADASTRO : "divulga"
+    LINK_AUTOCADASTRO ||--o{ FICHA_AUTOCADASTRO : recebe
+    CATEQUIZANDO ||--o| FICHA_AUTOCADASTRO : "veio de"
 ```
 
 - **Membro da equipe**: catequista ou coordenação, com conta de acesso.
 - **Turma**: grupo de catequizandos com dia, horário e catequistas responsáveis.
 - **Tema**: item do programa comum, na mesma ordem para todas as turmas.
+- **Link de autocadastro**: endereço público da turma (um ativo por vez, com expiração opcional) pelo qual o adulto preenche a própria ficha, sem login.
+- **Ficha de autocadastro**: origem de uma ficha recebida pelo link, com o consentimento LGPD (data e versão do texto). A ficha fica pendente até o catequista ou a coordenação confirmá-la (ativa e inscreve na turma) ou descartá-la (excluída).
 - **Encontro**: data de uma turma, com tema opcional e situação:
 
 ```mermaid
@@ -115,7 +121,7 @@ Pré-requisitos: Node.js 22+ e Docker (com Docker Compose).
 git clone https://github.com/geraugu/acutis-catequese.git
 cd acutis-catequese
 cp .env.example .env
-# Gere um segredo de autenticação (32+ caracteres) e cole em BETTER_AUTH_SECRET no .env:
+# Gere dois segredos (32+ caracteres) e cole em BETTER_AUTH_SECRET e AUTOCADASTRO_SEGREDO no .env:
 openssl rand -base64 32
 npm install
 npm run db:up      # sobe o PostgreSQL 17 e aguarda ficar saudável
@@ -136,6 +142,7 @@ Para parar o banco: `npm run db:down`. Se faltar ou for inválida alguma variáv
 | `DATABASE_URL_TEST` | Banco dos testes de integração e e2e (`acutis_test`, criado pelo Docker Compose) |
 | `BETTER_AUTH_SECRET` | Segredo da autenticação, com no mínimo 32 caracteres (gere com `openssl rand -base64 32`) |
 | `BETTER_AUTH_URL` | URL pública da aplicação (dev: `http://localhost:3000`) |
+| `AUTOCADASTRO_SEGREDO` | Segredo usado para guardar o IP só como hash no limite de envios do autocadastro, com no mínimo 32 caracteres. Os links públicos usam `BETTER_AUTH_URL` como endereço base |
 | `AUTH_RATE_LIMIT` | `on` ou `off`: limite de requisições por IP no login |
 | `SEED_COORDENACAO_EMAIL` / `_SENHA` / `_NOME` | Conta inicial de coordenação criada pelo `db:seed` |
 
