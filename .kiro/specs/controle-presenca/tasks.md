@@ -1,8 +1,8 @@
 # Implementation Plan
 
-- [ ] 1. Base de dados
+- [x] 1. Base de dados
 
-- [ ] 1.1 Criar as tabelas de presença e de limite de frequência
+- [x] 1.1 Criar as tabelas de presença e de limite de frequência
   - Criar o enum `StatusPresenca`, os modelos `Presenca` e `LimiteFrequencia` e os campos de relação `presencas` em `Turma`, `Encontro` e `Catequizando` (mais a relação nomeada `PresencaOrigem` em `Turma`), com a migração `*_presenca` contendo o SQL das restrições `presenca_visitante_ck`, `presenca_origem_ck` e `limite_frequencia_ck`, conforme o design. Rodar `npm run db:generate` depois de migrar.
   - Incluir `presenca` e `limite_frequencia` no TRUNCATE de `tests/integration/setup.ts` e `tests/e2e/preparar-banco.ts`.
   - Criar `tests/integration/presenca/helpers.ts` com criadores de turma, inscrição (com datas de entrada e saída), catequizando, tema, encontro e presença.

@@ -19,6 +19,8 @@ const TABELAS = [
   "ficha_autocadastro",
   "link_autocadastro",
   "limite_autocadastro",
+  "presenca",
+  "limite_frequencia",
 ];
 
 const url = process.env.DATABASE_URL ?? "";

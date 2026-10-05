@@ -26,6 +26,8 @@ const TABELAS = [
   "ficha_autocadastro",
   "link_autocadastro",
   "limite_autocadastro",
+  "presenca",
+  "limite_frequencia",
 ];
 
 async function main() {

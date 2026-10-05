@@ -144,6 +144,7 @@ model Catequizando {
   sacramentos    SacramentoRecebido[]
   inscricoes     Inscricao[]
   autocadastro   FichaAutocadastro?
+  presencas      Presenca[]
 
   @@index([estado])
   @@map("catequizando")
@@ -198,6 +199,8 @@ model Turma {
   encontros          Encontro[]
   linksAutocadastro  LinkAutocadastro[]
   fichasAutocadastro FichaAutocadastro[]
+  presencas          Presenca[]
+  presencasOrigem    Presenca[]          @relation("PresencaOrigem")
 
   @@index([ciclo])
   @@map("turma")
@@ -267,6 +270,7 @@ model Encontro {
   updatedAt          DateTime         @updatedAt
   turma              Turma            @relation(fields: [turmaId], references: [id], onDelete: Restrict)
   tema               Tema?            @relation(fields: [temaId], references: [id], onDelete: Restrict)
+  presencas          Presenca[]
 
   @@index([turmaId, data])
   @@index([temaId])
@@ -312,4 +316,41 @@ model LimiteAutocadastro {
   janelaInicio DateTime
 
   @@map("limite_autocadastro")
+}
+
+enum StatusPresenca {
+  presente
+  ausente
+  justificado
+
+  @@map("status_presenca")
+}
+
+model Presenca {
+  id             String         @id @default(uuid())
+  encontroId     String
+  turmaId        String
+  catequizandoId String
+  status         StatusPresenca
+  visitante      Boolean        @default(false)
+  turmaOrigemId  String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  encontro       Encontro       @relation(fields: [encontroId], references: [id], onDelete: Restrict)
+  turma          Turma          @relation(fields: [turmaId], references: [id], onDelete: Restrict)
+  turmaOrigem    Turma?         @relation("PresencaOrigem", fields: [turmaOrigemId], references: [id], onDelete: Restrict)
+  catequizando   Catequizando   @relation(fields: [catequizandoId], references: [id], onDelete: Restrict)
+
+  @@unique([encontroId, catequizandoId])
+  @@index([turmaId, catequizandoId])
+  @@index([catequizandoId])
+  @@map("presenca")
+}
+
+model LimiteFrequencia {
+  id         Int      @id @default(1)
+  percentual Int
+  updatedAt  DateTime @updatedAt
+
+  @@map("limite_frequencia")
 }
