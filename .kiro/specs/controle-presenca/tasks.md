@@ -162,7 +162,7 @@
   - _Boundary: components/layout_
   - _Requirements: 7.12_
 
-- [ ] 6.5 Integrar a chamada ao cronograma da turma
+- [x] 6.5 Integrar a chamada ao cronograma da turma
   - Acrescentar a `components/programa/cronograma.tsx` a prop opcional `complemento`, renderizada em cada linha sem alterar o comportamento atual quando ausente, e usá-la em `_encontros/paginas.tsx` para exibir o link "Fazer chamada" (ou "Corrigir chamada") e o resumo de cada encontro realizado.
   - Pronto quando: os testes de componente do programa seguem verdes sem a prop, o cronograma mostra o link de chamada para encontros disponíveis, o resumo de presentes, ausentes, justificados e visitantes nos realizados, e nenhuma ação de chamada para turma encerrada ou para quem só consulta.
   - _Depends: 5.3, 6.1_
@@ -214,3 +214,4 @@
 - 6.1: `PaginaChamada({sessao, papel, turmaId, encontroId, aviso})` vive em `src/app/(interno)/_presenca/paginas.tsx` (as páginas 6.2 e 6.3 entram no mesmo arquivo); a página de visitantes deve usar a rota `…/encontros/[encontroId]/chamada/visitantes`, e o link "Adicionar visitante" já aponta para ela. A re-verificação da remediação de CSS (`presenca-encontro`) foi feita pelo controlador, sem novo revisor, por ser só acréscimo de CSS.
 - 6.2: `PaginaVisitantes({sessao, papel, turmaId, encontroId, termo, aviso})` em `_presenca/paginas.tsx`; o formulário GET da busca não define `action` (volta à mesma URL com `?q=`, perdendo o `?aviso=`, o que é aceitável).
 - 6.3: `PaginaFrequencia({sessao, papel, aviso})` em `_presenca/paginas.tsx`; rotas `/coordenacao/frequencia` e `/catequista/frequencia` (a ação do limite redireciona para a primeira). O item de menu "Frequência" é da tarefa 6.4.
+- 6.5: `Cronograma` ganhou `complemento?: (encontro) => ReactNode` (contrato entre `programa` e `presenca`; sem a prop nada muda). Não existe papel "só consulta" no cronograma: coordenação e catequista responsável gerenciam; a turma encerrada é a única só de consulta.

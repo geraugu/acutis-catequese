@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { AcoesEncontro } from "@/components/programa/acoes-encontro";
 import { type DataCivil, formatarDataComDia } from "@/modules/compartilhado/datas";
@@ -27,11 +28,14 @@ export function Cronograma({
   hoje,
   base,
   acoes = false,
+  complemento,
 }: {
   encontros: readonly EncontroResumo[];
   hoje: DataCivil;
   base: string;
   acoes?: boolean;
+  /** Conteúdo extra por encontro (ex.: chamada de presença); sem ele a linha não muda. */
+  complemento?: (encontro: EncontroResumo) => ReactNode;
 }) {
   const proximo = proximoEncontro(encontros, hoje);
   return (
@@ -78,6 +82,7 @@ export function Cronograma({
                 />
               </div>
             ) : null}
+            {complemento ? complemento(e) : null}
           </li>
         );
       })}

@@ -20,6 +20,9 @@ import {
   MSG_TURMA_ENCERRADA,
   mensagemDeAviso,
 } from "@/modules/programa/mensagens";
+import { disponibilidadeDaChamada } from "@/modules/presenca/domain/chamada";
+import { resumoPorEncontro } from "@/modules/presenca/repositorio";
+import { ResumoChamada } from "@/components/presenca/resumo-chamada";
 import { Aviso } from "@/components/comum/aviso";
 import { Cronograma } from "@/components/programa/cronograma";
 import { FormularioEncontro } from "@/components/programa/formulario-encontro";
@@ -58,7 +61,11 @@ export async function PaginaCronograma({
 }) {
   const turma = await turmaVisivel(sessao, turmaId);
   const base = baseDoCronograma(papel, turmaId);
-  const [encontros, temas] = await Promise.all([listarEncontros(turmaId), listarTemas()]);
+  const [encontros, temas, resumos] = await Promise.all([
+    listarEncontros(turmaId),
+    listarTemas(),
+    resumoPorEncontro(turmaId),
+  ]);
   const temasAtivos = numerarTemas(temas).flatMap((t) =>
     t.numero === null ? [] : [{ id: t.id, titulo: t.titulo, numero: t.numero }],
   );
@@ -67,6 +74,21 @@ export async function PaginaCronograma({
     encontros.map((e) => ({ temaId: e.tema?.id ?? null, situacao: e.situacao })),
   );
   const aberta = !turma.encerrada;
+  const hoje = hojeCivil();
+  // Chamada por encontro e resumo dos realizados (2.8, 3.4, 6.3); contagens lidas uma vez por turma.
+  const complemento = (e: (typeof encontros)[number]) => {
+    const disp = disponibilidadeDaChamada(e, { encerrada: turma.encerrada }, hoje);
+    return (
+      <>
+        {disp.disponivel ? (
+          <Link href={`${base}/${e.id}/chamada`} className="botao botao-secundario">
+            {disp.modo === "correcao" ? "Corrigir chamada" : "Fazer chamada"}
+          </Link>
+        ) : null}
+        <ResumoChamada situacao={e.situacao} contagem={resumos.get(e.id)} />
+      </>
+    );
+  };
 
   return (
     <>
@@ -98,7 +120,13 @@ export async function PaginaCronograma({
           ) : null}
         </div>
       ) : (
-        <Cronograma encontros={encontros} hoje={hojeCivil()} base={base} acoes={aberta} />
+        <Cronograma
+          encontros={encontros}
+          hoje={hoje}
+          base={base}
+          acoes={aberta}
+          complemento={complemento}
+        />
       )}
     </>
   );

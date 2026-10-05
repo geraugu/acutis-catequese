@@ -93,3 +93,33 @@ describe("Cronograma", () => {
     }
   });
 });
+
+describe("Cronograma — complemento", () => {
+  it("sem a prop o HTML não muda", () => {
+    const a = render(<Cronograma encontros={encontros} hoje={hoje} base={base} acoes />);
+    const semIds = (h: string) => h.replace(/_r_[0-9a-z]+_/g, "_r_");
+    const sem = semIds(a.container.innerHTML);
+    a.unmount();
+    const b = render(
+      <Cronograma encontros={encontros} hoje={hoje} base={base} acoes complemento={undefined} />,
+    );
+    expect(semIds(b.container.innerHTML)).toBe(sem);
+    expect(sem).not.toContain("complemento-teste");
+  });
+
+  it("com a prop mostra o conteúdo em cada linha", () => {
+    render(
+      <Cronograma
+        encontros={encontros}
+        hoje={hoje}
+        base={base}
+        complemento={(e) => <span>{`complemento-teste ${e.id}`}</span>}
+      />,
+    );
+    const itens = screen.getAllByRole("listitem");
+    expect(itens).toHaveLength(4);
+    for (const [i, id] of ["r", "a", "b", "c"].entries()) {
+      expect(itens[i]).toHaveTextContent(`complemento-teste ${id}`);
+    }
+  });
+});
