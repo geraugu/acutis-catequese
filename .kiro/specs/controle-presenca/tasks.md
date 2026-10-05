@@ -104,7 +104,7 @@
   - _Boundary: components/presenca_
   - _Requirements: 4.2, 4.3, 4.6, 4.9, 8.5_
 
-- [ ] 5.3 Criar o resumo da chamada e o bloco da chamada de hoje
+- [x] 5.3 Criar o resumo da chamada e o bloco da chamada de hoje
   - `resumo-chamada` ("N presentes · N ausentes · N justificados · N visitantes") e `chamada-de-hoje`, que destaca o encontro de hoje ainda sem chamada com o link para fazê-la.
   - Pronto quando: os testes de componente mostram o resumo só para encontro realizado, o bloco aparecendo apenas com encontro planejado de hoje, o link para a chamada e a ausência do bloco em turma encerrada.
   - _Depends: 5.2_
@@ -207,3 +207,4 @@
 - 4.3: `salvarLimiteAction` redireciona para `/coordenacao/frequencia?aviso=limite-salvo`; essa rota é criada na tarefa 6.3 (o formulário do limite envia o campo `percentual`).
 - 5.1: `ChamadaForm` exporta `VisitanteDaChamada {catequizandoId, nome, turmaOrigemNome}` e `AcaoChamada`; a página 6.1 mapeia os `RegistroPresenca` com `visitante = true` para isso e liga `salvarChamadaAction` com `bind(turmaId, encontroId, base)`. Os estilos `presenca-*` de 5.2–5.6 já existem em `globals.css`. O layout ainda não foi conferido no navegador: conferir quando a página 6.1 existir.
 - 5.2: `ListaVisitantes` e `BuscaVisitante` são componentes cliente e recebem `AcaoVisitante = (catequizandoId) => Promise<EstadoPresenca>` (`removerVisitanteAction.bind(null, turmaId, encontroId, base)` e `adicionarVisitanteAction.bind(null, turmaId, encontroId, base)`); `BuscaVisitante({termo: string | null, candidatos, adicionar})` com `termo` nulo quando não houve busca; `SemTemaDoEncontro({tema, inscritos})`.
+- 5.3: `ResumoChamada({situacao, contagem})` exporta `ContagemChamada`; `ChamadaDeHoje({encontro, turmaEncerrada, hoje, hrefChamada})` só decide se exibe; a página (6.6) escolhe qual encontro é o de hoje.
