@@ -91,7 +91,7 @@
 
 - [ ] 5. Componentes de interface
 
-- [ ] 5.1 Criar os estilos e a tela de chamada
+- [x] 5.1 Criar os estilos e a tela de chamada
   - Seguir `.kiro/steering/design-system.md`. Criar em `globals.css` os estilos da chamada, dos alertas e dos blocos de frequência usados por todos os componentes de presença. Criar `status-presenca` (rótulo e ícone por status) e `chamada-form` (cliente): uma coluna de linhas, grupo de rádios nativos por inscrito, área de toque mínima de 44 px, "Marcar todos como presentes", totais por status atualizados ao marcar, faltantes destacados e marcações mantidas depois de erro.
   - Pronto quando: os testes de componente mostram a lista sem nenhum status pré-selecionado, "Marcar todos como presentes" marcando todos, os totais mudando ao marcar, os faltantes destacados com a mensagem, as marcações mantidas após um estado de erro, cada status com texto e ícone, e a navegação só com teclado entre os rádios.
   - _Boundary: components/presenca, globals.css_
@@ -205,3 +205,4 @@
 - 4.1: arquivos `"use server"` só exportam funções async (tipos são permitidos); as ações 4.2 e 4.3 entram no mesmo `actions.ts`. `salvarChamadaAction` aceita só as marcações enviadas: num encontro reaberto, quem já tinha presença mas não veio no formulário conta como faltante (a tela vem pré-preenchida).
 - 4.2: as ações de visitante recebem a base do cronograma e redirecionam para `${base}/${encontroId}/chamada/visitantes?aviso=visitante-adicionado|visitante-removido`; a página 6.2 deve usar essa rota (`…/encontros/[encontroId]/chamada/visitantes`) e passar essa base. Visitante em encontro planejado só passa a contar no progresso depois que a chamada for salva (encontro realizado).
 - 4.3: `salvarLimiteAction` redireciona para `/coordenacao/frequencia?aviso=limite-salvo`; essa rota é criada na tarefa 6.3 (o formulário do limite envia o campo `percentual`).
+- 5.1: `ChamadaForm` exporta `VisitanteDaChamada {catequizandoId, nome, turmaOrigemNome}` e `AcaoChamada`; a página 6.1 mapeia os `RegistroPresenca` com `visitante = true` para isso e liga `salvarChamadaAction` com `bind(turmaId, encontroId, base)`. Os estilos `presenca-*` de 5.2–5.6 já existem em `globals.css`. O layout ainda não foi conferido no navegador: conferir quando a página 6.1 existir.

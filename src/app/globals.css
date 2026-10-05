@@ -1095,3 +1095,249 @@ main {
   margin: 0.5rem 0 0;
   padding-left: 1.25rem;
 }
+
+/* Presença (controle-presenca): chamada, visitantes, frequência e alertas. */
+.presenca-barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.presenca-totais {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--cor-texto-suave);
+}
+
+.presenca-totais strong {
+  color: var(--cor-texto);
+}
+
+.presenca-linhas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.presenca-linha {
+  margin: 0;
+  padding: 0.75rem;
+  min-width: 0;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-cartao);
+}
+
+.presenca-linha-faltante {
+  border-color: var(--cor-perigo);
+  background: var(--cor-perigo-fundo);
+}
+
+.presenca-nome {
+  padding: 0 0.25rem;
+  font-weight: 600;
+}
+
+.presenca-faltante {
+  margin: 0.5rem 0 0;
+}
+
+/* Controle segmentado: rádios nativos, alvo de toque de 44 px. */
+.presenca-opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.presenca-opcao {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: 1 1 7rem;
+  min-height: 2.75rem;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pilula);
+  background: var(--cor-superficie);
+  cursor: pointer;
+}
+
+.presenca-opcao input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.presenca-opcao:has(input:checked) {
+  background: var(--cor-primaria-suave);
+  border-color: var(--cor-primaria);
+  box-shadow: inset 0 0 0 1px var(--cor-primaria);
+}
+
+.presenca-opcao-ausente:has(input:checked) {
+  background: var(--cor-perigo-fundo);
+  border-color: var(--cor-perigo);
+  box-shadow: inset 0 0 0 1px var(--cor-perigo);
+}
+
+.presenca-opcao:has(input:focus-visible) {
+  outline: 3px solid var(--cor-foco);
+  outline-offset: 2px;
+}
+
+.presenca-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-weight: 600;
+}
+
+.presenca-icone {
+  flex: none;
+}
+
+.presenca-status-presente {
+  color: var(--cor-sucesso);
+}
+
+.presenca-status-ausente {
+  color: var(--cor-perigo);
+}
+
+.presenca-status-justificado {
+  color: var(--cor-texto);
+}
+
+/* Visitantes (4.9). */
+.presenca-visitantes {
+  margin: 0 0 1rem;
+}
+
+.presenca-lista-visitantes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.presenca-lista-visitantes li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-campo);
+}
+
+.presenca-selo-visitante,
+.presenca-selo-baixa {
+  display: inline-block;
+  padding: 0.125rem 0.625rem;
+  border-radius: var(--raio-pilula);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.presenca-selo-visitante {
+  background: var(--cor-primaria-suave);
+  color: var(--cor-primaria-hover);
+  border: 1px solid var(--cor-primaria);
+}
+
+.presenca-selo-baixa {
+  background: var(--cor-perigo-fundo);
+  color: var(--cor-perigo);
+  border: 1px solid var(--cor-perigo);
+}
+
+.presenca-origem {
+  color: var(--cor-texto-suave);
+  font-size: 0.875rem;
+}
+
+/* Frequência: percentual e contagens. */
+.presenca-frequencia {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1rem;
+  margin: 0 0 1rem;
+}
+
+.presenca-percentual {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.presenca-contagens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--cor-texto-suave);
+}
+
+/* Alertas de baixa frequência. */
+.presenca-alertas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.presenca-alertas li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--cor-perigo-fundo);
+  border: 1px solid var(--cor-perigo);
+  border-radius: var(--raio-campo);
+}
+
+/* Inscritos com frequência: cartões em uma coluna, sem rolagem horizontal. */
+.presenca-inscritos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.presenca-inscrito {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1rem;
+  padding: 0.75rem;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-cartao);
+}
+
+.presenca-inscrito-nome {
+  flex: 1 1 12rem;
+  min-width: 0;
+  font-weight: 600;
+}
