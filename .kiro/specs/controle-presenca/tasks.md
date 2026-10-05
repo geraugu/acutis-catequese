@@ -38,7 +38,7 @@
 
 - [ ] 3. Persistência e autorização
 
-- [ ] 3.1 Implementar o repositório da chamada e dos visitantes
+- [x] 3.1 Implementar o repositório da chamada e dos visitantes
   - Implementar `dadosDoEncontro`, `inscritosNaData`, `presencasDoEncontro`, `salvarChamada` (transação com `upsert` das marcações e `updateMany` condicional de planejado para realizado em modo `nova`), `buscarVisitantes`, `adicionarVisitante` (lendo a inscrição vigente na mesma transação) e `removerVisitante`.
   - Pronto quando: os testes de integração mostram `salvarChamada` gravando todas as presenças e marcando o encontro como realizado; a correção atualizando sem mudar a situação; duas chamadas concorrentes com um só vencedor e a outra recebendo "situacao-mudou" sem gravar nada; encontro reaberto mantendo as linhas; inscritos na data respeitando entrada e saída exclusiva; a busca de visitantes devolvendo só id, nome e turma de origem de ativos inscritos em outra turma aberta e excluindo quem já consta no encontro; `adicionarVisitante` recusando duplicado e catequizando sem inscrição em outra turma aberta; e `removerVisitante` só apagando linhas de visitante e nunca mexendo na inscrição.
   - _Depends: 1.1_
@@ -195,3 +195,8 @@
   - Pronto quando: o teste e2e passa cobrindo esses quatro comportamentos.
   - _Depends: 7.2_
   - _Requirements: 1.4, 7.2, 7.4, 7.6, 7.7, 9.1_
+
+## Implementation Notes
+- 3.1: `adicionarVisitante` (repositório) não confere que o encontro pertence à turma nem se o catequizando já era inscrito na data; as ações 4.2 devem validar com `dadosDoEncontro` e `inscritosNaData` antes de chamá-lo.
+- 3.1: `salvarChamada` ignora marcações de quem já é visitante no encontro e não apaga presenças; em modo `nova` faz a transição condicional antes dos upserts, dentro da transação.
+- 3.1: o índice `inscricao_vigente_unica` permite uma só inscrição vigente por catequizando; nos testes, "já consta como inscrito" usa inscrição com saída posterior à data do encontro.
