@@ -24,7 +24,7 @@
   - _Boundary: presenca/domain/chamada_
   - _Requirements: 2.1, 2.4, 2.5, 2.6, 3.1, 3.3, 3.5, 4.1, 4.4, 9.1_
 
-- [ ] 2.3 (P) Implementar o progresso do catequizando no programa
+- [x] 2.3 (P) Implementar o progresso do catequizando no programa
   - Criar `calcularProgressoCatequizando`, devolvendo temas cumpridos (com turma, data e se foi reposição), total e pendentes na ordem do programa.
   - Pronto quando: os testes unitários mostram presença na própria turma e como visitante contando, o tema repetido valendo a data mais antiga, tema desativado fora do total e dos cumpridos, e lista de pendentes na ordem do programa.
   - _Boundary: presenca/domain/progresso-catequizando_

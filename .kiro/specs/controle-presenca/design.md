@@ -34,7 +34,7 @@
 
 ### Allowed Dependencies
 - `@/modules/turmas/acesso` (`podeVerTurma`, `podeVerCatequizando`), conforme a exceção de `structure.md` de 2026-10-01.
-- Arquivos puros `domain/*.ts` de módulos upstream, conforme a exceção de 2026-10-03: `@/modules/programa/domain/encontro` (`TRANSICOES`, `SituacaoEncontro`) e `@/modules/programa/domain/tema` (tipos de tema).
+- Arquivos puros `domain/*.ts` de módulos upstream, conforme a exceção de 2026-10-03: `@/modules/programa/domain/encontro` (`TRANSICOES`, `SituacaoEncontro`), `@/modules/programa/domain/tema` (tipos de tema) e `@/modules/programa/domain/progresso` (`TemaDoProgresso`).
 - `@/modules/auth/dal` (`requireRole`, `requireSession`), `@/modules/compartilhado/{datas,busca}`, `@/lib/prisma`, `@/components/comum/*`.
 - Dados de encontros, inscrições, catequizandos e temas são lidos pelo **repositório do próprio módulo**, nunca pelos repositórios dos módulos upstream.
 - Proibido: importar `repositorio.ts` ou `actions.ts` de `programa`, `turmas` ou `catequizandos`.
