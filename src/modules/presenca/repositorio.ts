@@ -10,6 +10,7 @@ import type { TemaDoProgresso } from "@/modules/programa/domain/progresso";
 import {
   contarPresencas,
   emAlerta,
+  LIMITE_PADRAO,
   type ContagemFrequencia,
   type StatusPresenca,
 } from "./domain/frequencia";
@@ -587,4 +588,32 @@ export async function alertasDeFrequencia(
         a.contagem.presentes / a.contagem.total - b.contagem.presentes / b.contagem.total ||
         porNome(a, b),
     );
+}
+
+/** Limite de baixa frequência (percentual); sem linha, vale o padrão (7.1, 7.11). */
+export async function obterLimite(): Promise<number> {
+  const linha = await prisma.limiteFrequencia.findUnique({
+    where: { id: 1 },
+    select: { percentual: true },
+  });
+  return linha?.percentual ?? LIMITE_PADRAO;
+}
+
+/** Linha única (id 1). Fora de 1 a 100 o CHECK do banco recusa; a validação amigável é da ação (7.2). */
+export async function salvarLimite(percentual: number): Promise<void> {
+  await prisma.limiteFrequencia.upsert({
+    where: { id: 1 },
+    create: { id: 1, percentual },
+    update: { percentual },
+  });
+}
+
+/** Turmas abertas com designação vigente do catequista; base de `turmasDoUsuario` (1.2, 7.7). */
+export async function turmasAbertasDoCatequista(userId: string): Promise<string[]> {
+  if (!userId) return [];
+  const linhas = await prisma.designacao.findMany({
+    where: { userId, removidoEm: null, turma: { encerradaEm: null } },
+    select: { turmaId: true },
+  });
+  return [...new Set(linhas.map((l) => l.turmaId))];
 }

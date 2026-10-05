@@ -52,7 +52,7 @@
   - _Boundary: presenca/repositorio_
   - _Requirements: 3.4, 5.2, 5.6, 5.7, 6.1, 6.3, 6.5, 7.6, 7.7, 8.2, 8.4, 8.5, 8.7, 9.3, 9.4, 9.5_
 
-- [ ] 3.3 Implementar o limite de frequência e as turmas do usuário
+- [x] 3.3 Implementar o limite de frequência e as turmas do usuário
   - Implementar `obterLimite` (75 quando não há linha), `salvarLimite` (`upsert` da linha única) e `turmasDoUsuario` (todas para a coordenação; para o catequista, as turmas abertas em que é responsável).
   - Pronto quando: os testes de integração mostram o limite padrão sem linha, o novo valor lido de volta, o segundo salvamento atualizando a mesma linha, um valor fora de 1 a 100 recusado pelo banco, e `turmasDoUsuario` devolvendo só as turmas abertas com designação vigente do catequista.
   - _Depends: 3.2_
@@ -201,3 +201,4 @@
 - 3.1: `salvarChamada` ignora marcações de quem já é visitante no encontro e não apaga presenças; em modo `nova` faz a transição condicional antes dos upserts, dentro da transação.
 - 3.1: o índice `inscricao_vigente_unica` permite uma só inscrição vigente por catequizando; nos testes, "já consta como inscrito" usa inscrição com saída posterior à data do encontro.
 - 3.2: `frequenciaDaTurma` em turma aberta lista só inscritos vigentes (contagem zerada se sem presença); em turma encerrada inclui quem teve inscrição ou presença não visitante na turma. A suíte de integração limpa o banco a cada teste (TRUNCATE no `beforeEach`) e roda sem paralelismo entre arquivos.
+- 3.3: `turmasDoUsuario` (tarefa 3.4, em `autorizacao.ts`) deve usar `turmasAbertasDoCatequista(userId)` do repositório; ids de usuário do better-auth não são UUID e não devem ser validados como tal.
