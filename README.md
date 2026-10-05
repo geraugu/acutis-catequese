@@ -71,7 +71,7 @@ Cada spec fica em `.kiro/specs/<funcionalidade>/`, com os arquivos `brief.md`, `
 | 4 | [gestao-turmas](.kiro/specs/gestao-turmas/) | Turmas, catequistas responsáveis e inscrições | 🚀 Entregue (v0.4.0) |
 | 5 | [programa-catequese](.kiro/specs/programa-catequese/) | Encontros e temas de cada turma | 🚀 Entregue (v0.5.0) |
 | 6 | [autocadastro-catequizandos](.kiro/specs/autocadastro-catequizandos/) | Link da turma para o adulto preencher a própria ficha (pendente até confirmação) | 🚀 Entregue (v0.6.0) |
-| 7 | [controle-presenca](.kiro/specs/controle-presenca/) | Chamada por encontro e frequência | 📝 Brief |
+| 7 | [controle-presenca](.kiro/specs/controle-presenca/) | Chamada por encontro e frequência | 🚧 Em implementação |
 
 Legenda: 📝 Brief · 📋 Requisitos · 📐 Design · ✅ Tarefas aprovadas · 🚧 Em implementação · 🚀 Entregue (release)
 
@@ -89,6 +89,9 @@ erDiagram
     TURMA ||--o{ LINK_AUTOCADASTRO : "divulga"
     LINK_AUTOCADASTRO ||--o{ FICHA_AUTOCADASTRO : recebe
     CATEQUIZANDO ||--o| FICHA_AUTOCADASTRO : "veio de"
+    ENCONTRO ||--o{ PRESENCA : "tem chamada"
+    CATEQUIZANDO ||--o{ PRESENCA : "tem"
+    TURMA ||--o{ PRESENCA : "registra"
 ```
 
 - **Membro da equipe**: catequista ou coordenação, com conta de acesso.
@@ -96,6 +99,8 @@ erDiagram
 - **Tema**: item do programa comum, na mesma ordem para todas as turmas.
 - **Link de autocadastro**: endereço público da turma (um ativo por vez, com expiração opcional) pelo qual o adulto preenche a própria ficha, sem login.
 - **Ficha de autocadastro**: origem de uma ficha recebida pelo link, com o consentimento LGPD (data e versão do texto). A ficha fica pendente até o catequista ou a coordenação confirmá-la (ativa e inscreve na turma) ou descartá-la (excluída).
+- **Presença**: registro de um catequizando em um encontro (presente, ausente ou justificado), único por encontro e catequizando. Quando o catequizando assiste ao encontro de outra turma para repor um tema, é um **visitante**: a presença guarda a turma de origem, conta para o progresso dele no programa e não entra na frequência da turma visitada.
+- **Limite de frequência**: percentual mínimo, único e configurável, abaixo do qual o catequizando aparece em alerta.
 - **Encontro**: data de uma turma, com tema opcional e situação:
 
 ```mermaid
@@ -111,11 +116,9 @@ stateDiagram-v2
 
 - Git
 - Node.js 22 LTS
-- Docker (para o PostgreSQL local)
+- Docker, com Docker Compose (para o PostgreSQL local)
 
 ## Instalação e execução
-
-Pré-requisitos: Node.js 22+ e Docker (com Docker Compose).
 
 ```bash
 git clone https://github.com/geraugu/acutis-catequese.git
