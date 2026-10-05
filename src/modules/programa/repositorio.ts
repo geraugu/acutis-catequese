@@ -2,7 +2,7 @@ import "server-only";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { DataCivil } from "@/modules/compartilhado/datas";
-import type { EncontroDados, SituacaoEncontro } from "./domain/encontro";
+import type { EncontroDados, EncontroResumo, SituacaoEncontro } from "./domain/encontro";
 import { chaveDoTitulo, numerarTemas, type TemaDados } from "./domain/tema";
 
 export interface TemaResumo {
@@ -14,16 +14,7 @@ export interface TemaResumo {
   encontros: number;
 }
 
-export interface EncontroResumo {
-  id: string;
-  turmaId: string;
-  data: DataCivil;
-  horario: string;
-  situacao: SituacaoEncontro;
-  observacoes: string | null;
-  motivoCancelamento: string | null;
-  tema: { id: string; titulo: string; ativo: boolean; numero: number | null } | null;
-}
+export type { EncontroResumo };
 
 export interface DadosTurma {
   id: string;

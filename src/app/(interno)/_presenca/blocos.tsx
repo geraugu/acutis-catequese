@@ -1,5 +1,5 @@
 import { hojeCivil } from "@/modules/compartilhado/datas";
-import type { EncontroResumo } from "@/modules/programa/repositorio";
+import type { EncontroResumo } from "@/modules/programa/domain/encontro";
 import {
   cumpridosDoCatequizando,
   frequenciaDaTurma,

@@ -5,6 +5,18 @@ import { MSG_TEMA_INDISPONIVEL } from "@/modules/programa/mensagens";
 export const SITUACOES = ["planejado", "realizado", "cancelado"] as const;
 export type SituacaoEncontro = (typeof SITUACOES)[number];
 
+/** Encontro como as páginas o exibem; fica no domínio para outros módulos usarem sem importar o repositório. */
+export interface EncontroResumo {
+  id: string;
+  turmaId: string;
+  data: DataCivil;
+  horario: string;
+  situacao: SituacaoEncontro;
+  observacoes: string | null;
+  motivoCancelamento: string | null;
+  tema: { id: string; titulo: string; ativo: boolean; numero: number | null } | null;
+}
+
 export const ROTULO_SITUACAO: Record<SituacaoEncontro, string> = {
   planejado: "Planejado",
   realizado: "Realizado",
