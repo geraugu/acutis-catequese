@@ -118,7 +118,7 @@
   - _Boundary: components/presenca_
   - _Requirements: 5.4, 5.5, 6.2, 6.4, 6.5, 7.4, 7.9_
 
-- [ ] 5.5 Criar o bloco de frequência da ficha do catequizando
+- [x] 5.5 Criar o bloco de frequência da ficha do catequizando
   - `frequencia-catequizando`: frequência por turma com a turma atual em destaque, lista das presenças (data, tema e status, a mais recente primeiro) e progresso "{cumpridos} de {total} temas" com temas pendentes e a origem de cada cumprimento.
   - Pronto quando: os testes de componente mostram a frequência de cada turma em que esteve inscrito, a turma atual em destaque, as presenças em ordem decrescente com datas e horários no formato brasileiro, o tema cumprido por reposição identificado com a turma visitada e a lista de pendentes na ordem do programa.
   - _Depends: 5.4_
@@ -209,3 +209,4 @@
 - 5.2: `ListaVisitantes` e `BuscaVisitante` são componentes cliente e recebem `AcaoVisitante = (catequizandoId) => Promise<EstadoPresenca>` (`removerVisitanteAction.bind(null, turmaId, encontroId, base)` e `adicionarVisitanteAction.bind(null, turmaId, encontroId, base)`); `BuscaVisitante({termo: string | null, candidatos, adicionar})` com `termo` nulo quando não houve busca; `SemTemaDoEncontro({tema, inscritos})`.
 - 5.3: `ResumoChamada({situacao, contagem})` exporta `ContagemChamada`; `ChamadaDeHoje({encontro, turmaEncerrada, hoje, hrefChamada})` só decide se exibe; a página (6.6) escolhe qual encontro é o de hoje.
 - 5.4: `FrequenciaTurma({itens, limite, ordem, hrefOrdenar})` calcula tudo pelo domínio; o helper `plural(n, singular, plural)` é exportado de `resumo-chamada.tsx` e deve ser reaproveitado pelos demais componentes que exibam contagens (use singular quando N=1).
+- 5.5: `FrequenciaCatequizando({turmas, limite, presencas, progresso})` exporta `TurmaDoCatequizando` e `PresencaDoCatequizando` (tipos estruturais, sem importar o repositório `server-only`); a turma atual usa `presenca-turma-atual` + selo "Turma atual". Opcional futuro: classe própria para esse selo (hoje reaproveita `presenca-selo-visitante`).

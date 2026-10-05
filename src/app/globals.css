@@ -1341,3 +1341,9 @@ main {
   min-width: 0;
   font-weight: 600;
 }
+
+/* Turma atual na ficha do catequizando: fundo e borda destacados, além do rótulo em texto. */
+.presenca-turma-atual {
+  background: var(--cor-primaria-suave);
+  border: 2px solid var(--cor-primaria);
+}
