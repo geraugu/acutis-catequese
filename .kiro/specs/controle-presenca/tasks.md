@@ -9,7 +9,7 @@
   - Pronto quando: a migração aplica nos bancos de dev e de teste; um teste de integração grava uma presença, recusa a segunda presença do mesmo catequizando no mesmo encontro, recusa visitante ausente ou justificado, visitante sem turma de origem, visitante com origem igual à turma do encontro, presença comum com turma de origem e limite fora de 1 a 100 ou com `id` diferente de 1; recusa apagar encontro, turma e catequizando com presenças (chaves `Restrict`); e a limpeza zera as tabelas.
   - _Requirements: 3.6, 4.5, 4.7, 7.1, 9.2, 9.3, 9.5, 9.6_
 
-- [ ] 2. Domínio da presença (regras puras)
+- [x] 2. Domínio da presença (regras puras)
 
 - [x] 2.1 (P) Implementar o cálculo de frequência, o limite e o alerta
   - Criar `STATUS_PRESENCA`, `LIMITE_PADRAO` (75), `contarPresencas`, `somarContagens`, `calcularFrequencia`, `emAlerta`, `limiteSchema` e `ordenarPorFrequencia`, com justificado contando como ausência e alerta comparado em inteiros, sem arredondar.
@@ -30,7 +30,7 @@
   - _Boundary: presenca/domain/progresso-catequizando_
   - _Requirements: 8.1, 8.3, 8.4, 8.6_
 
-- [ ] 2.4 (P) Criar as mensagens da presença
+- [x] 2.4 (P) Criar as mensagens da presença
   - Criar os códigos de aviso (`chamada-salva`, `chamada-atualizada`, `visitante-adicionado`, `visitante-removido`, `limite-salvo`), as mensagens de erro do design e `mensagemDeAviso`, no padrão dos outros módulos.
   - Pronto quando: os testes unitários mostram o texto de cada código ("Chamada salva", "Chamada atualizada", "Limite salvo"), `null` para códigos desconhecidos e não string, e as mensagens de turma encerrada, situação alterada, visitante duplicado e visitante sem tema.
   - _Boundary: presenca/mensagens_
