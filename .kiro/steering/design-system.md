@@ -1,10 +1,10 @@
 ---
 inclusion: always
-updated_at: 2026-09-30
+updated_at: 2026-10-05
 ---
 # Design System: "Acolhedor"
 
-Direção visual escolhida em 2026-09-30, entre três opções (Sereno, Acolhedor e Litúrgico). A implementação de referência está em `src/app/globals.css`, na tela de login e no layout interno (`AppShell`).
+Direção visual escolhida em 2026-09-30, entre três opções (Sereno, Acolhedor e Litúrgico). A implementação de referência está em `src/app/globals.css`, na tela de login e no layout interno (`AppShell`). Todas as telas já entregues (equipe, catequizandos, turmas, programa, autocadastro) seguem este sistema.
 
 ## Princípios
 
@@ -25,13 +25,15 @@ Direção visual escolhida em 2026-09-30, entre três opções (Sereno, Acolhedo
 | `--cor-primaria` | `#3B6D11` | Botão principal, marca, links |
 | `--cor-primaria-hover` | `#27500A` | Hover do primário |
 | `--cor-primaria-suave` | `#EAF3DE` | Item de menu ativo, destaques leves |
+| `--cor-primaria-contraste` | `#FFFFFF` | Texto sobre o fundo primário |
 | `--cor-borda` | `#D5DEC8` | Bordas e divisórias |
 | `--cor-perigo` / `--cor-perigo-fundo` | `#A32D2D` / `#FCEBEB` | Erros |
 | `--cor-sucesso` / `--cor-sucesso-fundo` | `#27500A` / `#EAF3DE` | Confirmações |
 | `--cor-foco` | `#1D4ED8` | Anel de foco (contrasta com o verde) |
 | `--raio-campo` | `10px` | Campos |
 | `--raio-cartao` | `14px` | Cartões |
-| `--raio-pilula` | `999px` | Botões |
+| `--raio-pilula` | `999px` | Botões e etiquetas |
+| `--largura-maxima` | `960px` | Largura máxima do conteúdo |
 
 **Tipografia:** fonte do sistema (`system-ui`). Títulos com peso 600 e corpo com 400. Tamanhos: título da página em 1.5rem, título de cartão em 1.25rem, corpo em 1rem e legenda em 0.875rem. Não há fonte com serifa.
 
@@ -45,9 +47,18 @@ Direção visual escolhida em 2026-09-30, entre três opções (Sereno, Acolhedo
 - **Cartão:** superfície branca com `--raio-cartao` e padding de 1.25rem a 1.5rem.
 - **Alertas:** fundo suave com texto na cor forte do mesmo tom (perigo ou sucesso). Nunca use texto preto sobre fundo colorido.
 - **Marca:** quadrado arredondado verde com um ícone de folha, seguido de "Acutis Catequese" em peso 600.
-- **Telas de lista (próximas specs):** busca no topo, linhas separadas por borda (não cartões individuais) e ação principal como botão primário.
+- **Telas de lista:** busca no topo, linhas separadas por borda (não cartões individuais) e ação principal como botão primário.
+- **Etiquetas e situações:** `.etiqueta` e `.selo` (pílula suave) para categorias, `.situacao-*` e `.estado-*` para a situação de um registro (ativo, inativo, planejado, realizado, cancelado...). A situação sempre aparece como **texto**, nunca só por cor.
 - **Estado vazio:** título convidativo, uma linha de explicação e a ação principal.
 - **Confirmação de ações destrutivas** (inativar etc.): pede confirmação explícita e usa texto que nomeia a ação ("Inativar catequista"), não "OK".
+
+## Como aplicar os estilos
+
+- **Fonte da verdade:** `src/app/globals.css`, com classes semânticas em português (`.lista-turmas`, `.cronograma`, `.botao-primario`) e cores/raios sempre via tokens, nunca valores soltos.
+- **Organização do arquivo:** tokens e base primeiro; depois os padrões compartilhados (botão, campo, aviso, lista vazia, paginação); depois uma seção comentada por feature (`/* Turmas (gestao-turmas): ... */`). Estilos novos entram na seção da própria feature.
+- **CSS Modules** (`*.module.css`) são exceção, para estilo isolado de um componente ou página (hoje: `comum/confirmacao` e a página pública de inscrição). Eles usam os mesmos tokens.
+- **Acessibilidade de base:** `:focus-visible` global com `--cor-foco`, link "pular para o conteúdo" (`.pular-link`) e `.visualmente-oculto` para texto só para leitor de tela.
+- **Breakpoint:** uma coluna até 640 px e ajustes a partir de `min-width: 640px`.
 
 ## Textos (voz)
 

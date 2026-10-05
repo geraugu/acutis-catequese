@@ -24,7 +24,7 @@ updated_at: 2026-10-05
 
 - **Better Auth 1.x**: autenticação com e-mail e senha. É uma biblioteca, não um serviço, e guarda usuários e sessões no próprio Postgres (adapter Prisma). Os papéis `coordenacao` e `catequista` vêm do plugin `admin`, que também permite bloquear usuários inativos.
 - **Zod 4**: schemas de validação compartilhados entre formulários e Server Actions.
-- **Estilos**: CSS puro com tokens em `src/app/globals.css` e CSS Modules por componente (`*.module.css`), conforme `design-system.md`. Sem framework de CSS.
+- **Estilos**: CSS puro com tokens e classes semânticas em `src/app/globals.css`, e CSS Modules (`*.module.css`) só em casos isolados, conforme `design-system.md`. Sem framework de CSS.
 - **Server-only**: `import "server-only"` nos arquivos que tocam persistência, para impedir que cheguem ao bundle do cliente.
 
 ## Padrões de Desenvolvimento
