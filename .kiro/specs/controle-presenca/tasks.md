@@ -11,7 +11,7 @@
 
 - [ ] 2. Domínio da presença (regras puras)
 
-- [ ] 2.1 (P) Implementar o cálculo de frequência, o limite e o alerta
+- [x] 2.1 (P) Implementar o cálculo de frequência, o limite e o alerta
   - Criar `STATUS_PRESENCA`, `LIMITE_PADRAO` (75), `contarPresencas`, `somarContagens`, `calcularFrequencia`, `emAlerta`, `limiteSchema` e `ordenarPorFrequencia`, com justificado contando como ausência e alerta comparado em inteiros, sem arredondar.
   - Pronto quando: os testes unitários cobrem 1 presente, 1 justificado e 2 ausentes igual a 25%; total 0 com percentual `null` e alerta falso; 2 de 3 exibido como 67% e em alerta com limite 67; 3 de 4 sem alerta com limite 75; soma de contagens; ordenação com menor percentual primeiro, sem encontros por último e desempate por nome; e `limiteSchema` recusando vazio, 0, 101 e 70,5 com mensagem em pt-BR.
   - _Boundary: presenca/domain/frequencia_
