@@ -35,7 +35,7 @@ describe("AppShell", () => {
     const link = within(nav).getByRole("link", { name: "Início" });
     expect(link).toHaveAttribute("href", "/coordenacao");
     expect(link).toHaveAttribute("aria-current", "page");
-    expect(within(nav).getAllByRole("link")).toHaveLength(5);
+    expect(within(nav).getAllByRole("link")).toHaveLength(6);
     expect(within(nav).getByRole("link", { name: "Equipe" })).toHaveAttribute(
       "href",
       "/coordenacao/equipe",
@@ -51,6 +51,10 @@ describe("AppShell", () => {
     expect(within(nav).getByRole("link", { name: "Programa" })).toHaveAttribute(
       "href",
       "/coordenacao/programa",
+    );
+    expect(within(nav).getByRole("link", { name: "Frequência" })).toHaveAttribute(
+      "href",
+      "/coordenacao/frequencia",
     );
     expect(screen.getByRole("main")).toHaveAttribute("id", "conteudo");
     expect(screen.getByRole("main")).toHaveTextContent("conteúdo");
@@ -71,8 +75,22 @@ describe("AppShell", () => {
       "/catequista",
       "/catequista/turmas",
       "/catequista/programa",
+      "/catequista/frequencia",
     ]);
     expect(links[0]).not.toHaveAttribute("aria-current");
+  });
+
+  it("marca Frequência como item ativo na rota de frequência", () => {
+    render(
+      <AppShell sessao={cat} caminhoAtual="/catequista/frequencia">
+        <p>x</p>
+      </AppShell>,
+    );
+    const nav = screen.getByRole("navigation", { name: "Principal" });
+    expect(within(nav).getByRole("link", { name: "Frequência" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
   });
 
   it("tem link para pular para o conteúdo", () => {

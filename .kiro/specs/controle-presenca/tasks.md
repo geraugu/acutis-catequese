@@ -155,7 +155,7 @@
   - _Boundary: app/_presenca, rotas de frequência_
   - _Requirements: 1.2, 7.6, 7.7, 7.10, 7.11, 10.1_
 
-- [ ] 6.4 Incluir o item "Frequência" no menu
+- [x] 6.4 Incluir o item "Frequência" no menu
   - Acrescentar "Frequência" ao menu da coordenação e do catequista, atualizando os testes do menu e do app-shell.
   - Pronto quando: os testes de `menu-por-papel` e de `app-shell` mostram o item "Frequência" com o destino do papel para os dois perfis, e a rota de cada papel abre com o menu ativo.
   - _Depends: 6.3_
