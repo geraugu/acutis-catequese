@@ -12,7 +12,7 @@ interface ResumoChamadaProps {
   contagem: ContagemChamada | undefined;
 }
 
-function plural(n: number, singular: string, pluralForma: string): string {
+export function plural(n: number, singular: string, pluralForma: string): string {
   return `${n} ${n === 1 ? singular : pluralForma}`;
 }
 

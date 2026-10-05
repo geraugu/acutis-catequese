@@ -111,7 +111,7 @@
   - _Boundary: components/presenca_
   - _Requirements: 2.8, 6.3_
 
-- [ ] 5.4 Criar o bloco de frequência da turma
+- [x] 5.4 Criar o bloco de frequência da turma
   - `frequencia-turma`: percentual da turma, quantidade de catequizandos em alerta e tabela dos inscritos vigentes com percentual, contagens e "Baixa frequência" (texto e ícone), com ordenação por nome ou por menor frequência.
   - Pronto quando: os testes de componente mostram "Sem encontros registrados" no lugar do percentual, o alerta só para quem está abaixo do limite, a ordenação por menor frequência com sem-encontros por último, o texto do alerta além da cor e o bloco consultável numa turma encerrada.
   - _Depends: 5.3_
@@ -208,3 +208,4 @@
 - 5.1: `ChamadaForm` exporta `VisitanteDaChamada {catequizandoId, nome, turmaOrigemNome}` e `AcaoChamada`; a página 6.1 mapeia os `RegistroPresenca` com `visitante = true` para isso e liga `salvarChamadaAction` com `bind(turmaId, encontroId, base)`. Os estilos `presenca-*` de 5.2–5.6 já existem em `globals.css`. O layout ainda não foi conferido no navegador: conferir quando a página 6.1 existir.
 - 5.2: `ListaVisitantes` e `BuscaVisitante` são componentes cliente e recebem `AcaoVisitante = (catequizandoId) => Promise<EstadoPresenca>` (`removerVisitanteAction.bind(null, turmaId, encontroId, base)` e `adicionarVisitanteAction.bind(null, turmaId, encontroId, base)`); `BuscaVisitante({termo: string | null, candidatos, adicionar})` com `termo` nulo quando não houve busca; `SemTemaDoEncontro({tema, inscritos})`.
 - 5.3: `ResumoChamada({situacao, contagem})` exporta `ContagemChamada`; `ChamadaDeHoje({encontro, turmaEncerrada, hoje, hrefChamada})` só decide se exibe; a página (6.6) escolhe qual encontro é o de hoje.
+- 5.4: `FrequenciaTurma({itens, limite, ordem, hrefOrdenar})` calcula tudo pelo domínio; o helper `plural(n, singular, plural)` é exportado de `resumo-chamada.tsx` e deve ser reaproveitado pelos demais componentes que exibam contagens (use singular quando N=1).
