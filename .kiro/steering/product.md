@@ -15,14 +15,15 @@ O nome homenageia São Carlo Acutis, padroeiro dos informáticos. O projeto é u
 - **Turmas e inscrições**: turmas por ciclo, com catequistas responsáveis e catequizandos inscritos.
 - **Autocadastro de catequizandos**: o adulto preenche a própria ficha por um link público da turma, com consentimento LGPD. A ficha fica pendente até o catequista ou a coordenação confirmá-la.
 - **Programa da catequese**: cronograma de encontros e temas ao longo da caminhada.
-- **Controle de presença** _(em desenvolvimento)_: registro da frequência em cada encontro, acompanhamento da assiduidade e reposição de temas em outra turma (visitante).
+- **Controle de presença**: chamada por encontro (presente, ausente ou justificado), percentual de frequência por catequizando e por turma, alerta de baixa frequência com limite configurável e reposição de temas em outra turma (visitante).
 
 ## Casos de Uso Alvo
 
 - A coordenação abre uma nova turma, associa catequistas e inscreve catequizandos.
 - O adulto se inscreve sozinho pelo link da turma e o catequista confirma a ficha.
-- O catequista consulta o programa e registra a presença no encontro do dia.
+- O catequista consulta o programa e registra a presença no encontro do dia, inclusive pelo celular.
 - A coordenação identifica catequizandos com baixa frequência para acompanhamento pastoral.
+- O catequizando que perdeu um tema repõe o encontro em outra turma, e a presença conta para o progresso dele no programa.
 
 ## Proposta de Valor
 

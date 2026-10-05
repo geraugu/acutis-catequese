@@ -49,6 +49,7 @@ Direção visual escolhida em 2026-09-30, entre três opções (Sereno, Acolhedo
 - **Marca:** quadrado arredondado verde com um ícone de folha, seguido de "Acutis Catequese" em peso 600.
 - **Telas de lista:** busca no topo, linhas separadas por borda (não cartões individuais) e ação principal como botão primário.
 - **Etiquetas e situações:** `.etiqueta` e `.selo` (pílula suave) para categorias, `.situacao-*` e `.estado-*` para a situação de um registro (ativo, inativo, planejado, realizado, cancelado...). A situação sempre aparece como **texto**, nunca só por cor.
+- **Escolha de status (ex.: chamada):** opções em pílula (`.presenca-opcao`) sobre um `input` de rádio invisível que cobre toda a pílula, para o alvo de toque ser inteiro. A opção marcada muda fundo e borda (`:has(input:checked)`); "ausente" usa o tom de perigo. Cada status aparece com **ícone + texto** (`StatusPresenca`), e alertas como "Baixa frequência" também, nunca só pela cor.
 - **Estado vazio:** título convidativo, uma linha de explicação e a ação principal.
 - **Confirmação de ações destrutivas** (inativar etc.): pede confirmação explícita e usa texto que nomeia a ação ("Inativar catequista"), não "OK".
 
