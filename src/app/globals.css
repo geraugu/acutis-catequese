@@ -1347,3 +1347,22 @@ main {
   background: var(--cor-primaria-suave);
   border: 2px solid var(--cor-primaria);
 }
+
+/* Topo da chamada: turma, data, horário, tema e situação em pares compactos. */
+.presenca-encontro {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.75rem 1rem;
+  margin: 0 0 1rem;
+}
+
+.presenca-encontro dt {
+  color: var(--cor-texto-suave);
+  font-size: 0.875rem;
+}
+
+.presenca-encontro dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

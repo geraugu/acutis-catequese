@@ -134,7 +134,7 @@
 
 - [ ] 6. Páginas e integração
 
-- [ ] 6.1 Criar a página de chamada e as rotas dos dois papéis
+- [x] 6.1 Criar a página de chamada e as rotas dos dois papéis
   - Criar `PaginaChamada` em `_presenca/paginas.tsx` (turma, data com dia da semana, horário e tema no topo; formulário de chamada; visitantes; quem ainda não viu o tema; mensagem de indisponibilidade com o motivo) e as rotas `coordenacao` e `catequista` de `…/encontros/[encontroId]/chamada`, cada uma com `requireRole` e o caminho exato.
   - Pronto quando: os testes de integração e de componente mostram a página abrindo para o catequista responsável e para a coordenação, "Acesso negado" para o catequista de outra turma, os inscritos listados sem status em encontro planejado até hoje, os status preenchidos em encontro realizado, o motivo exibido para cancelado, data futura e turma encerrada, e encontro de outra turma na URL resultando em não encontrado.
   - _Depends: 5.2, 4.1_
@@ -211,3 +211,4 @@
 - 5.4: `FrequenciaTurma({itens, limite, ordem, hrefOrdenar})` calcula tudo pelo domínio; o helper `plural(n, singular, plural)` é exportado de `resumo-chamada.tsx` e deve ser reaproveitado pelos demais componentes que exibam contagens (use singular quando N=1).
 - 5.5: `FrequenciaCatequizando({turmas, limite, presencas, progresso})` exporta `TurmaDoCatequizando` e `PresencaDoCatequizando` (tipos estruturais, sem importar o repositório `server-only`); a turma atual usa `presenca-turma-atual` + selo "Turma atual". Opcional futuro: classe própria para esse selo (hoje reaproveita `presenca-selo-visitante`).
 - 5.6: `AlertasFrequencia({alertas, limite})` (puro) e `FormularioLimite({limiteAtual, salvarLimiteAction})` (cliente; exporta `AcaoLimite`); `SeloBaixaFrequencia` existe em arquivo próprio, mas `frequencia-turma.tsx` e `frequencia-catequizando.tsx` ainda têm uma cópia local do mesmo selo (unificação opcional, trivial).
+- 6.1: `PaginaChamada({sessao, papel, turmaId, encontroId, aviso})` vive em `src/app/(interno)/_presenca/paginas.tsx` (as páginas 6.2 e 6.3 entram no mesmo arquivo); a página de visitantes deve usar a rota `…/encontros/[encontroId]/chamada/visitantes`, e o link "Adicionar visitante" já aponta para ela. A re-verificação da remediação de CSS (`presenca-encontro`) foi feita pelo controlador, sem novo revisor, por ser só acréscimo de CSS.
