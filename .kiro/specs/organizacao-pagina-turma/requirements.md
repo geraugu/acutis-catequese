@@ -134,7 +134,7 @@ Ao longo do documento:
 #### Acceptance Criteria
 1. The Sistema shall aplicar a regra de acesso por turma em cada aba e em cada página de tarefa, de modo que abrir diretamente o endereço de uma aba também seja verificado.
 2. If um catequista abrir qualquer aba ou página de tarefa de uma turma em que não é responsável, the Sistema shall exibir a página de "Acesso negado" sem exibir nenhum dado da turma.
-3. If o endereço apontar para uma turma que não existe, the Sistema shall exibir a página de "não encontrado".
+3. If a coordenação abrir o endereço de uma turma que não existe, the Sistema shall exibir a página de "não encontrado"; se um catequista abrir esse endereço, the Sistema shall exibir a página de "Acesso negado", sem revelar se a turma existe.
 4. The Sistema shall exibir, para cada papel, somente as ações que ele já tinha na página da turma, sem acrescentar nenhuma.
 5. The Sistema shall exibir a mesma estrutura de abas para a coordenação e para o catequista, com o conteúdo de cada aba ajustado ao papel.
 

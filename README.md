@@ -17,6 +17,7 @@ Este projeto é um trabalho da pós-graduação em Engenharia de Software e foi 
 - [x] Programa da catequese (encontros e temas) — v0.5.0
 - [x] Autocadastro de catequizandos por link da turma — v0.6.0
 - [x] Controle de presença: chamada por encontro, visitantes para reposição de tema, frequência e alerta de baixa frequência — v0.7.0
+- [x] Página da turma organizada em abas (Resumo, Inscritos, Frequência, Encontros, Equipe e link) — v0.8.0
 
 ## Tecnologias
 
@@ -72,6 +73,7 @@ Cada spec fica em `.kiro/specs/<funcionalidade>/`, com os arquivos `brief.md`, `
 | 5 | [programa-catequese](.kiro/specs/programa-catequese/) | Encontros e temas de cada turma | 🚀 Entregue (v0.5.0) |
 | 6 | [autocadastro-catequizandos](.kiro/specs/autocadastro-catequizandos/) | Link da turma para o adulto preencher a própria ficha (pendente até confirmação) | 🚀 Entregue (v0.6.0) |
 | 7 | [controle-presenca](.kiro/specs/controle-presenca/) | Chamada por encontro, visitantes para reposição de tema e frequência com alerta | 🚀 Entregue (v0.7.0) |
+| 8 | [organizacao-pagina-turma](.kiro/specs/organizacao-pagina-turma/) | Página da turma em abas por rota (Resumo, Inscritos, Frequência, Encontros, Equipe e link) | 🚀 Entregue (v0.8.0) |
 
 Legenda: 📝 Brief · 📋 Requisitos · 📐 Design · ✅ Tarefas aprovadas · 🚧 Em implementação · 🚀 Entregue (release)
 

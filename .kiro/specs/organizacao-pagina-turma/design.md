@@ -202,7 +202,7 @@ Decisões do fluxo:
 | 8.7 | Mensagem no topo da aba | páginas das abas, `avisoDaTurma` | `avisoDaTurma` | — |
 | 9.1 | Acesso em cada aba e página de tarefa | `carregarTurmaDaAba`, LayoutDaTurma | `carregarTurmaDaAba` | Abrir a turma |
 | 9.2 | Catequista sem acesso → "Acesso negado" | `carregarTurmaDaAba` | `podeVerTurma` | — |
-| 9.3 | Turma inexistente → não encontrada | `not-found.tsx` por papel | — | — |
+| 9.3 | Turma inexistente → não encontrada para a coordenação; "Acesso negado" para o catequista (a regra de acesso nega antes de saber se a turma existe) | `not-found.tsx` por papel; `podeVerTurma` | — | — |
 | 9.4 | Só as ações que o papel já tinha | abas por papel | — | — |
 | 9.5 | Mesma estrutura para os dois papéis | `_turma` compartilhado | — | — |
 | 10.1 | Tudo continua disponível em alguma aba | distribuição dos blocos | — | — |
@@ -343,7 +343,7 @@ Manter o tratamento atual: acesso negado por redirect, turma inexistente por `no
 
 ### Error Categories and Responses
 - **Permissão**: sem acesso à turma → "Acesso negado", em qualquer aba ou página de tarefa, antes de ler dados (9.1, 9.2).
-- **Não encontrado**: turma inexistente → `turmas/[id]/not-found.tsx` do papel (o `notFound()` do layout e o das abas caem nele); encontro inexistente → `encontros/not-found.tsx`, como hoje (9.3).
+- **Não encontrado**: turma inexistente → para a coordenação, `turmas/[id]/not-found.tsx` (o `notFound()` do layout e o das abas caem nele); para o catequista, `podeVerTurma` nega antes e a tela é "Acesso negado", sem revelar se a turma existe (9.3); encontro inexistente → `encontros/not-found.tsx`, como hoje (9.3).
 - **Aviso desconhecido**: `?aviso=` inválido não gera mensagem.
 
 ### Monitoring
