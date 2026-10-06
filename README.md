@@ -199,9 +199,19 @@ Chamada, visitantes, novo e editar encontro, fichas pendentes e edição da turm
 
 ## Limitações conhecidas
 
+- O sistema atende **uma única paróquia**: não há separação de dados entre paróquias, então não serve a várias paróquias na mesma instalação (veja os próximos passos).
 - A quantidade de fichas pendentes na aba **Equipe e link** só atualiza ao confirmar ou descartar uma ficha ou ao navegar para outra página; uma ficha enviada por outra pessoa enquanto a aba está aberta só aparece depois.
 - Se um catequista abrir o endereço de uma turma que não existe, vê "Acesso negado" (e não "não encontrado"), para não revelar quais turmas existem. A coordenação vê "não encontrado".
 - O e2e sobe a aplicação na porta 3000 e reaproveita o que já estiver lá: pare o `npm run dev` antes de rodá-lo, para que ele não use o banco de desenvolvimento.
+
+## Próximos passos
+
+Ideias para as próximas versões, ainda sem spec:
+
+- **Várias paróquias**: separar os dados por paróquia (multi-tenant), para que a mesma instalação atenda mais de uma comunidade.
+- **Assistente com IA**: um chat em que o catequizando pergunta qual é a sua situação no curso (frequência, encontros e temas já vistos) e que também ajude a coordenação a organizar as turmas.
+- **Página inicial melhor depois do login**: dar à coordenação e aos catequistas uma visão geral das suas turmas e dos catequizandos, com os alertas e as pendências à vista; hoje a página inicial é só uma saudação, com um botão para "Minhas turmas" no caso do catequista.
+- **Área do catequizando**: conta de acesso própria, para o aluno acompanhar a sua situação, e a base do assistente acima.
 
 ## Versionamento
 
