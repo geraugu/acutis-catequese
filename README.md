@@ -171,6 +171,10 @@ A cada push e pull request, o [GitHub Actions](.github/workflows/ci.yml) executa
 
 ## Exemplos de uso
 
+![Navegação pelas abas da página da turma: Resumo, Inscritos, Frequência, Encontros e Equipe e link](docs/demo-turma.gif)
+
+_Demonstração com dados fictícios, gerada por `npm run demo:gif`._
+
 Os principais fluxos, pelo menu da aplicação:
 
 1. **Montar a turma** (coordenação): crie a turma, designe os catequistas responsáveis na aba **Equipe e link** e inscreva os catequizandos na aba **Inscritos**.
