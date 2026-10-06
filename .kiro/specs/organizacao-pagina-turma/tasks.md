@@ -94,7 +94,7 @@
 
 - [ ] 5. Atualização dos testes e2e existentes
 
-- [ ] 5.1 Atualizar os e2e de turmas e de autocadastro para as abas
+- [x] 5.1 Atualizar os e2e de turmas e de autocadastro para as abas
   - Em `turmas.spec.ts` e `autocadastro.spec.ts`, navegar até a aba onde cada bloco está agora (Inscritos, Equipe e link) e ajustar os seletores e os destinos esperados após as ações.
   - Pronto quando: os dois specs passam em `npm run test:e2e`, sem enfraquecer as asserções originais.
   - _Depends: 4.2, 4.3_

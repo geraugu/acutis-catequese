@@ -33,9 +33,9 @@ async function cadastrarCatequizando(page: Page, nome: string): Promise<string> 
   return new URL(page.url()).pathname.split("/").pop() ?? "";
 }
 
-/** Busca o candidato na página da turma e devolve o item dele na lista de candidatos. */
+/** Busca o candidato na aba Inscritos da turma e devolve o item dele na lista de candidatos. */
 async function buscarCandidato(page: Page, turmaId: string, nome: string) {
-  await page.goto(`${BASE}/${turmaId}`);
+  await page.goto(`${BASE}/${turmaId}/inscritos`);
   await page.getByLabel("Buscar catequizando por termo").fill(nome);
   await page.getByRole("button", { name: "Buscar", exact: true }).click();
   const item = page.locator(".inscrever-candidatos li").filter({ hasText: nome });
@@ -47,12 +47,17 @@ async function inscrever(page: Page, turmaId: string, nome: string) {
   const item = await buscarCandidato(page, turmaId, nome);
   await item.getByRole("button", { name: "Inscrever", exact: true }).click();
   await expect(page.getByRole("status")).toContainText("Catequizando inscrito.");
+  // A inscrição volta para a aba Inscritos (8.2).
+  await expect(page).toHaveURL(new RegExp(`${BASE}/${turmaId}/inscritos`));
 }
 
-async function designarFixture(page: Page) {
+/** Designa o catequista fixture na aba Equipe e link, para onde a ação volta (8.3). */
+async function designarFixture(page: Page, turmaId: string) {
+  await page.goto(`${BASE}/${turmaId}/equipe`);
   await page.getByLabel("Catequista", { exact: true }).selectOption({ label: CATEQUISTA.nome });
   await page.getByRole("button", { name: "Designar" }).click();
   await expect(page.getByRole("status")).toContainText("Catequista designado.");
+  await expect(page).toHaveURL(new RegExp(`${BASE}/${turmaId}/equipe`));
 }
 
 function vigentes(page: Page) {
@@ -86,7 +91,7 @@ test.describe("coordenação", () => {
     const nome = `Bruno Inscrito ${s}`;
     const naoInscrito = `Carla Fora ${s}`;
     const turmaId = await criarTurma(page, turma);
-    await designarFixture(page);
+    await designarFixture(page, turmaId);
     await expect(page.locator(".turma-catequistas")).toContainText(CATEQUISTA.nome);
     const catequizandoId = await cadastrarCatequizando(page, nome);
     const foraId = await cadastrarCatequizando(page, naoInscrito);
@@ -107,8 +112,16 @@ test.describe("coordenação", () => {
     await expect(cat.getByRole("heading", { level: 1 })).toHaveText("Minhas turmas");
     await cat.getByRole("link", { name: turma }).click();
     await expect(cat.getByRole("heading", { level: 1 })).toHaveText(turma);
-    // Única ação do catequista na turma: gerar o link de autocadastro (autocadastro 1.1).
+    const abas = cat.getByRole("navigation", { name: "Seções da turma" });
+    // Única ação do catequista na turma: gerar o link de autocadastro (autocadastro 1.1),
+    // na aba Equipe e link; o Resumo não tem nenhuma ação de alteração.
+    await expect(cat.locator("main").getByRole("button")).toHaveCount(0);
+    await abas.getByRole("link", { name: "Equipe e link" }).click();
+    await expect(cat).toHaveURL(new RegExp(`/catequista/turmas/${turmaId}/equipe$`));
     await expect(cat.locator("main").getByRole("button")).toHaveText(["Gerar link"]);
+    await abas.getByRole("link", { name: "Inscritos" }).click();
+    await expect(cat).toHaveURL(new RegExp(`/catequista/turmas/${turmaId}/inscritos$`));
+    await expect(cat.locator("main").getByRole("button")).toHaveCount(0);
     await cat
       .getByRole("list", { name: "Inscritos vigentes" })
       .getByRole("link", { name: nome })
@@ -144,7 +157,7 @@ test.describe("coordenação", () => {
     await expect(page.getByRole("status")).toContainText("Catequizando transferido.");
     await expect(vigentes(page).getByRole("link", { name: nome })).toBeVisible();
 
-    await page.goto(`${BASE}/${origemId}`);
+    await page.goto(`${BASE}/${origemId}/inscritos`);
     await expect(page.getByRole("link", { name: nome })).toHaveCount(0);
     await expect(page.getByText("Nenhum catequizando inscrito", { exact: true })).toBeVisible();
   });
@@ -165,6 +178,7 @@ test.describe("coordenação", () => {
     await item.getByRole("button", { name: "Inscrever mesmo assim" }).click();
     await expect(page.getByRole("status")).toContainText("Catequizando inscrito.");
     await expect(vigentes(page).getByRole("listitem")).toHaveCount(2);
+    await page.goto(`${BASE}/${turmaId}`);
     await expect(page.locator(".turma-selos")).toContainText("Lotada");
 
     await page.goto(BASE);
@@ -180,15 +194,22 @@ test.describe("coordenação", () => {
     await cadastrarCatequizando(page, nome);
     await inscrever(page, turmaId, nome);
 
+    await page.goto(`${BASE}/${turmaId}`);
     await page.getByRole("button", { name: "Encerrar turma" }).click();
     const dialogo = page.getByRole("dialog");
     await expect(dialogo).toContainText("1 catequizando será desligado.");
     await dialogo.getByRole("button", { name: "Encerrar turma" }).click();
-    await expect(page).toHaveURL(/aviso=turma-encerrada/);
+    // Encerrar volta para o Resumo da turma (8.1).
+    await expect(page).toHaveURL(new RegExp(`${BASE}/${turmaId}\\?aviso=turma-encerrada`));
     await expect(page.locator(".turma-selos")).toContainText("Encerrada");
-    await expect(page.getByText("Nenhum catequizando inscrito")).toBeVisible();
     await expect(page.locator("main").getByRole("button")).toHaveCount(0);
     await expect(page.getByRole("link", { name: "Editar" })).toHaveCount(0);
+    // Sem ações de alteração também em Inscritos e em Equipe e link (3.5, 6.5).
+    await page.goto(`${BASE}/${turmaId}/inscritos`);
+    await expect(page.getByText("Nenhum catequizando inscrito")).toBeVisible();
+    await expect(page.locator("main").getByRole("button")).toHaveCount(0);
+    await page.goto(`${BASE}/${turmaId}/equipe`);
+    await expect(page.locator("main").getByRole("button")).toHaveCount(0);
   });
 
   test.describe("teclado", () => {
@@ -230,12 +251,14 @@ test.describe("coordenação", () => {
 
     test("lista e página da turma sem rolagem horizontal", async ({ page }) => {
       const turmaId = await criarTurma(page, `Turma Estreita com nome comprido ${sufixo()}`);
-      await designarFixture(page);
+      await designarFixture(page, turmaId);
       await semRolagemHorizontal(page);
       await page.goto(BASE);
       await semRolagemHorizontal(page);
-      await page.goto(`${BASE}/${turmaId}`);
-      await semRolagemHorizontal(page);
+      for (const aba of ["", "/inscritos", "/frequencia", "/encontros", "/equipe"]) {
+        await page.goto(`${BASE}/${turmaId}${aba}`);
+        await semRolagemHorizontal(page);
+      }
     });
   });
 });

@@ -18,6 +18,7 @@ async function criarTurmaDesignada(page: Page, nome: string): Promise<string> {
   await page.getByRole("button", { name: "Criar turma" }).click();
   await expect(page.getByRole("status")).toContainText("Turma criada.");
   const id = new URL(page.url()).pathname.split("/").pop() ?? "";
+  await page.goto(`/coordenacao/turmas/${id}/equipe`);
   await page.getByLabel("Catequista", { exact: true }).selectOption({ label: CATEQUISTA.nome });
   await page.getByRole("button", { name: "Designar" }).click();
   await expect(page.getByRole("status")).toContainText("Catequista designado.");
@@ -65,7 +66,7 @@ test("fluxo completo do autocadastro: link, envio, revisão, desativação e des
   const cat = await browser.newContext({ baseURL, storageState: CATEQUISTA.estado });
   await cat.grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseURL });
   const pk = await cat.newPage();
-  await pk.goto(`/catequista/turmas/${turmaId}`);
+  await pk.goto(`/catequista/turmas/${turmaId}/equipe`);
   const secao = pk.getByRole("region", { name: "Link de autocadastro" });
   await secao.getByRole("button", { name: "Gerar link" }).click();
   await expect(pk.getByRole("status").filter({ hasText: "Link gerado." })).toBeVisible();
@@ -100,6 +101,7 @@ test("fluxo completo do autocadastro: link, envio, revisão, desativação e des
   // 3. Catequista vê a contagem e a fila, abre e confirma (5.1, 7.1).
   await pk.goto("/catequista/turmas");
   await pk.getByRole("link", { name: "1 ficha pendente" }).click();
+  await expect(pk).toHaveURL(new RegExp(`/catequista/turmas/${turmaId}/pendentes$`));
   const fila = pk.getByRole("list", { name: "Fichas pendentes" });
   await fila.getByRole("link", { name: pessoa }).click();
   await expect(pk.getByRole("heading", { level: 1 })).toContainText(pessoa);
@@ -107,6 +109,8 @@ test("fluxo completo do autocadastro: link, envio, revisão, desativação e des
   await expect(
     pk.getByRole("status").filter({ hasText: "Ficha confirmada e inscrita na turma" }),
   ).toBeVisible();
+  // Confirmar volta para a aba Inscritos da turma (8.5).
+  await expect(pk).toHaveURL(new RegExp(`/catequista/turmas/${turmaId}/inscritos`));
   await expect(
     pk.getByRole("list", { name: "Inscritos vigentes" }).getByRole("link", { name: pessoa }),
   ).toBeVisible();
@@ -128,7 +132,7 @@ test("fluxo completo do autocadastro: link, envio, revisão, desativação e des
   await expect(pk.getByRole("link", { name: descartada })).toHaveCount(0);
 
   // 4. Coordenação desativa o link; o anônimo vê a indisponibilidade (1.4).
-  await pc.goto(`/coordenacao/turmas/${turmaId}`);
+  await pc.goto(`/coordenacao/turmas/${turmaId}/equipe`);
   await pc.getByRole("button", { name: "Desativar link" }).click();
   const confirmar = pc.getByRole("dialog", { name: "Desativar o link?" });
   await confirmar.getByRole("button", { name: "Desativar", exact: true }).click();
