@@ -23,7 +23,8 @@
     "test": "vitest run",
     "test:integration": "vitest run --project integration",
     "test:e2e": "playwright test",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "demo:gif": "bash scripts/demo/gerar-gif.sh"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",
