@@ -6,7 +6,7 @@
 
 O **acutis-catequese** é uma aplicação web que apoia a coordenação e os catequistas de uma paróquia na organização da catequese de adultos. Ele substitui planilhas e cadernos de chamada por um registro único e consultável de catequizandos, catequistas, encontros e frequência.
 
-Este projeto é um trabalho da pós-graduação em Engenharia de Software e foi desenvolvido com a metodologia **Spec Driven Development (Kiro)**.
+Este projeto é um trabalho da pós-graduação em Engenharia de Software: Automação e Inovação com Inteligência Artificial Generativa - UFG e foi desenvolvido com a metodologia **Spec Driven Development (Kiro)**.
 
 ### Funcionalidades
 
