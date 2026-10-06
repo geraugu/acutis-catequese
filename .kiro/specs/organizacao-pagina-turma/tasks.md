@@ -110,7 +110,7 @@
 
 - [ ] 6. Validação ponta a ponta
 
-- [ ] 6.1 Testar a navegação por abas, o celular e o teclado
+- [x] 6.1 Testar a navegação por abas, o celular e o teclado
   - Criar `tests/e2e/abas-turma.spec.ts`: a coordenação abre uma turma, percorre as cinco abas conferindo o conteúdo e a aba atual, inscreve um catequizando e volta para Inscritos com a confirmação, designa um catequista e volta para Equipe e link, abre "Fazer chamada" e usa "Voltar para Encontros". Em 360 px, a barra quebra em linhas e nenhuma aba rola na horizontal. Percorrer as abas só com o teclado.
   - Pronto quando: o e2e passa em `npm run test:e2e` e a suíte completa continua com código de saída 0.
   - _Depends: 5.2_
@@ -121,3 +121,10 @@
   - Pronto quando: o e2e passa e a suíte e2e completa passa em três execuções seguidas com código de saída 0.
   - _Depends: 6.1_
   - _Requirements: 1.6, 9.1, 9.2, 9.4_
+
+## Implementation Notes
+
+- Mover páginas para o grupo `(abas)` deixa `.next/dev/types/validator.ts` (gerado pelo servidor dev, fora do git) apontando para o caminho antigo e quebra `npm run typecheck`/`build` com TS2307. Corrigir o caminho nesse arquivo (ou apagar `.next/dev/types`) resolve; o servidor dev o regenera.
+- Páginas de aba que devolvem `<AbaX/>` async não renderizam com `renderToStaticMarkup`: nos testes de integração, resolver o elemento (`el.type(el.props)`) antes de renderizar.
+- E2E em paralelo: helpers que criam tema direto no banco usam `posicao = min - 1` (sempre abaixo dos temas criados pela UI com `max + 1`), e a asserção de total de temas de `programa.spec.ts` usa `toPass()`, porque outros specs criam temas durante o teste.
+- E2E só roda com a porta 3000 livre (senão o Playwright reaproveita o servidor dev do usuário, com o banco de desenvolvimento).

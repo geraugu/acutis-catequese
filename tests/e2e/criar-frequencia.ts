@@ -76,12 +76,14 @@ async function main() {
     where: { email: CATEQUISTA.email },
     select: { id: true },
   });
+  const { _min } = await prisma.tema.aggregate({ _min: { posicao: true } });
+  const posicaoAbaixoDoMenor = (_min.posicao ?? 0) - 1 - Math.floor(Math.random() * 10);
   const tema = await prisma.tema.create({
     data: {
       titulo: `Tema Frequência ${sufixo}`,
       chave: `tema frequencia ${sufixo}`.toLowerCase(),
-      // Posição negativa: nunca fica entre os temas que outros specs criam em sequência (max+1).
-      posicao: -1_000_000 - Math.floor(Math.random() * 1_000_000),
+      // Sempre abaixo do menor existente: nunca se interpõe entre os temas que a UI cria com max+1.
+      posicao: posicaoAbaixoDoMenor,
     },
     select: { id: true },
   });

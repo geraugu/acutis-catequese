@@ -223,11 +223,16 @@ test.describe("programa e encontros", () => {
     await expect(cat.getByRole("status")).toContainText("Encontro realizado.");
     await expect(itemEncontro(cat, passada).locator(".situacao-realizado")).toBeVisible();
 
-    // Só este arquivo cria temas e roda em série: o total lido agora é estável.
-    const total = await totalDeTemasAtivos(page);
-    expect(total).toBeGreaterThanOrEqual(2);
-    await cat.reload();
-    await expect(cat.locator(".progresso-resumo")).toHaveText(`1 de ${total} temas`);
+    // Helpers de outros specs também criam temas direto no banco: o total pode mudar entre a
+    // leitura e o reload, então lê e valida juntos e repete até o texto bater com o total real.
+    await expect(async () => {
+      const total = await totalDeTemasAtivos(page);
+      expect(total).toBeGreaterThanOrEqual(2);
+      await cat.reload();
+      await expect(cat.locator(".progresso-resumo")).toHaveText(`1 de ${total} temas`, {
+        timeout: 2_000,
+      });
+    }).toPass();
     // O tema B segue pendente; o A, não.
     const pendentes = cat.locator(".progresso-pendentes");
     await pendentes.getByText("Ver temas pendentes").click();
