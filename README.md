@@ -171,16 +171,38 @@ A cada push e pull request, o [GitHub Actions](.github/workflows/ci.yml) executa
 
 ## Exemplos de uso
 
-> Em construção. Aqui entrarão capturas de tela e fluxos, como cadastrar um catequizando e registrar presença.
+Os principais fluxos, pelo menu da aplicação:
+
+1. **Montar a turma** (coordenação): crie a turma, designe os catequistas responsáveis na aba **Equipe e link** e inscreva os catequizandos na aba **Inscritos**.
+2. **Receber fichas pelo link**: na aba **Equipe e link**, gere o link de autocadastro e divulgue. As fichas enviadas ficam pendentes (a aba mostra a quantidade) até serem confirmadas, corrigidas ou descartadas; confirmar uma ficha ativa o catequizando e o inscreve na turma.
+3. **Planejar os encontros**: monte o programa de temas no menu **Programa** e, na aba **Encontros** da turma, planeje cada encontro, marque como realizado ou cancele com motivo.
+4. **Fazer a chamada**: no dia do encontro, abra **Fazer chamada** (no **Resumo** ou em **Encontros**) e marque presente, ausente ou justificado. Quem faltou e repõe o tema em outra turma entra como visitante.
+5. **Acompanhar a frequência**: a aba **Frequência** mostra o percentual da turma e de cada inscrito; o menu **Frequência** lista os alertas dos catequizandos abaixo do limite.
+
+### Página da turma
+
+Cada turma tem cinco abas, com endereço próprio (`/coordenacao/turmas/<id>` ou `/catequista/turmas/<id>`), iguais para os dois papéis. O catequista só abre as turmas em que é responsável.
+
+| Aba | Endereço | Conteúdo |
+|---|---|---|
+| Resumo | `/` | Dados da turma, próximo encontro, encontro de hoje, editar e encerrar (coordenação) |
+| Inscritos | `/inscritos` | Inscritos vigentes e anteriores; inscrever e desligar (coordenação) |
+| Frequência | `/frequencia` | Frequência da turma e de cada inscrito, com ordenação por nome ou por menor frequência |
+| Encontros | `/encontros` | Cronograma, progresso no programa e situação de cada encontro |
+| Equipe e link | `/equipe` | Catequistas responsáveis e link de autocadastro, com a fila de fichas pendentes |
+
+Chamada, visitantes, novo e editar encontro, fichas pendentes e edição da turma são páginas de tarefa: abrem sem as abas e têm um link de volta para a aba de origem.
 
 ## Limitações conhecidas
 
-> Em construção.
+- A quantidade de fichas pendentes na aba **Equipe e link** só atualiza ao confirmar ou descartar uma ficha ou ao navegar para outra página; uma ficha enviada por outra pessoa enquanto a aba está aberta só aparece depois.
+- Se um catequista abrir o endereço de uma turma que não existe, vê "Acesso negado" (e não "não encontrado"), para não revelar quais turmas existem. A coordenação vê "não encontrado".
+- O e2e sobe a aplicação na porta 3000 e reaproveita o que já estiver lá: pare o `npm run dev` antes de rodá-lo, para que ele não use o banco de desenvolvimento.
 
 ## Versionamento
 
 - Commits no padrão [Conventional Commits](https://www.conventionalcommits.org/pt-br/).
-- Releases com [versionamento semântico](https://semver.org/lang/pt-BR/), publicadas nas tags do GitHub.
+- Releases com [versionamento semântico](https://semver.org/lang/pt-BR/), publicadas como tags e como [Releases do GitHub](https://github.com/geraugu/acutis-catequese/releases).
 
 ## Créditos
 
