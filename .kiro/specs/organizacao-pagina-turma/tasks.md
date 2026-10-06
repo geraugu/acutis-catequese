@@ -71,7 +71,7 @@
 
 - [ ] 4. Páginas de tarefa e retorno das ações
 
-- [ ] 4.1 Ajustar os links de volta das páginas de tarefa
+- [x] 4.1 Ajustar os links de volta das páginas de tarefa
   - Aplicar os textos e destinos do requisito 7.2: "← Voltar para Encontros" na chamada, em novo encontro e em editar encontro; a visitantes continua "Voltar para a chamada"; a fila de fichas pendentes volta para `/equipe` ("Voltar para Equipe e link"); a revisão continua voltando para a fila; a edição da turma passa a "← Voltar para Resumo".
   - Pronto quando: testes de integração mostram cada link com o texto e o destino certos, nenhuma dessas páginas exibe o cabeçalho da turma nem a barra de abas, e os testes de integração seguem verdes, sem rodar e2e; `npm run build` passa.
   - _Depends: 3.2_

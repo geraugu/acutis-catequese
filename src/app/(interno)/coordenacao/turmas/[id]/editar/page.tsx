@@ -19,7 +19,7 @@ export default async function EditarTurmaPage({ params }: { params: Promise<{ id
 
   const voltar = (
     <p>
-      <Link href={`/coordenacao/turmas/${id}`}>← Voltar para {turma.nome}</Link>
+      <Link href={`/coordenacao/turmas/${id}`}>← Voltar para Resumo</Link>
     </p>
   );
 

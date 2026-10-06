@@ -147,7 +147,7 @@ export async function PaginaNovoEncontro({
   return (
     <>
       <p>
-        <Link href={base}>← Voltar para os encontros</Link>
+        <Link href={base}>← Voltar para Encontros</Link>
       </p>
       <h1>Novo encontro — {turma.nome}</h1>
       {turma.encerrada ? (
@@ -191,7 +191,7 @@ export async function PaginaEditarEncontro({
   return (
     <>
       <p>
-        <Link href={base}>← Voltar para os encontros</Link>
+        <Link href={base}>← Voltar para Encontros</Link>
       </p>
       <h1>Editar encontro — {turma.nome}</h1>
       {bloqueio ? (

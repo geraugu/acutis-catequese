@@ -79,7 +79,7 @@ export async function PaginaFila({
   return (
     <>
       <p>
-        <Link href={`/${area}/turmas/${turmaId}`}>← Voltar para {turma.nome}</Link>
+        <Link href={`/${area}/turmas/${turmaId}/equipe`}>← Voltar para Equipe e link</Link>
       </p>
       <div className="pagina-cabecalho">
         <h1>Fichas pendentes — {turma.nome}</h1>

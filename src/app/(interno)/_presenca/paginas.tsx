@@ -102,7 +102,7 @@ export async function PaginaChamada({
   return (
     <>
       <p>
-        <Link href={base}>← Voltar para os encontros</Link>
+        <Link href={base}>← Voltar para Encontros</Link>
       </p>
       <div className="pagina-cabecalho">
         <h1>
