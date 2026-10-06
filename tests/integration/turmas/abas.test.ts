@@ -12,7 +12,9 @@ import {
   carregarTurmaDaAba,
 } from "@/app/(interno)/_turma/dados";
 import { LayoutDaTurma } from "@/app/(interno)/_turma/layout-turma";
-import { AbaInscritos } from "@/app/(interno)/_turma/abas";
+import { AbaFrequencia, AbaInscritos } from "@/app/(interno)/_turma/abas";
+import { criarEncontroDireto } from "../programa/helpers";
+import { criarPresencaDireta } from "../presenca/helpers";
 import {
   criarCatequizandoDireto,
   criarTurmaDireta,
@@ -323,5 +325,123 @@ describe("AbaInscritos (3.1 a 3.5, 8.7, 9.4)", () => {
     const h = await html("coordenacao", turmaId, { aviso: "inscrito" });
     expect(h).toContain("Catequizando inscrito.");
     expect(h.indexOf("Catequizando inscrito.")).toBeLessThan(h.indexOf("Inscritos</h2>"));
+  });
+});
+
+describe("AbaFrequencia (4.1 a 4.4, 8.7, 9.2)", () => {
+  async function html(
+    papel: "coordenacao" | "catequista",
+    turmaId: string,
+    ordem: "nome" | "frequencia" = "nome",
+  ) {
+    return renderToStaticMarkup(await AbaFrequencia({ papel, turmaId, aviso: undefined, ordem }));
+  }
+
+  // Ana presente 1 de 2 (50%); Bia presente 2 de 2 (100%).
+  async function turmaComChamada(extra: { encerradaEm?: string } = {}) {
+    const turmaId = await criarTurmaDireta(extra);
+    const ana = await criarCatequizandoDireto("Ana Souza");
+    const bia = await criarCatequizandoDireto("Bia Lima");
+    await inscreverDireto(turmaId, ana, "2026-02-01");
+    await inscreverDireto(turmaId, bia, "2026-02-01");
+    const e1 = await criarEncontroDireto(turmaId, { data: "2026-03-07", situacao: "realizado" });
+    const e2 = await criarEncontroDireto(turmaId, { data: "2026-03-14", situacao: "realizado" });
+    for (const [enc, cat, status] of [
+      [e1, ana, "presente"],
+      [e2, ana, "ausente"],
+      [e1, bia, "presente"],
+      [e2, bia, "presente"],
+    ] as const) {
+      await criarPresencaDireta({ encontroId: enc, turmaId, catequizandoId: cat, status });
+    }
+    return turmaId;
+  }
+
+  it("mostra o percentual da turma, a quantidade em baixa e a lista", async () => {
+    const turmaId = await turmaComChamada();
+    logado = sessao(await criarUsuarioDireto("Coord", { role: "coordenacao" }), "coordenacao");
+    const h = await html("coordenacao", turmaId);
+    expect(h).toContain("75%");
+    expect(h).toContain("em baixa frequência");
+    expect(h).toContain("Ana Souza");
+    expect(h).toContain("Bia Lima");
+    expect(h).toContain("50%");
+  });
+
+  it("ordena por nome ou por menor frequência, com links da própria aba", async () => {
+    const turmaId = await turmaComChamada();
+    logado = sessao(await criarUsuarioDireto("Coord", { role: "coordenacao" }), "coordenacao");
+    const base = `/coordenacao/turmas/${turmaId}/frequencia`;
+    const porNome = await html("coordenacao", turmaId, "nome");
+    expect(porNome.indexOf("Ana Souza")).toBeLessThan(porNome.indexOf("Bia Lima"));
+    expect(porNome).toContain(`href="${base}?ordem=frequencia"`);
+    expect(porNome).toContain(`href="${base}?ordem=nome"`);
+
+    // Inverte a ordem: Bia (100%) antes de Ana só se ordenar por nome; por frequência, Ana (50%) vem primeiro.
+    const porFreq = await html("coordenacao", turmaId, "frequencia");
+    expect(porFreq.indexOf("Ana Souza")).toBeLessThan(porFreq.indexOf("Bia Lima"));
+  });
+
+  it("por menor frequência coloca quem frequenta menos antes, mesmo contra a ordem alfabética", async () => {
+    const turmaId = await criarTurmaDireta();
+    const ana = await criarCatequizandoDireto("Ana Alta");
+    const zeca = await criarCatequizandoDireto("Zeca Baixo");
+    await inscreverDireto(turmaId, ana, "2026-02-01");
+    await inscreverDireto(turmaId, zeca, "2026-02-01");
+    const e = await criarEncontroDireto(turmaId, { data: "2026-03-07", situacao: "realizado" });
+    await criarPresencaDireta({ encontroId: e, turmaId, catequizandoId: ana });
+    await criarPresencaDireta({
+      encontroId: e,
+      turmaId,
+      catequizandoId: zeca,
+      status: "ausente",
+    });
+    logado = sessao(await criarUsuarioDireto("Coord", { role: "coordenacao" }), "coordenacao");
+    const h = await html("coordenacao", turmaId, "frequencia");
+    expect(h.indexOf("Zeca Baixo")).toBeLessThan(h.indexOf("Ana Alta"));
+  });
+
+  it("sem chamada registrada mostra 'Sem encontros registrados'", async () => {
+    const turmaId = await criarTurmaDireta();
+    const ana = await criarCatequizandoDireto("Ana Souza");
+    await inscreverDireto(turmaId, ana, "2026-02-01");
+    logado = sessao(await criarUsuarioDireto("Coord", { role: "coordenacao" }), "coordenacao");
+    expect(await html("coordenacao", turmaId)).toContain("Sem encontros registrados");
+  });
+
+  it("turma encerrada continua consultável", async () => {
+    const turmaId = await turmaComChamada({ encerradaEm: "2026-06-01" });
+    logado = sessao(await criarUsuarioDireto("Coord", { role: "coordenacao" }), "coordenacao");
+    const h = await html("coordenacao", turmaId);
+    expect(h).toContain("Ana Souza");
+    expect(h).toContain("75%");
+  });
+
+  it("catequista responsável consulta com links no próprio papel", async () => {
+    const turmaId = await turmaComChamada();
+    const ana = await criarUsuarioDireto("Ana");
+    await designar(turmaId, ana);
+    logado = sessao(ana, "catequista");
+    const h = await html("catequista", turmaId);
+    expect(h).toContain(`href="/catequista/turmas/${turmaId}/frequencia?ordem=frequencia"`);
+  });
+
+  it("catequista de outra turma é negado", async () => {
+    const turmaId = await turmaComChamada();
+    logado = sessao(await criarUsuarioDireto("Bia"), "catequista");
+    expect(await destino(html("catequista", turmaId))).toBe("/acesso-negado");
+  });
+
+  it("mostra a mensagem de aviso no topo", async () => {
+    const turmaId = await criarTurmaDireta();
+    logado = sessao(await criarUsuarioDireto("Coord", { role: "coordenacao" }), "coordenacao");
+    const el = await AbaFrequencia({
+      papel: "coordenacao",
+      turmaId,
+      aviso: "inscrito",
+      ordem: "nome",
+    });
+    const h = renderToStaticMarkup(el);
+    expect(h.indexOf("Catequizando inscrito.")).toBeLessThan(h.indexOf("Frequência</h2>"));
   });
 });

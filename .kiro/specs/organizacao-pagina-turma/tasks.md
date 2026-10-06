@@ -39,7 +39,7 @@
   - _Boundary: app/_turma/abas (AbaInscritos), rotas inscritos_
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 8.7, 9.4, 11.5_
 
-- [ ] 2.3 Criar a aba Frequência e as rotas dos dois papéis
+- [x] 2.3 Criar a aba Frequência e as rotas dos dois papéis
   - Criar `AbaFrequencia` (frequência da turma, quantidade em baixa frequência e lista dos inscritos com o percentual, ordenação por `?ordem=` na própria aba com `hrefOrdenar` para `/frequencia?ordem=`, consultável em turma encerrada) e as rotas `(abas)/frequencia/page.tsx`.
   - Pronto quando: testes de integração (acrescentados a `tests/integration/turmas/abas.test.ts`) mostram o percentual e a lista, a ordenação por nome e por menor frequência com o link da própria aba, "Sem encontros registrados" quando não há chamada, turma encerrada consultável, e "Acesso negado" para catequista de outra turma; `npm run build` lista as duas rotas.
   - _Depends: 2.2, 1.3_

@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { Aviso } from "@/components/comum/aviso";
 import { InscreverCatequizando } from "@/components/turmas/inscrever-catequizando";
 import { Inscritos } from "@/components/turmas/inscritos";
+import { BlocoFrequenciaDaTurma } from "@/app/(interno)/_presenca/blocos";
+import type { OrdemFrequencia } from "@/components/presenca/frequencia-turma";
 import { hojeCivil } from "@/modules/compartilhado/datas";
 import { desligarAction, inscreverAction } from "@/modules/turmas/actions";
 import { catequizandosParaInscricao, obterTurma } from "@/modules/turmas/repositorio";
@@ -69,6 +71,30 @@ export async function AbaInscritos({
           }
         />
       </section>
+    </>
+  );
+}
+
+/**
+ * Aba Frequência: percentual da turma, quantidade em baixa e inscritos ordenáveis por `?ordem=`
+ * na própria aba; consultável em turma encerrada (4.1 a 4.4, 8.7, 9.4).
+ */
+export async function AbaFrequencia({
+  papel,
+  turmaId,
+  aviso,
+  ordem,
+}: PropsAba & { ordem: OrdemFrequencia }): Promise<ReactElement> {
+  await carregarTurmaDaAba(papel, turmaId, `/${papel}/turmas/${turmaId}/frequencia`);
+  return (
+    <>
+      <Aviso mensagem={avisoDaTurma(aviso)} />
+      {await BlocoFrequenciaDaTurma({
+        papel,
+        turmaId,
+        ordem,
+        hrefOrdenar: (o) => `/${papel}/turmas/${turmaId}/frequencia?ordem=${o}`,
+      })}
     </>
   );
 }
