@@ -12,7 +12,8 @@ import {
   carregarTurmaDaAba,
 } from "@/app/(interno)/_turma/dados";
 import { LayoutDaTurma } from "@/app/(interno)/_turma/layout-turma";
-import { AbaEquipe, AbaFrequencia, AbaInscritos } from "@/app/(interno)/_turma/abas";
+import { AbaEquipe, AbaFrequencia, AbaInscritos, AbaResumo } from "@/app/(interno)/_turma/abas";
+import { hojeCivil } from "@/modules/compartilhado/datas";
 import { criarEncontroDireto } from "../programa/helpers";
 import { criarPresencaDireta } from "../presenca/helpers";
 import {
@@ -555,5 +556,89 @@ describe("AbaEquipe (6.1 a 6.5, 8.7, 9.2, 9.4)", () => {
     expect(h.indexOf("Catequizando inscrito.")).toBeLessThan(h.indexOf("Catequistas</h2>"));
     const h2 = await html("coordenacao", turmaId, "link-gerado");
     expect(h2.indexOf("Link gerado.")).toBeLessThan(h2.indexOf("Catequistas</h2>"));
+  });
+});
+
+describe("AbaResumo (2.1 a 2.5, 9.4)", () => {
+  async function html(
+    papel: "coordenacao" | "catequista",
+    turmaId: string,
+    aviso?: string | string[],
+  ) {
+    return renderToStaticMarkup(await AbaResumo({ papel, turmaId, aviso }));
+  }
+
+  it("mostra dados da turma, próximo encontro com link para Encontros e o bloco de hoje", async () => {
+    const turmaId = await criarTurmaDireta({ nome: "Turma Resumo" });
+    const daqui7 = new Date(Date.now() + 7 * 86_400_000).toISOString().slice(0, 10);
+    await criarEncontroDireto(turmaId, { data: daqui7 });
+    const hoje = await criarEncontroDireto(turmaId, { data: hojeCivil() });
+    const ana = await criarUsuarioDireto("Ana");
+    await designar(turmaId, ana);
+    const coord = await criarUsuarioDireto("Coord", { role: "coordenacao" });
+    for (const [id, papel] of [
+      [coord, "coordenacao"],
+      [ana, "catequista"],
+    ] as const) {
+      logado = sessao(id, papel);
+      const h = await html(papel, turmaId);
+      expect(h).toContain("2026");
+      expect(h).toContain("Próximo encontro");
+      expect(h).toContain(`href="/${papel}/turmas/${turmaId}/encontros"`);
+      expect(h).toContain("Encontro de hoje");
+      expect(h).toContain(`href="/${papel}/turmas/${turmaId}/encontros/${hoje}/chamada"`);
+      expect(h).toContain("Ciclo");
+    }
+  });
+
+  it("não traz inscritos, frequência, equipe nem link", async () => {
+    const turmaId = await criarTurmaDireta();
+    const bia = await criarCatequizandoDireto("Bia Vigente");
+    await inscreverDireto(turmaId, bia, "2026-02-01");
+    logado = sessao(await criarUsuarioDireto("Coord", { role: "coordenacao" }), "coordenacao");
+    const h = await html("coordenacao", turmaId);
+    expect(h).not.toContain("Bia Vigente");
+    expect(h).not.toContain("Inscrever catequizando");
+    expect(h).not.toContain("em baixa frequência");
+    expect(h).not.toContain("Catequistas</h2>");
+    expect(h).not.toContain("Link de autocadastro");
+  });
+
+  it("coordenação em turma aberta vê Editar e Encerrar", async () => {
+    const turmaId = await criarTurmaDireta();
+    logado = sessao(await criarUsuarioDireto("Coord", { role: "coordenacao" }), "coordenacao");
+    const h = await html("coordenacao", turmaId);
+    expect(h).toContain(`href="/coordenacao/turmas/${turmaId}/editar"`);
+    expect(h).toContain("Editar");
+    expect(h).toContain("Encerrar");
+  });
+
+  it("catequista responsável não vê Editar nem Encerrar", async () => {
+    const turmaId = await criarTurmaDireta();
+    const ana = await criarUsuarioDireto("Ana");
+    await designar(turmaId, ana);
+    logado = sessao(ana, "catequista");
+    const h = await html("catequista", turmaId);
+    expect(h).not.toContain("Editar");
+    expect(h).not.toContain("Encerrar");
+  });
+
+  it("turma encerrada: sem ações e sem chamada de hoje", async () => {
+    const turmaId = await criarTurmaDireta({ encerradaEm: "2026-06-01" });
+    await criarEncontroDireto(turmaId, { data: hojeCivil() });
+    logado = sessao(await criarUsuarioDireto("Coord", { role: "coordenacao" }), "coordenacao");
+    const h = await html("coordenacao", turmaId);
+    expect(h).not.toContain("Editar");
+    expect(h).not.toContain("Encerrar");
+    expect(h).not.toContain("Encontro de hoje");
+  });
+
+  it("mostra o aviso no topo; catequista de outra turma é negado", async () => {
+    const turmaId = await criarTurmaDireta();
+    logado = sessao(await criarUsuarioDireto("Coord", { role: "coordenacao" }), "coordenacao");
+    const h = await html("coordenacao", turmaId, "link-gerado");
+    expect(h.indexOf("Link gerado.")).toBeLessThan(h.indexOf("Ciclo"));
+    logado = sessao(await criarUsuarioDireto("Bia"), "catequista");
+    expect(await destino(html("catequista", turmaId))).toBe("/acesso-negado");
   });
 });

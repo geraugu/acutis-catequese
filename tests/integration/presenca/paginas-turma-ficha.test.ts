@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import type { SessaoUsuario } from "@/modules/auth/dal";
@@ -44,18 +45,40 @@ const sessao = (userId: string, papel: SessaoUsuario["papel"]): SessaoUsuario =>
   papel,
 });
 
+/** As páginas das abas devolvem o componente async da aba; resolve-o antes de renderizar. */
+async function renderizarPagina(el: ReactElement): Promise<string> {
+  const tipo = el.type as (props: unknown) => Promise<ReactElement>;
+  return renderToStaticMarkup(await tipo(el.props));
+}
+
 type Busca = Record<string, string | string[] | undefined>;
 
 async function paginaTurma(papel: "coordenacao" | "catequista", id: string, busca: Busca = {}) {
   const mod =
     papel === "coordenacao"
-      ? await import("@/app/(interno)/coordenacao/turmas/[id]/page")
-      : await import("@/app/(interno)/catequista/turmas/[id]/page");
+      ? await import("@/app/(interno)/coordenacao/turmas/[id]/(abas)/page")
+      : await import("@/app/(interno)/catequista/turmas/[id]/(abas)/page");
   const el = await mod.default({
     params: Promise.resolve({ id }),
     searchParams: Promise.resolve(busca),
   });
-  return renderToStaticMarkup(el);
+  return renderizarPagina(el);
+}
+
+async function paginaFrequencia(
+  papel: "coordenacao" | "catequista",
+  id: string,
+  busca: Busca = {},
+) {
+  const mod =
+    papel === "coordenacao"
+      ? await import("@/app/(interno)/coordenacao/turmas/[id]/(abas)/frequencia/page")
+      : await import("@/app/(interno)/catequista/turmas/[id]/(abas)/frequencia/page");
+  const el = await mod.default({
+    params: Promise.resolve({ id }),
+    searchParams: Promise.resolve(busca),
+  });
+  return renderizarPagina(el);
 }
 
 /** Nome do primeiro item da lista de frequência (a ordem do bloco, não a da lista de inscritos). */
@@ -105,7 +128,7 @@ async function cenario() {
 }
 
 describe("páginas da turma com frequência (2.8, 5.5, 6.2)", () => {
-  it("mostra o encontro de hoje destacado e a frequência da turma nos dois papéis", async () => {
+  it("o Resumo mostra o encontro de hoje e a aba Frequência mostra a frequência, nos dois papéis", async () => {
     const c = await cenario();
     const hoje = await criarEncontroDireto(c.turmaId, { data: hojeCivil() });
     for (const [id, papel] of [
@@ -116,10 +139,13 @@ describe("páginas da turma com frequência (2.8, 5.5, 6.2)", () => {
       const h = await paginaTurma(papel, c.turmaId);
       expect(h).toContain("Encontro de hoje");
       expect(h).toContain(`href="/${papel}/turmas/${c.turmaId}/encontros/${hoje}/chamada"`);
-      expect(h).toContain("Frequência");
-      expect(h).toContain("Ana Souza");
-      expect(h).toContain(`href="/${papel}/catequizandos/${c.maria}"`);
-      expect(h).toContain("1 em baixa frequência");
+      expect(h).not.toContain("em baixa frequência");
+      expect(h).not.toContain("Ana Souza");
+      const f = await paginaFrequencia(papel, c.turmaId);
+      expect(f).toContain("Ana Souza");
+      expect(f).toContain(`href="/${papel}/catequizandos/${c.maria}"`);
+      expect(f).toContain("1 em baixa frequência");
+      expect(f).not.toContain("Encontro de hoje");
     }
   });
 
@@ -133,12 +159,12 @@ describe("páginas da turma com frequência (2.8, 5.5, 6.2)", () => {
   it("ordena por ?ordem=frequencia (menor primeiro) e cai em nome para valores inválidos", async () => {
     const c = await cenario();
     logado = sessao(c.coord, "coordenacao");
-    const porFreq = await paginaTurma("coordenacao", c.turmaId, { ordem: "frequencia" });
+    const porFreq = await paginaFrequencia("coordenacao", c.turmaId, { ordem: "frequencia" });
     expect(primeiroNaLista(porFreq)).toBe("João Lima");
-    expect(porFreq).toContain(`/coordenacao/turmas/${c.turmaId}?ordem=nome`);
-    const porNome = await paginaTurma("coordenacao", c.turmaId, { ordem: "qualquer" });
+    expect(porFreq).toContain(`/coordenacao/turmas/${c.turmaId}/frequencia?ordem=nome`);
+    const porNome = await paginaFrequencia("coordenacao", c.turmaId, { ordem: "qualquer" });
     expect(primeiroNaLista(porNome)).toBe("Ana Souza");
-    const emLista = await paginaTurma("coordenacao", c.turmaId, { ordem: ["frequencia"] });
+    const emLista = await paginaFrequencia("coordenacao", c.turmaId, { ordem: ["frequencia"] });
     expect(primeiroNaLista(emLista)).toBe("João Lima");
   });
 
@@ -149,9 +175,24 @@ describe("páginas da turma com frequência (2.8, 5.5, 6.2)", () => {
     await criarInscricaoDireta(enc, m, { dataEntrada: "2019-01-01", dataSaida: "2021-01-01" });
     await criarEncontroDireto(enc, { data: hojeCivil() });
     logado = sessao(c.coord, "coordenacao");
+    const f = await paginaFrequencia("coordenacao", enc);
+    expect(f).toContain("Pedro Antigo");
     const h = await paginaTurma("coordenacao", enc);
-    expect(h).toContain("Pedro Antigo");
     expect(h).not.toContain("Encontro de hoje");
+  });
+});
+
+describe("página principal da turma (Resumo) (1.3, 2.1 a 2.5, 10.3)", () => {
+  it("ignora ?q e ?ordem e não traz os blocos movidos para outras abas", async () => {
+    const c = await cenario();
+    logado = sessao(c.coord, "coordenacao");
+    const h = await paginaTurma("coordenacao", c.turmaId, { q: "Ana", ordem: "frequencia" });
+    expect(h).not.toContain("Ana Souza");
+    expect(h).not.toContain("Inscrever catequizando");
+    expect(h).not.toContain("em baixa frequência");
+    expect(h).not.toContain("Catequistas</h2>");
+    expect(h).not.toContain("Link de autocadastro");
+    expect(h).not.toContain("Voltar para as turmas");
   });
 });
 

@@ -55,7 +55,7 @@
 
 - [ ] 3. Troca da página principal e do cronograma
 
-- [ ] 3.1 Transformar a página principal da turma na aba Resumo
+- [x] 3.1 Transformar a página principal da turma na aba Resumo
   - Criar `AbaResumo` (dados da turma, próximo encontro com link para Encontros, "Encontro de hoje" com o link da chamada, e "Editar" e "Encerrar" só para a coordenação em turma aberta) e mover com `git mv` (nunca copiar: `(abas)/page.tsx` e `turmas/[id]/page.tsx` são a mesma URL) a página principal de cada papel para `(abas)/page.tsx`, delegando a `AbaResumo` e ignorando `?q` e `?ordem`. Atualizar `tests/integration/presenca/paginas-turma-ficha.test.ts`: trocar os imports de `turmas/[id]/page` por `turmas/[id]/(abas)/page` e passar as asserções de frequência para a aba Frequência; atualizar também os demais testes de integração que liam blocos na página principal.
   - Pronto quando: testes de integração mostram, nos dois papéis, os dados da turma, o próximo encontro, o bloco de hoje, as ações só para a coordenação em turma aberta, turma encerrada sem ações, a página principal ignorando `?q` e `?ordem`, e que os blocos movidos não aparecem mais nela; os testes de integração e unitários seguem verdes e `npm run build` passa, sem rodar e2e. Os e2e que dependem da página principal ficam para o grupo 5.
   - _Depends: 2.4, 1.3_

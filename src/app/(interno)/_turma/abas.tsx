@@ -1,11 +1,12 @@
 import "server-only";
 import type { ReactElement } from "react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Aviso } from "@/components/comum/aviso";
 import { InscreverCatequizando } from "@/components/turmas/inscrever-catequizando";
 import { Inscritos } from "@/components/turmas/inscritos";
 import { DesignarCatequista } from "@/components/turmas/designar-catequista";
-import { RemoverCatequista } from "@/components/turmas/acoes-turma";
+import { EncerrarTurma, RemoverCatequista } from "@/components/turmas/acoes-turma";
 import { SecaoLink } from "@/components/autocadastro/secao-link";
 import { env } from "@/lib/env";
 import { obterLinkDaTurma } from "@/modules/autocadastro/repositorio";
@@ -16,12 +17,17 @@ import {
   regenerarLinkAction,
   salvarExpiracaoAction,
 } from "@/modules/autocadastro/actions";
-import { BlocoFrequenciaDaTurma } from "@/app/(interno)/_presenca/blocos";
+import { BlocoChamadaDeHoje, BlocoFrequenciaDaTurma } from "@/app/(interno)/_presenca/blocos";
+import { DadosTurma } from "@/components/turmas/dados-turma";
+import { ProximoEncontro } from "@/components/programa/proximo-encontro";
+import { listarEncontros } from "@/modules/programa/repositorio";
+import { proximoEncontro } from "@/modules/programa/domain/encontro";
 import type { OrdemFrequencia } from "@/components/presenca/frequencia-turma";
 import { hojeCivil } from "@/modules/compartilhado/datas";
 import {
   desligarAction,
   designarCatequistaAction,
+  encerrarTurmaAction,
   inscreverAction,
   removerCatequistaAction,
 } from "@/modules/turmas/actions";
@@ -37,6 +43,53 @@ export type PropsAba = {
   turmaId: string;
   aviso: string | string[] | undefined;
 };
+
+/**
+ * Aba Resumo: dados da turma, próximo encontro (link para Encontros) e encontro de hoje com a
+ * chamada; só a coordenação, em turma aberta, vê "Editar" e "Encerrar" (2.1 a 2.5, 9.4).
+ */
+export async function AbaResumo({ papel, turmaId, aviso }: PropsAba): Promise<ReactElement> {
+  await carregarTurmaDaAba(papel, turmaId, `/${papel}/turmas/${turmaId}`);
+  const turma = await obterTurma(turmaId);
+  if (!turma) notFound();
+
+  const encontros = await listarEncontros(turmaId);
+  const proximo = proximoEncontro(encontros, hojeCivil());
+  const podeAlterar = papel === "coordenacao" && !turma.encerrada;
+
+  return (
+    <>
+      <Aviso mensagem={avisoDaTurma(aviso)} />
+
+      <DadosTurma turma={turma} />
+
+      <ProximoEncontro
+        encontro={proximo}
+        linkCronograma={`/${papel}/turmas/${turmaId}/encontros`}
+      />
+
+      <BlocoChamadaDeHoje
+        papel={papel}
+        turmaId={turmaId}
+        encerrada={turma.encerrada}
+        encontros={encontros}
+      />
+
+      {podeAlterar ? (
+        <div className="membro-acoes">
+          <Link href={`/${papel}/turmas/${turmaId}/editar`} className="botao botao-secundario">
+            Editar
+          </Link>
+          <EncerrarTurma
+            turma={turma.nome}
+            vigentes={turma.vigentes.length}
+            acao={encerrarTurmaAction.bind(null, turmaId)}
+          />
+        </div>
+      ) : null}
+    </>
+  );
+}
 
 /**
  * Aba Inscritos: vigentes e anteriores; a coordenação, em turma aberta, inscreve (busca por
