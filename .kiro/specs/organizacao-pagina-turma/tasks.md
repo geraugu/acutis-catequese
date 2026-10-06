@@ -25,7 +25,7 @@
 
 - [ ] 2. Layout e abas novas
 
-- [ ] 2.1 Criar o layout da turma e as rotas de layout dos dois papéis
+- [x] 2.1 Criar o layout da turma e as rotas de layout dos dois papéis
   - Criar `LayoutDaTurma` em `_turma/layout-turma.tsx` (autoriza, lê nome e pendentes, devolve `notFound` para turma inexistente e renderiza cabeçalho, barra e conteúdo, sem ler `searchParams`), os `(abas)/layout.tsx` finos de coordenação e catequista, e o `not-found.tsx` do segmento `[id]` do catequista (o da coordenação já existe).
   - Pronto quando: testes de integração (acrescentados a `tests/integration/turmas/abas.test.ts`) renderizam o layout com banco real e mostram cabeçalho e barra para coordenação e catequista, a contagem de pendentes na barra, "Acesso negado" para catequista de outra turma antes de exibir qualquer dado, e não encontrado para turma inexistente; `npm run build` passa.
   - _Depends: 1.1, 1.2_

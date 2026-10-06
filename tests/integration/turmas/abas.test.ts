@@ -1,3 +1,5 @@
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { prisma } from "@/lib/prisma";
 import type { SessaoUsuario } from "@/modules/auth/dal";
@@ -9,6 +11,7 @@ import {
   cabecalhoDaTurma,
   carregarTurmaDaAba,
 } from "@/app/(interno)/_turma/dados";
+import { LayoutDaTurma } from "@/app/(interno)/_turma/layout-turma";
 import { criarTurmaDireta, criarUsuarioDireto, dia } from "./helpers";
 
 class RedirectErro extends Error {
@@ -20,6 +23,10 @@ vi.mock("next/navigation", () => ({
   redirect: (url: string) => {
     throw new RedirectErro(url);
   },
+  notFound: () => {
+    throw new Error("NEXT_NOT_FOUND");
+  },
+  useSelectedLayoutSegment: () => null,
 }));
 
 // Sessão simulada: cada teste define quem está logado.
@@ -152,5 +159,83 @@ describe("avisoDaTurma (8.7)", () => {
     expect(avisoDaTurma("")).toBeNull();
     expect(avisoDaTurma(undefined)).toBeNull();
     expect(avisoDaTurma(["link-gerado"])).toBeNull();
+  });
+});
+
+describe("LayoutDaTurma (1.1, 1.6, 1.7, 9.1, 9.3, 9.5)", () => {
+  async function html(papel: "coordenacao" | "catequista", turmaId: string) {
+    const el = await LayoutDaTurma({
+      papel,
+      turmaId,
+      children: createElement("p", null, "conteúdo da aba"),
+    });
+    return renderToStaticMarkup(el);
+  }
+
+  it("coordenação vê cabeçalho, barra com as cinco abas e o conteúdo", async () => {
+    const turmaId = await criarTurmaDireta({ nome: "Turma Layout" });
+    const coord = await criarUsuarioDireto("Coord", { role: "coordenacao" });
+    logado = sessao(coord, "coordenacao");
+    const h = await html("coordenacao", turmaId);
+    expect(h).toContain("Turma Layout");
+    expect(h).toContain("← Voltar para as turmas");
+    for (const aba of ABAS) expect(h).toContain(aba.rotulo);
+    expect(h).toContain(`href="/coordenacao/turmas/${turmaId}/equipe"`);
+    expect(h).toContain("conteúdo da aba");
+  });
+
+  it("catequista responsável vê cabeçalho e barra do papel dele", async () => {
+    const turmaId = await criarTurmaDireta({ nome: "Turma da Ana" });
+    const ana = await criarUsuarioDireto("Ana");
+    await designar(turmaId, ana);
+    logado = sessao(ana, "catequista");
+    const h = await html("catequista", turmaId);
+    expect(h).toContain("Turma da Ana");
+    expect(h).toContain("← Voltar para minhas turmas");
+    expect(h).toContain(`href="/catequista/turmas/${turmaId}/inscritos"`);
+  });
+
+  it("mostra a contagem de pendentes na aba Equipe e link", async () => {
+    const turmaId = await criarTurmaDireta();
+    const coord = await criarUsuarioDireto("Coord", { role: "coordenacao" });
+    await criarLink(turmaId, "tok-layout", coord);
+    const link = await prisma.linkAutocadastro.findFirstOrThrow({ where: { turmaId } });
+    const c = await prisma.catequizando.create({
+      data: {
+        nome: "Bia",
+        dataNascimento: dia("2015-01-01"),
+        telefone: "11987654321",
+        estado: "pendente",
+      },
+      select: { id: true },
+    });
+    await prisma.fichaAutocadastro.create({
+      data: {
+        catequizandoId: c.id,
+        turmaId,
+        linkId: link.id,
+        consentidoEm: new Date(),
+        versaoConsentimento: "v1",
+      },
+    });
+    logado = sessao(coord, "coordenacao");
+    expect(await html("coordenacao", turmaId)).toContain("1 ficha pendente");
+  });
+
+  it("catequista de outra turma é negado antes de qualquer dado", async () => {
+    const turmaId = await criarTurmaDireta({ nome: "Turma Alheia" });
+    const outra = await criarUsuarioDireto("Bia");
+    logado = sessao(outra, "catequista");
+    const fichas = vi.spyOn(prisma.fichaAutocadastro, "groupBy");
+    expect(await destino(html("catequista", turmaId))).toBe("/acesso-negado");
+    expect(fichas).not.toHaveBeenCalled();
+  });
+
+  it("turma inexistente vira não encontrada", async () => {
+    const coord = await criarUsuarioDireto("Coord", { role: "coordenacao" });
+    logado = sessao(coord, "coordenacao");
+    await expect(html("coordenacao", "00000000-0000-4000-8000-000000000000")).rejects.toThrow(
+      "NEXT_NOT_FOUND",
+    );
   });
 });
