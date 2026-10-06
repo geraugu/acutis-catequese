@@ -17,7 +17,7 @@
   - _Boundary: components/turmas, globals.css_
   - _Requirements: 1.2, 1.4, 1.6, 11.1, 11.2, 11.3, 11.4_
 
-- [ ] 1.3 (P) Dividir o bloco de presença da turma em chamada de hoje e frequência
+- [x] 1.3 (P) Dividir o bloco de presença da turma em chamada de hoje e frequência
   - Em `_presenca/blocos.tsx`, separar `BlocoFrequenciaDaTurma` em `BlocoChamadaDeHoje` (encontro de hoje e link da chamada) e `BlocoFrequenciaDaTurma` (só a frequência), com `hrefOrdenar` recebido por prop. Para não mudar o comportamento enquanto as abas não existem, as duas páginas atuais da turma passam a chamar os dois blocos, com `hrefOrdenar` apontando para a própria página.
   - Pronto quando: os testes de integração das páginas atuais da turma seguem verdes sem alteração de asserções, `BlocoChamadaDeHoje` aparece só com encontro planejado de hoje em turma aberta, e `BlocoFrequenciaDaTurma` usa o `hrefOrdenar` recebido; `npm run build` passa.
   - _Boundary: app/_presenca/blocos, páginas atuais da turma (integração mínima)_

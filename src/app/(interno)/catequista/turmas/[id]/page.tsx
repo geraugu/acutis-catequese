@@ -8,7 +8,11 @@ import { hojeCivil } from "@/modules/compartilhado/datas";
 import { listarEncontros } from "@/modules/programa/repositorio";
 import { proximoEncontro } from "@/modules/programa/domain/encontro";
 import { ProximoEncontro } from "@/components/programa/proximo-encontro";
-import { BlocoFrequenciaDaTurma, ordemDaBusca } from "@/app/(interno)/_presenca/blocos";
+import {
+  BlocoChamadaDeHoje,
+  BlocoFrequenciaDaTurma,
+  ordemDaBusca,
+} from "@/app/(interno)/_presenca/blocos";
 import { DadosTurma } from "@/components/turmas/dados-turma";
 import { Inscritos } from "@/components/turmas/inscritos";
 import { Aviso } from "@/components/comum/aviso";
@@ -61,12 +65,18 @@ export default async function TurmaCatequistaPage({
 
       <ProximoEncontro encontro={proximo} linkCronograma={`/catequista/turmas/${id}/encontros`} />
 
+      <BlocoChamadaDeHoje
+        papel="catequista"
+        turmaId={id}
+        encerrada={turma.encerrada}
+        encontros={encontros}
+      />
+
       {await BlocoFrequenciaDaTurma({
         papel: "catequista",
         turmaId: id,
-        encerrada: turma.encerrada,
-        encontros,
         ordem: ordemDaBusca(ordem),
+        hrefOrdenar: (o) => `/catequista/turmas/${id}?ordem=${o}`,
       })}
 
       <SecaoLink

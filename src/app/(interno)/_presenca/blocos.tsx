@@ -21,54 +21,67 @@ export function ordemDaBusca(valor: string | string[] | undefined): OrdemFrequen
   return (Array.isArray(valor) ? valor[0] : valor) === "frequencia" ? "frequencia" : "nome";
 }
 
-/** Chamada de hoje (turma aberta) e frequência da turma, ordenável (2.8, 6.2, 6.5). */
-export async function BlocoFrequenciaDaTurma({
+/** Encontro planejado de hoje com o link da chamada; só aparece em turma aberta (2.3, 6.3). */
+export function BlocoChamadaDeHoje({
   papel,
   turmaId,
   encerrada,
   encontros,
-  ordem,
 }: {
   papel: Papel;
   turmaId: string;
   encerrada: boolean;
   encontros: readonly EncontroResumo[];
-  ordem: OrdemFrequencia;
 }) {
   const hoje = hojeCivil();
   const doDia = encontros
     .filter((e) => e.situacao === "planejado" && e.data === hoje)
     .sort((a, b) => a.horario.localeCompare(b.horario))[0];
+
+  return (
+    <ChamadaDeHoje
+      encontro={
+        doDia
+          ? {
+              id: doDia.id,
+              data: doDia.data,
+              horario: doDia.horario,
+              temaTitulo: doDia.tema?.titulo ?? null,
+              situacao: doDia.situacao,
+            }
+          : null
+      }
+      turmaEncerrada={encerrada}
+      hoje={hoje}
+      hrefChamada={doDia ? `/${papel}/turmas/${turmaId}/encontros/${doDia.id}/chamada` : ""}
+    />
+  );
+}
+
+/** Frequência da turma, ordenável; `hrefOrdenar` define o destino dos links de ordem (4.1, 4.2, 6.2, 6.5). */
+export async function BlocoFrequenciaDaTurma({
+  papel,
+  turmaId,
+  ordem,
+  hrefOrdenar,
+}: {
+  papel: Papel;
+  turmaId: string;
+  ordem: OrdemFrequencia;
+  hrefOrdenar: (ordem: OrdemFrequencia) => string;
+}) {
   const [itens, limite] = await Promise.all([frequenciaDaTurma(turmaId), obterLimite()]);
 
   return (
-    <>
-      <ChamadaDeHoje
-        encontro={
-          doDia
-            ? {
-                id: doDia.id,
-                data: doDia.data,
-                horario: doDia.horario,
-                temaTitulo: doDia.tema?.titulo ?? null,
-                situacao: doDia.situacao,
-              }
-            : null
-        }
-        turmaEncerrada={encerrada}
-        hoje={hoje}
-        hrefChamada={doDia ? `/${papel}/turmas/${turmaId}/encontros/${doDia.id}/chamada` : ""}
+    <section className="turma-secao" aria-labelledby="turma-frequencia">
+      <h2 id="turma-frequencia">Frequência</h2>
+      <FrequenciaTurma
+        itens={itens.map((i) => ({ ...i, href: `/${papel}/catequizandos/${i.catequizandoId}` }))}
+        limite={limite}
+        ordem={ordem}
+        hrefOrdenar={hrefOrdenar}
       />
-      <section className="turma-secao" aria-labelledby="turma-frequencia">
-        <h2 id="turma-frequencia">Frequência</h2>
-        <FrequenciaTurma
-          itens={itens.map((i) => ({ ...i, href: `/${papel}/catequizandos/${i.catequizandoId}` }))}
-          limite={limite}
-          ordem={ordem}
-          hrefOrdenar={(o) => `/${papel}/turmas/${turmaId}?ordem=${o}`}
-        />
-      </section>
-    </>
+    </section>
   );
 }
 

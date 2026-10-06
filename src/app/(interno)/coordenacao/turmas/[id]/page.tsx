@@ -31,7 +31,11 @@ import { SecaoLink } from "@/components/autocadastro/secao-link";
 import { listarEncontros } from "@/modules/programa/repositorio";
 import { proximoEncontro } from "@/modules/programa/domain/encontro";
 import { ProximoEncontro } from "@/components/programa/proximo-encontro";
-import { BlocoFrequenciaDaTurma, ordemDaBusca } from "@/app/(interno)/_presenca/blocos";
+import {
+  BlocoChamadaDeHoje,
+  BlocoFrequenciaDaTurma,
+  ordemDaBusca,
+} from "@/app/(interno)/_presenca/blocos";
 import { DadosTurma } from "@/components/turmas/dados-turma";
 import { DesignarCatequista } from "@/components/turmas/designar-catequista";
 import { EncerrarTurma, RemoverCatequista } from "@/components/turmas/acoes-turma";
@@ -90,12 +94,18 @@ export default async function TurmaPage({
 
       <ProximoEncontro encontro={proximo} linkCronograma={`/coordenacao/turmas/${id}/encontros`} />
 
+      <BlocoChamadaDeHoje
+        papel="coordenacao"
+        turmaId={id}
+        encerrada={turma.encerrada}
+        encontros={encontros}
+      />
+
       {await BlocoFrequenciaDaTurma({
         papel: "coordenacao",
         turmaId: id,
-        encerrada: turma.encerrada,
-        encontros,
         ordem: ordemDaBusca(busca.ordem),
+        hrefOrdenar: (o) => `/coordenacao/turmas/${id}?ordem=${o}`,
       })}
 
       {aberta ? (
