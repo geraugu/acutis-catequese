@@ -12,7 +12,7 @@ import {
   carregarTurmaDaAba,
 } from "@/app/(interno)/_turma/dados";
 import { LayoutDaTurma } from "@/app/(interno)/_turma/layout-turma";
-import { AbaFrequencia, AbaInscritos } from "@/app/(interno)/_turma/abas";
+import { AbaEquipe, AbaFrequencia, AbaInscritos } from "@/app/(interno)/_turma/abas";
 import { criarEncontroDireto } from "../programa/helpers";
 import { criarPresencaDireta } from "../presenca/helpers";
 import {
@@ -443,5 +443,117 @@ describe("AbaFrequencia (4.1 a 4.4, 8.7, 9.2)", () => {
     });
     const h = renderToStaticMarkup(el);
     expect(h.indexOf("Catequizando inscrito.")).toBeLessThan(h.indexOf("Frequência</h2>"));
+  });
+});
+
+describe("AbaEquipe (6.1 a 6.5, 8.7, 9.2, 9.4)", () => {
+  async function html(
+    papel: "coordenacao" | "catequista",
+    turmaId: string,
+    aviso?: string | string[],
+  ) {
+    return renderToStaticMarkup(await AbaEquipe({ papel, turmaId, aviso }));
+  }
+
+  async function fichaPendente(turmaId: string, nome: string, coord: string) {
+    await criarLink(turmaId, `tok-${nome}`, coord);
+    const link = await prisma.linkAutocadastro.findFirstOrThrow({ where: { turmaId } });
+    const c = await prisma.catequizando.create({
+      data: {
+        nome,
+        dataNascimento: dia("2015-01-01"),
+        telefone: "11987654321",
+        estado: "pendente",
+      },
+      select: { id: true },
+    });
+    await prisma.fichaAutocadastro.create({
+      data: {
+        catequizandoId: c.id,
+        turmaId,
+        linkId: link.id,
+        consentidoEm: new Date(),
+        versaoConsentimento: "v1",
+      },
+    });
+  }
+
+  it("coordenação em turma aberta lista catequistas e vê designar, remover e o bloco do link", async () => {
+    const turmaId = await criarTurmaDireta();
+    const ana = await criarUsuarioDireto("Ana Responsável");
+    await criarUsuarioDireto("Bia Disponível");
+    await designar(turmaId, ana);
+    logado = sessao(await criarUsuarioDireto("Coord", { role: "coordenacao" }), "coordenacao");
+    const h = await html("coordenacao", turmaId);
+    expect(h).toContain("Catequistas</h2>");
+    expect(h).toContain("Ana Responsável");
+    expect(h).toContain("Remover");
+    expect(h).toContain("Designar");
+    expect(h).toContain("Bia Disponível");
+    expect(h).toContain("Link de autocadastro");
+    expect(h).toContain("Gerar link");
+  });
+
+  it("sem catequista designado mostra a mensagem", async () => {
+    const turmaId = await criarTurmaDireta();
+    logado = sessao(await criarUsuarioDireto("Coord", { role: "coordenacao" }), "coordenacao");
+    expect(await html("coordenacao", turmaId)).toContain("Nenhum catequista designado.");
+  });
+
+  it("catequista responsável vê a lista e o bloco do link, sem designar nem remover", async () => {
+    const turmaId = await criarTurmaDireta();
+    const ana = await criarUsuarioDireto("Ana Responsável");
+    await designar(turmaId, ana);
+    logado = sessao(ana, "catequista");
+    const h = await html("catequista", turmaId);
+    expect(h).toContain("Ana Responsável");
+    expect(h).not.toContain("Remover");
+    expect(h).not.toContain("Designar");
+    expect(h).toContain("Link de autocadastro");
+    expect(h).toContain("Gerar link");
+  });
+
+  it("mostra a quantidade de pendentes com o link da fila do papel", async () => {
+    const turmaId = await criarTurmaDireta();
+    const coord = await criarUsuarioDireto("Coord", { role: "coordenacao" });
+    await fichaPendente(turmaId, "Bia", coord);
+    logado = sessao(coord, "coordenacao");
+    const h = await html("coordenacao", turmaId);
+    expect(h).toContain("1 ficha pendente");
+    expect(h).toContain(`href="/coordenacao/turmas/${turmaId}/pendentes"`);
+
+    const ana = await criarUsuarioDireto("Ana");
+    await designar(turmaId, ana);
+    logado = sessao(ana, "catequista");
+    expect(await html("catequista", turmaId)).toContain(
+      `href="/catequista/turmas/${turmaId}/pendentes"`,
+    );
+  });
+
+  it("turma encerrada: coordenação vê os catequistas sem ações", async () => {
+    const turmaId = await criarTurmaDireta({ encerradaEm: "2026-06-01" });
+    const ana = await criarUsuarioDireto("Ana Responsável");
+    await designar(turmaId, ana);
+    logado = sessao(await criarUsuarioDireto("Coord", { role: "coordenacao" }), "coordenacao");
+    const h = await html("coordenacao", turmaId);
+    expect(h).toContain("Ana Responsável");
+    expect(h).not.toContain("Remover");
+    expect(h).not.toContain("Designar");
+    expect(h).not.toContain("Gerar link");
+  });
+
+  it("catequista de outra turma é negado", async () => {
+    const turmaId = await criarTurmaDireta();
+    logado = sessao(await criarUsuarioDireto("Bia"), "catequista");
+    expect(await destino(html("catequista", turmaId))).toBe("/acesso-negado");
+  });
+
+  it("mostra as mensagens de turmas e de autocadastro no topo", async () => {
+    const turmaId = await criarTurmaDireta();
+    logado = sessao(await criarUsuarioDireto("Coord", { role: "coordenacao" }), "coordenacao");
+    const h = await html("coordenacao", turmaId, "inscrito");
+    expect(h.indexOf("Catequizando inscrito.")).toBeLessThan(h.indexOf("Catequistas</h2>"));
+    const h2 = await html("coordenacao", turmaId, "link-gerado");
+    expect(h2.indexOf("Link gerado.")).toBeLessThan(h2.indexOf("Catequistas</h2>"));
   });
 });

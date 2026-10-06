@@ -46,7 +46,7 @@
   - _Boundary: app/_turma/abas (AbaFrequencia), rotas frequencia_
   - _Requirements: 4.1, 4.2, 4.3, 4.4_
 
-- [ ] 2.4 Criar a aba Equipe e link e as rotas dos dois papéis
+- [x] 2.4 Criar a aba Equipe e link e as rotas dos dois papéis
   - Criar `AbaEquipe` (catequistas responsáveis ou mensagem de que nenhum foi designado; designar e remover para a coordenação em turma aberta; bloco do link de autocadastro com as mesmas ações e informações que cada papel já tinha; quantidade de pendentes e link para a fila; aviso no topo com as mensagens de turmas e de autocadastro) e as rotas `(abas)/equipe/page.tsx`.
   - Pronto quando: testes de integração (acrescentados a `tests/integration/turmas/abas.test.ts`) mostram a lista de catequistas, as ações de designar e remover só para a coordenação em turma aberta, o bloco do link para os dois papéis, a quantidade de pendentes com o link da fila, turma encerrada sem ações, e "Acesso negado" para catequista de outra turma; `npm run build` lista as duas rotas.
   - _Depends: 2.3_
