@@ -2,7 +2,7 @@
 
 > **Nota:** da tarefa 3.1 até a 5.2 os e2e ficam deliberadamente desatualizados. A cada tarefa, `npm run build`, os testes unitários e os de integração devem ficar verdes (sem rodar e2e). Não fazer merge nem release entre a 3.1 e a 5.2.
 
-- [ ] 1. Fundação: funções, componentes e blocos compartilhados
+- [x] 1. Fundação: funções, componentes e blocos compartilhados
 
 - [x] 1.1 Criar as funções compartilhadas da turma
   - Criar `_turma/abas-config.ts`, módulo puro (sem importar o DAL nem módulos de servidor), com o tipo `Papel` e a lista `ABAS` (rótulos e segmentos), e `_turma/dados.ts`, que os reexporta e traz `carregarTurmaDaAba` (autoriza com `requireRole` e `podeVerTurma`, redirecionando para "Acesso negado" antes de ler qualquer dado), `cabecalhoDaTurma` (nome, situação e fichas pendentes, com cache de requisição; `null` se a turma não existe) e `avisoDaTurma` (mensagens de turmas e, depois, de autocadastro). Criar `tests/integration/turmas/abas.test.ts`, que as tarefas 2.1 a 2.4 vão acumulando.
@@ -23,7 +23,7 @@
   - _Boundary: app/_presenca/blocos, páginas atuais da turma (integração mínima)_
   - _Requirements: 2.3, 4.1, 4.2_
 
-- [ ] 2. Layout e abas novas
+- [x] 2. Layout e abas novas
 
 - [x] 2.1 Criar o layout da turma e as rotas de layout dos dois papéis
   - Criar `LayoutDaTurma` em `_turma/layout-turma.tsx` (autoriza, lê nome e pendentes, devolve `notFound` para turma inexistente e renderiza cabeçalho, barra e conteúdo, sem ler `searchParams`), os `(abas)/layout.tsx` finos de coordenação e catequista, e o `not-found.tsx` do segmento `[id]` do catequista (o da coordenação já existe).
@@ -53,7 +53,7 @@
   - _Boundary: app/_turma/abas (AbaEquipe), rotas equipe_
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 8.7_
 
-- [ ] 3. Troca da página principal e do cronograma
+- [x] 3. Troca da página principal e do cronograma
 
 - [x] 3.1 Transformar a página principal da turma na aba Resumo
   - Criar `AbaResumo` (dados da turma, próximo encontro com link para Encontros, "Encontro de hoje" com o link da chamada, e "Editar" e "Encerrar" só para a coordenação em turma aberta) e mover com `git mv` (nunca copiar: `(abas)/page.tsx` e `turmas/[id]/page.tsx` são a mesma URL) a página principal de cada papel para `(abas)/page.tsx`, delegando a `AbaResumo` e ignorando `?q` e `?ordem`. Atualizar `tests/integration/presenca/paginas-turma-ficha.test.ts`: trocar os imports de `turmas/[id]/page` por `turmas/[id]/(abas)/page` e passar as asserções de frequência para a aba Frequência; atualizar também os demais testes de integração que liam blocos na página principal.
@@ -69,7 +69,7 @@
   - _Boundary: app/_encontros/paginas (PaginaCronograma), rotas encontros_
   - _Requirements: 5.1, 5.2, 5.3, 10.2_
 
-- [ ] 4. Páginas de tarefa e retorno das ações
+- [x] 4. Páginas de tarefa e retorno das ações
 
 - [x] 4.1 Ajustar os links de volta das páginas de tarefa
   - Aplicar os textos e destinos do requisito 7.2: "← Voltar para Encontros" na chamada, em novo encontro e em editar encontro; a visitantes continua "Voltar para a chamada"; a fila de fichas pendentes volta para `/equipe` ("Voltar para Equipe e link"); a revisão continua voltando para a fila; a edição da turma passa a "← Voltar para Resumo".
@@ -92,7 +92,7 @@
   - _Boundary: autocadastro/actions_
   - _Requirements: 1.6, 8.4, 8.5, 8.6_
 
-- [ ] 5. Atualização dos testes e2e existentes
+- [x] 5. Atualização dos testes e2e existentes
 
 - [x] 5.1 Atualizar os e2e de turmas e de autocadastro para as abas
   - Em `turmas.spec.ts` e `autocadastro.spec.ts`, navegar até a aba onde cada bloco está agora (Inscritos, Equipe e link) e ajustar os seletores e os destinos esperados após as ações.
@@ -108,7 +108,7 @@
   - _Boundary: tests/e2e (programa, presença)_
   - _Requirements: 10.1_
 
-- [ ] 6. Validação ponta a ponta
+- [x] 6. Validação ponta a ponta
 
 - [x] 6.1 Testar a navegação por abas, o celular e o teclado
   - Criar `tests/e2e/abas-turma.spec.ts`: a coordenação abre uma turma, percorre as cinco abas conferindo o conteúdo e a aba atual, inscreve um catequizando e volta para Inscritos com a confirmação, designa um catequista e volta para Equipe e link, abre "Fazer chamada" e usa "Voltar para Encontros". Em 360 px, a barra quebra em linhas e nenhuma aba rola na horizontal. Percorrer as abas só com o teclado.
@@ -129,3 +129,4 @@
 - E2E em paralelo: helpers que criam tema direto no banco usam `posicao = min - 1` (sempre abaixo dos temas criados pela UI com `max + 1`), e a asserção de total de temas de `programa.spec.ts` usa `toPass()`, porque outros specs criam temas durante o teste.
 - E2E só roda com a porta 3000 livre (senão o Playwright reaproveita o servidor dev do usuário, com o banco de desenvolvimento).
 - E2E com fichas pendentes: localizadores de "ficha pendente" em `/catequista/turmas` devem ser escopados à turma do próprio teste (specs rodam em paralelo com o mesmo catequista), e fichas temporárias são descartadas em `finally`.
+- Desvio conhecido do requisito 9.3: para o catequista, turma inexistente mostra "Acesso negado" (comportamento herdado de `podeVerTurma`, que nega antes de saber se a turma existe e não revela quais ids existem); só a coordenação vê "não encontrado". Decidir se o texto de 9.3 deve ser ajustado.
