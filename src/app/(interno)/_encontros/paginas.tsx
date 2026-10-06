@@ -93,11 +93,8 @@ export async function PaginaCronograma({
 
   return (
     <>
-      <p>
-        <Link href={`/${papel}/turmas/${turmaId}`}>← Voltar para {turma.nome}</Link>
-      </p>
       <div className="pagina-cabecalho">
-        <h1>Encontros — {turma.nome}</h1>
+        <h2>Encontros</h2>
         {aberta ? (
           <Link href={`${base}/novo`} className="botao botao-primario">
             Novo encontro

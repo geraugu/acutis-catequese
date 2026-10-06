@@ -52,6 +52,40 @@ async function cenario(extra: Parameters<typeof criarTurmaDireta>[0] = {}) {
   return { resp, turmaId };
 }
 
+describe("PaginaCronograma — aba Encontros (5.1, 5.2, 5.3, 10.2)", () => {
+  it("título 'Encontros' em h2, sem link de volta nem nome da turma no título (5.1)", async () => {
+    const c = await cenario({ nome: "Turma Cronograma" });
+    await criarEncontroDireto(c.turmaId, { data: somaDias(hojeCivil(), 3) });
+    const h = await html(sessao(c.resp, "catequista"), "catequista", c.turmaId);
+    expect(h).toContain("<h2>Encontros</h2>");
+    expect(h).not.toContain("<h1");
+    expect(h).not.toContain("Voltar para");
+    expect(h).not.toContain("Encontros —");
+    expect(h).not.toContain("Turma Cronograma");
+  });
+
+  it("mostra próximo encontro em destaque, progresso e ações do usuário (5.2)", async () => {
+    const c = await cenario();
+    const enc = await criarEncontroDireto(c.turmaId, { data: somaDias(hojeCivil(), 3) });
+    const h = await html(sessao(c.resp, "catequista"), "catequista", c.turmaId);
+    expect(h).toContain("Próximo encontro");
+    expect(h).toContain("Progresso no programa");
+    expect(h).toContain("Novo encontro");
+    expect(h).toContain(`href="/catequista/turmas/${c.turmaId}/encontros/novo"`);
+    expect(h).toContain(`/catequista/turmas/${c.turmaId}/encontros/${enc}/editar`);
+  });
+
+  it("turma encerrada é só consulta: sem Novo encontro nem ações (5.3)", async () => {
+    const c = await cenario({ encerradaEm: "2020-12-01" });
+    const enc = await criarEncontroDireto(c.turmaId, { data: "2020-03-07", situacao: "realizado" });
+    const h = await html(sessao(c.resp, "catequista"), "catequista", c.turmaId);
+    expect(h).toContain("<h2>Encontros</h2>");
+    expect(h).not.toContain("Novo encontro");
+    expect(h).not.toContain(`/encontros/${enc}/editar`);
+    expect(h).toContain('role="status"');
+  });
+});
+
 describe("PaginaCronograma — chamada (2.8, 3.4, 6.3)", () => {
   it("encontro de hoje planejado tem 'Fazer chamada' com o href certo", async () => {
     const c = await cenario();

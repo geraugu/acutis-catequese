@@ -62,7 +62,7 @@
   - _Boundary: app/_turma/abas (AbaResumo), páginas principais por papel_
   - _Requirements: 1.3, 1.5, 1.7, 2.1, 2.2, 2.3, 2.4, 2.5, 10.1, 10.3, 10.4_
 
-- [ ] 3.2 Mover o cronograma para a aba Encontros
+- [x] 3.2 Mover o cronograma para a aba Encontros
   - Mover com `git mv` (nunca copiar: seria a mesma URL de `encontros/page.tsx`) o `encontros/page.tsx` de cada papel para `(abas)/encontros/page.tsx`, manter os `encontros/not-found.tsx` onde estão (cobrem novo, editar e chamada) e ajustar `PaginaCronograma`: sem o link de volta e sem o título com o nome da turma (agora no cabeçalho), com o título "Encontros" e o botão "Novo encontro". Atualizar os testes de integração do cronograma.
   - Pronto quando: testes de integração mostram o cronograma com o próximo encontro em destaque, o progresso e as ações que o usuário já tinha, turma encerrada só para consulta, o endereço `/encontros` inalterado, e `npm run build` lista a rota dentro do layout; a barra mostra "Encontros" como aba atual; os testes unitários e de integração seguem verdes, sem rodar e2e.
   - _Depends: 3.1_
