@@ -32,7 +32,7 @@
   - _Boundary: app/_turma/layout-turma, rotas (abas)/layout, not-found_
   - _Requirements: 1.1, 1.6, 1.7, 9.1, 9.3, 9.5_
 
-- [ ] 2.2 Criar a aba Inscritos e as rotas dos dois papéis
+- [x] 2.2 Criar a aba Inscritos e as rotas dos dois papéis
   - Criar `AbaInscritos` em `_turma/abas.tsx` (inscritos vigentes e anteriores; para a coordenação em turma aberta, "Inscrever catequizando" com busca por `?q=` na própria aba e a ação de desligar; para o catequista, só consulta; aviso no topo por `avisoDaTurma`) e as rotas `(abas)/inscritos/page.tsx`, cada uma com `requireRole` e o caminho exato.
   - Pronto quando: testes de integração (acrescentados a `tests/integration/turmas/abas.test.ts`) mostram as duas listas, a busca exibindo os resultados na própria aba, as ações só para a coordenação em turma aberta, turma encerrada e catequista sem ações, "Acesso negado" para catequista de outra turma, e a mensagem de aviso no topo; `npm run build` lista as duas rotas.
   - _Depends: 2.1_

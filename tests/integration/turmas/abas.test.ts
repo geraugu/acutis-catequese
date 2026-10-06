@@ -12,7 +12,14 @@ import {
   carregarTurmaDaAba,
 } from "@/app/(interno)/_turma/dados";
 import { LayoutDaTurma } from "@/app/(interno)/_turma/layout-turma";
-import { criarTurmaDireta, criarUsuarioDireto, dia } from "./helpers";
+import { AbaInscritos } from "@/app/(interno)/_turma/abas";
+import {
+  criarCatequizandoDireto,
+  criarTurmaDireta,
+  criarUsuarioDireto,
+  dia,
+  inscreverDireto,
+} from "./helpers";
 
 class RedirectErro extends Error {
   constructor(public url: string) {
@@ -237,5 +244,84 @@ describe("LayoutDaTurma (1.1, 1.6, 1.7, 9.1, 9.3, 9.5)", () => {
     await expect(html("coordenacao", "00000000-0000-4000-8000-000000000000")).rejects.toThrow(
       "NEXT_NOT_FOUND",
     );
+  });
+});
+
+describe("AbaInscritos (3.1 a 3.5, 8.7, 9.4)", () => {
+  async function html(
+    papel: "coordenacao" | "catequista",
+    turmaId: string,
+    extra: { termo?: string; aviso?: string | string[] } = {},
+  ) {
+    const el = await AbaInscritos({ papel, turmaId, aviso: extra.aviso, termo: extra.termo ?? "" });
+    return renderToStaticMarkup(el);
+  }
+
+  async function turmaComInscritos(extra: { encerradaEm?: string } = {}) {
+    const turmaId = await criarTurmaDireta(extra);
+    const bia = await criarCatequizandoDireto("Bia Vigente");
+    const caio = await criarCatequizandoDireto("Caio Anterior");
+    await inscreverDireto(turmaId, bia, "2026-02-01");
+    await inscreverDireto(turmaId, caio, "2026-02-01", {
+      data: "2026-03-01",
+      motivo: "desligamento",
+    });
+    return turmaId;
+  }
+
+  it("coordenação em turma aberta vê as duas listas, inscrever e desligar", async () => {
+    const turmaId = await turmaComInscritos();
+    logado = sessao(await criarUsuarioDireto("Coord", { role: "coordenacao" }), "coordenacao");
+    const h = await html("coordenacao", turmaId);
+    expect(h).toContain("Bia Vigente");
+    expect(h).toContain("Inscritos anteriores");
+    expect(h).toContain("Caio Anterior");
+    expect(h).toContain("Inscrever catequizando");
+    expect(h).toContain("Desligar");
+  });
+
+  it("a busca mostra os candidatos na própria aba", async () => {
+    const turmaId = await criarTurmaDireta();
+    await criarCatequizandoDireto("Zulmira Candidata");
+    logado = sessao(await criarUsuarioDireto("Coord", { role: "coordenacao" }), "coordenacao");
+    expect(await html("coordenacao", turmaId)).not.toContain("Zulmira Candidata");
+    const h = await html("coordenacao", turmaId, { termo: "Zulmira" });
+    expect(h).toContain("Zulmira Candidata");
+    expect(h).toContain('value="Zulmira"');
+  });
+
+  it("turma encerrada: coordenação só consulta", async () => {
+    const turmaId = await turmaComInscritos({ encerradaEm: "2026-06-01" });
+    logado = sessao(await criarUsuarioDireto("Coord", { role: "coordenacao" }), "coordenacao");
+    const h = await html("coordenacao", turmaId, { termo: "Bia" });
+    expect(h).toContain("Bia Vigente");
+    expect(h).not.toContain("Inscrever catequizando");
+    expect(h).not.toContain("Desligar");
+  });
+
+  it("catequista responsável só consulta, mesmo com turma aberta", async () => {
+    const turmaId = await turmaComInscritos();
+    const ana = await criarUsuarioDireto("Ana");
+    await designar(turmaId, ana);
+    logado = sessao(ana, "catequista");
+    const h = await html("catequista", turmaId, { termo: "Bia" });
+    expect(h).toContain("Bia Vigente");
+    expect(h).toContain("Caio Anterior");
+    expect(h).not.toContain("Inscrever catequizando");
+    expect(h).not.toContain("Desligar");
+  });
+
+  it("catequista de outra turma é negado", async () => {
+    const turmaId = await turmaComInscritos();
+    logado = sessao(await criarUsuarioDireto("Bia"), "catequista");
+    expect(await destino(html("catequista", turmaId))).toBe("/acesso-negado");
+  });
+
+  it("mostra a mensagem de aviso no topo", async () => {
+    const turmaId = await criarTurmaDireta();
+    logado = sessao(await criarUsuarioDireto("Coord", { role: "coordenacao" }), "coordenacao");
+    const h = await html("coordenacao", turmaId, { aviso: "inscrito" });
+    expect(h).toContain("Catequizando inscrito.");
+    expect(h.indexOf("Catequizando inscrito.")).toBeLessThan(h.indexOf("Inscritos</h2>"));
   });
 });
