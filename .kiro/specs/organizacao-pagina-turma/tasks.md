@@ -4,7 +4,7 @@
 
 - [ ] 1. Fundação: funções, componentes e blocos compartilhados
 
-- [ ] 1.1 Criar as funções compartilhadas da turma
+- [x] 1.1 Criar as funções compartilhadas da turma
   - Criar `_turma/abas-config.ts`, módulo puro (sem importar o DAL nem módulos de servidor), com o tipo `Papel` e a lista `ABAS` (rótulos e segmentos), e `_turma/dados.ts`, que os reexporta e traz `carregarTurmaDaAba` (autoriza com `requireRole` e `podeVerTurma`, redirecionando para "Acesso negado" antes de ler qualquer dado), `cabecalhoDaTurma` (nome, situação e fichas pendentes, com cache de requisição; `null` se a turma não existe) e `avisoDaTurma` (mensagens de turmas e, depois, de autocadastro). Criar `tests/integration/turmas/abas.test.ts`, que as tarefas 2.1 a 2.4 vão acumulando.
   - Pronto quando: testes de integração, em `tests/integration/turmas/abas.test.ts`, mostram a coordenação e o catequista responsável passando, o catequista de outra turma indo a `/acesso-negado` sem nenhuma leitura de dados da turma, id inválido negando sem lançar, `cabecalhoDaTurma` devolvendo nome e contagem de pendentes (e `null` para turma inexistente) e `avisoDaTurma` traduzindo códigos de turmas e de autocadastro, com `null` para desconhecido, vazio e array.
   - _Boundary: app/_turma/dados, app/_turma/abas-config_
