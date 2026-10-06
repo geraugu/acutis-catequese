@@ -1366,3 +1366,58 @@ main {
   min-width: 0;
   overflow-wrap: anywhere;
 }
+
+/* Abas da turma: itens quebram em linhas, alvo de toque de 44 px, sem rolagem horizontal. */
+.abas-turma {
+  margin: 0 0 1.25rem;
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.abas-turma-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aba-turma {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  padding: 0 0.75rem;
+  border-bottom: 3px solid transparent;
+  color: var(--cor-texto);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.aba-turma:hover {
+  background: var(--cor-primaria-suave);
+}
+
+.aba-turma:focus-visible {
+  outline: 3px solid var(--cor-foco);
+  outline-offset: 2px;
+}
+
+/* Aba atual: peso e borda inferior, além da cor. */
+.aba-turma[aria-current="page"] {
+  border-bottom-color: var(--cor-primaria);
+  color: var(--cor-primaria);
+  font-weight: 700;
+}
+
+.aba-contagem {
+  min-width: 1.5rem;
+  padding: 0 0.4rem;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-primaria);
+  color: var(--cor-primaria-contraste);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.5rem;
+  text-align: center;
+}

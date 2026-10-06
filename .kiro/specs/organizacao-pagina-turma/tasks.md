@@ -10,7 +10,7 @@
   - _Boundary: app/_turma/dados, app/_turma/abas-config_
   - _Requirements: 1.2, 8.7, 9.1, 9.2_
 
-- [ ] 1.2 Criar a barra de abas e o cabeçalho da turma
+- [x] 1.2 Criar a barra de abas e o cabeçalho da turma
   - Criar `BarraAbas` (componente cliente que importa `ABAS` de `_turma/abas-config.ts`, nunca de `dados.ts`: `<nav>` com links das cinco abas, aba atual por `useSelectedLayoutSegment` com `aria-current="page"` e destaque que não depende só de cor, contagem de pendentes ao lado de "Equipe e link" com texto oculto para leitor de tela) e `CabecalhoTurma` (link de volta para as turmas ou para "minhas turmas" e o nome da turma), com o bloco "Abas da turma" em `globals.css` (quebra em linhas, altura mínima de 44 px, foco visível, sem rolagem horizontal a partir de 360 px).
   - Pronto quando: testes de componente mostram as cinco abas na ordem com os endereços certos, `aria-current` só na aba do segmento (nulo é Resumo), contagem só em "Equipe e link" e só quando maior que zero, ausência de `role="tablist"`, e o cabeçalho com o link de volta de cada papel; `npm run build` passa.
   - _Depends: 1.1_
