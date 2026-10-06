@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { expect, test, type Locator, type Page } from "@playwright/test";
+import { expect, test, type Browser, type Locator, type Page } from "@playwright/test";
 import { loadEnv } from "vite";
 import { CATEQUISTA, COORDENACAO } from "./fixtures";
 
@@ -20,12 +20,16 @@ interface Chamada {
 }
 
 /** Turma própria com inscritos e o encontro de hoje, criada direto no banco de teste. */
-function criarChamada(): Chamada {
+function criarChamada(semDesignacao = false): Chamada {
   const variaveis = loadEnv("test", process.cwd(), "");
-  const saida = execFileSync("npx", ["tsx", "tests/e2e/criar-chamada.ts", sufixo()], {
-    env: { ...process.env, ...variaveis, DATABASE_URL: variaveis.DATABASE_URL_TEST ?? "" },
-    encoding: "utf8",
-  });
+  const saida = execFileSync(
+    "npx",
+    ["tsx", "tests/e2e/criar-chamada.ts", sufixo(), ...(semDesignacao ? ["sem-designacao"] : [])],
+    {
+      env: { ...process.env, ...variaveis, DATABASE_URL: variaveis.DATABASE_URL_TEST ?? "" },
+      encoding: "utf8",
+    },
+  );
   return JSON.parse(saida) as Chamada;
 }
 
@@ -203,4 +207,149 @@ test("percorre as abas só com o teclado", async ({ page }) => {
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(new RegExp(`${BASE}/${c.turmaId}/inscritos$`));
   await conferirAbaAtual(page, "Inscritos");
+});
+
+test.describe("catequista", () => {
+  test.use({ storageState: CATEQUISTA.estado });
+
+  async function enviarFichaPublica(
+    browser: Browser,
+    baseURL: string | undefined,
+    caminho: string,
+    nome: string,
+  ) {
+    const contexto = await browser.newContext({
+      baseURL,
+      storageState: { cookies: [], origins: [] },
+    });
+    try {
+      const anonimo = await contexto.newPage();
+      await anonimo.goto(caminho);
+      await anonimo.getByLabel("Nome", { exact: true }).fill(nome);
+      await anonimo.getByLabel("Data de nascimento", { exact: true }).fill("2004-06-15");
+      await anonimo.getByLabel("Telefone", { exact: true }).fill("(11) 91234-5678");
+      await anonimo.getByRole("checkbox", { name: /Autorizo/ }).check();
+      await anonimo.getByRole("button", { name: "Enviar ficha" }).click();
+      await expect(anonimo.getByRole("status")).toContainText("Recebemos sua ficha!");
+    } finally {
+      await contexto.close();
+    }
+  }
+
+  /** Descarta todas as fichas pendentes da turma; não falha se não houver nenhuma. */
+  async function descartarPendentes(page: Page, base: string) {
+    await page.goto(`${base}/pendentes`);
+    const fila = page.getByRole("list", { name: "Fichas pendentes" });
+    while ((await fila.count()) > 0) {
+      await fila.getByRole("link").first().click();
+      await page.getByRole("button", { name: "Descartar ficha" }).click();
+      await page
+        .getByRole("dialog", { name: "Descartar ficha" })
+        .getByRole("button", { name: "Descartar", exact: true })
+        .click();
+      await expect(page.getByRole("status").filter({ hasText: "Ficha descartada" })).toBeVisible();
+      await page.goto(`${base}/pendentes`);
+    }
+  }
+
+  test("vê as cinco abas sem ações de alteração e a contagem de pendentes em Equipe e link", async ({
+    page,
+    browser,
+    baseURL,
+  }) => {
+    const c = criarChamada();
+    const base = `/catequista/turmas/${c.turmaId}`;
+    const principal = page.locator("main");
+
+    await page.goto(base);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(c.turmaNome);
+    await conferirAbaAtual(page, "Resumo");
+    // Sem pendentes não há contagem na aba.
+    await expect(barra(page).getByRole("link", { name: "Equipe e link" })).toHaveText(
+      "Equipe e link",
+    );
+    // O Resumo só oferece a chamada (link); nenhum botão de alteração.
+    await expect(principal.getByRole("button")).toHaveCount(0);
+    await expect(
+      page.getByRole("region", { name: "Encontro de hoje" }).getByRole("link", {
+        name: "Fazer chamada",
+      }),
+    ).toBeVisible();
+
+    for (const [aba, rota] of [
+      ["Inscritos", "/inscritos"],
+      ["Frequência", "/frequencia"],
+    ] as const) {
+      await barra(page).getByRole("link", { name: aba }).click();
+      await expect(page).toHaveURL(new RegExp(`${base}${rota}$`));
+      await conferirAbaAtual(page, aba);
+      await expect(principal.getByRole("button")).toHaveCount(0);
+    }
+
+    // Encontros: o catequista designado cuida do cronograma da própria turma (programa); só
+    // essas ações existem, nenhuma de inscrição, designação ou exclusão.
+    await barra(page).getByRole("link", { name: "Encontros" }).click();
+    await expect(page).toHaveURL(new RegExp(`${base}/encontros$`));
+    await conferirAbaAtual(page, "Encontros");
+    await expect(principal.getByRole("button")).toHaveText([
+      /^Marcar como realizado/,
+      /^Cancelar encontro de /,
+    ]);
+    await expect(principal.getByRole("link", { name: "Novo encontro" })).toBeVisible();
+    await expect(principal.getByRole("link", { name: "Fazer chamada" })).toBeVisible();
+
+    // Equipe e link: a única ação é gerar o link de autocadastro.
+    await barra(page).getByRole("link", { name: "Equipe e link" }).click();
+    await expect(page).toHaveURL(new RegExp(`${base}/equipe$`));
+    await conferirAbaAtual(page, "Equipe e link");
+    await expect(principal.getByRole("button")).toHaveText(["Gerar link"]);
+    await principal.getByRole("button", { name: "Gerar link" }).click();
+    await expect(page.getByRole("status").filter({ hasText: "Link gerado." })).toBeVisible();
+    const link = (await principal.locator("code").textContent())?.trim() ?? "";
+    expect(link).toMatch(/\/inscricao\/[A-Za-z0-9_-]{43}$/);
+
+    // Uma ficha pendente aparece como contagem no rótulo, com texto acessível (1.6).
+    // O descarte roda sempre (mesmo se o teste falhar) para não vazar pendência na turma.
+    const pendente = `Fulana Pendente ${sufixo()}`;
+    try {
+      await enviarFichaPublica(browser, baseURL, new URL(link).pathname, pendente);
+      await page.goto(base);
+      const equipe = barra(page).getByRole("link", { name: /^Equipe e link\s*1 ficha pendente$/ });
+      await expect(equipe).toBeVisible();
+      await expect(equipe.locator(".aba-contagem")).toHaveText("1");
+      await expect(equipe.locator(".aba-contagem")).toHaveAttribute("aria-hidden", "true");
+      // As outras abas não levam contagem.
+      for (const rotulo of ROTULOS.filter((r) => r !== "Equipe e link")) {
+        await expect(barra(page).getByRole("link", { name: rotulo, exact: true })).toHaveText(
+          rotulo,
+        );
+      }
+    } finally {
+      await descartarPendentes(page, base);
+    }
+  });
+
+  test("abrir direto qualquer aba ou a chamada de outra turma mostra Acesso negado", async ({
+    page,
+  }) => {
+    const alheia = criarChamada(true);
+    const base = `/catequista/turmas/${alheia.turmaId}`;
+    const caminhos = [
+      "",
+      "/inscritos",
+      "/frequencia",
+      "/encontros",
+      "/equipe",
+      `/encontros/${alheia.encontroId}/chamada`,
+    ];
+    for (const caminho of caminhos) {
+      await page.goto(`${base}${caminho}`);
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText("Acesso negado");
+      // Nenhum dado da turma vaza: nem o nome, nem a barra de abas, nem os inscritos.
+      await expect(barra(page)).toHaveCount(0);
+      const html = await page.content();
+      expect(html).not.toContain(alheia.turmaNome);
+      for (const nome of alheia.nomes) expect(html).not.toContain(nome);
+    }
+  });
 });

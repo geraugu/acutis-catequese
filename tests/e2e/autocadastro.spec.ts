@@ -100,7 +100,12 @@ test("fluxo completo do autocadastro: link, envio, revisão, desativação e des
 
   // 3. Catequista vê a contagem e a fila, abre e confirma (5.1, 7.1).
   await pk.goto("/catequista/turmas");
-  await pk.getByRole("link", { name: "1 ficha pendente" }).click();
+  // Escopo na linha da própria turma: outros specs podem ter fichas pendentes em outras turmas.
+  await pk
+    .getByRole("listitem")
+    .filter({ has: pk.getByRole("link", { name: turma, exact: true }) })
+    .getByRole("link", { name: "1 ficha pendente" })
+    .click();
   await expect(pk).toHaveURL(new RegExp(`/catequista/turmas/${turmaId}/pendentes$`));
   const fila = pk.getByRole("list", { name: "Fichas pendentes" });
   await fila.getByRole("link", { name: pessoa }).click();

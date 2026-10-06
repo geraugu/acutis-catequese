@@ -2,7 +2,8 @@
  * Prepara uma turma aberta com o catequista de teste designado, inscritos e um encontro
  * planejado com a data de hoje, direto no banco de teste, e imprime os ids em JSON. Roda via
  * `tsx` (como o criar-ficha-pendente.ts) porque o client gerado do Prisma é ESM.
- * Uso: tsx tests/e2e/criar-chamada.ts "<sufixo>"
+ * Uso: tsx tests/e2e/criar-chamada.ts "<sufixo>" [sem-designacao]
+ * Com `sem-designacao` a turma não designa ninguém (turma de "outro catequista").
  */
 import { prisma } from "@/lib/prisma";
 import { hojeCivil } from "@/modules/compartilhado/datas";
@@ -26,7 +27,9 @@ async function main() {
     data: { nome: `Turma Chamada ${sufixo}`, ciclo: 2026, diaSemana: "sabado", horario: "09:30" },
     select: { id: true, nome: true },
   });
-  await prisma.designacao.create({ data: { turmaId: turma.id, userId: catequista.id } });
+  if (process.argv[3] !== "sem-designacao") {
+    await prisma.designacao.create({ data: { turmaId: turma.id, userId: catequista.id } });
+  }
   const { _min } = await prisma.tema.aggregate({ _min: { posicao: true } });
   const posicaoAbaixoDoMenor = (_min.posicao ?? 0) - 1 - Math.floor(Math.random() * 10);
   const tema = await prisma.tema.create({

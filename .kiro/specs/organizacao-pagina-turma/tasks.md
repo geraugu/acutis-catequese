@@ -116,7 +116,7 @@
   - _Depends: 5.2_
   - _Requirements: 1.1, 1.2, 1.5, 11.2, 11.3_
 
-- [ ] 6.2 Testar a visão do catequista e o acesso por aba
+- [x] 6.2 Testar a visão do catequista e o acesso por aba
   - No mesmo spec, o catequista vê as cinco abas sem ações de alteração, a contagem de pendentes aparece em "Equipe e link", e abrir diretamente cada aba (e a chamada) de uma turma de outro catequista mostra "Acesso negado".
   - Pronto quando: o e2e passa e a suíte e2e completa passa em três execuções seguidas com código de saída 0.
   - _Depends: 6.1_
@@ -128,3 +128,4 @@
 - Páginas de aba que devolvem `<AbaX/>` async não renderizam com `renderToStaticMarkup`: nos testes de integração, resolver o elemento (`el.type(el.props)`) antes de renderizar.
 - E2E em paralelo: helpers que criam tema direto no banco usam `posicao = min - 1` (sempre abaixo dos temas criados pela UI com `max + 1`), e a asserção de total de temas de `programa.spec.ts` usa `toPass()`, porque outros specs criam temas durante o teste.
 - E2E só roda com a porta 3000 livre (senão o Playwright reaproveita o servidor dev do usuário, com o banco de desenvolvimento).
+- E2E com fichas pendentes: localizadores de "ficha pendente" em `/catequista/turmas` devem ser escopados à turma do próprio teste (specs rodam em paralelo com o mesmo catequista), e fichas temporárias são descartadas em `finally`.
