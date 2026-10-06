@@ -92,8 +92,8 @@ test("catequista faz a chamada no celular, vê o resumo e corrige um status", as
   await capturar(page, "cronograma-resumo");
   await semRolagemHorizontal(page);
 
-  // Frequência na página da turma: percentuais coerentes com as marcações.
-  await page.goto(`/catequista/turmas/${c.turmaId}`);
+  // Frequência na aba Frequência da turma: percentuais coerentes com as marcações.
+  await page.goto(`/catequista/turmas/${c.turmaId}/frequencia`);
   const inscritos = page.locator(".presenca-inscrito");
   await expect(inscritos).toHaveCount(4);
   await expect(inscritos.filter({ hasText: ana })).toContainText("100%");

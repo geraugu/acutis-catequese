@@ -67,10 +67,13 @@ async function criarTurma(page: Page, nome: string): Promise<string> {
   return new URL(page.url()).pathname.split("/").pop() ?? "";
 }
 
-async function designarFixture(page: Page) {
+/** Designa o catequista fixture na aba Equipe e link, onde ficam as designações (6.1). */
+async function designarFixture(page: Page, turmaId: string) {
+  await page.goto(`/coordenacao/turmas/${turmaId}/equipe`);
   await page.getByLabel("Catequista", { exact: true }).selectOption({ label: CATEQUISTA.nome });
   await page.getByRole("button", { name: "Designar" }).click();
   await expect(page.getByRole("status")).toContainText("Catequista designado.");
+  await expect(page).toHaveURL(new RegExp(`/coordenacao/turmas/${turmaId}/equipe`));
 }
 
 /** Escolhe o tema pela opção que contém o título (o rótulo inclui o número do programa). */
@@ -185,7 +188,7 @@ test.describe("programa e encontros", () => {
     await criarTema(page, temaA);
     await criarTema(page, temaB);
     const turmaId = await criarTurma(page, `Turma Programa ${s}`);
-    await designarFixture(page);
+    await designarFixture(page, turmaId);
 
     const { contexto, page: cat } = await comoCatequista(browser, baseURL);
     const base = `/catequista/turmas/${turmaId}/encontros`;
@@ -266,7 +269,9 @@ test.describe("programa e encontros", () => {
     const tema = `Tema Próximo ${s}`;
     await criarTema(page, tema);
     const turmaId = await criarTurma(page, `Turma Próximo ${s}`);
-    await designarFixture(page);
+    await designarFixture(page, turmaId);
+    // O próximo encontro fica no Resumo da turma.
+    await page.goto(`/coordenacao/turmas/${turmaId}`);
     const secao = page.getByRole("region", { name: "Próximo encontro" });
     await expect(secao).toContainText("Nenhum encontro planejado");
     await expect(secao.getByRole("link", { name: "Ver cronograma" })).toHaveAttribute(

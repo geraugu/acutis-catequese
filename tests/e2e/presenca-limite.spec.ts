@@ -126,7 +126,7 @@ test.describe("coordenação", () => {
     page,
   }) => {
     const f = criarFrequencia();
-    await page.goto(`/coordenacao/turmas/${f.t3.id}`);
+    await page.goto(`/coordenacao/turmas/${f.t3.id}/frequencia`);
     await expect(page.getByRole("heading", { level: 1 })).toContainText(f.t3.nome);
     const linha = page.locator(".presenca-inscrito").filter({ hasText: f.e });
     await expect(linha).toContainText("0%");

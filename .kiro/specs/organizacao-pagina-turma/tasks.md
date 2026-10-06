@@ -101,7 +101,7 @@
   - _Boundary: tests/e2e (turmas, autocadastro)_
   - _Requirements: 10.1_
 
-- [ ] 5.2 Atualizar os e2e de programa e de presença para as abas
+- [x] 5.2 Atualizar os e2e de programa e de presença para as abas
   - Em `programa.spec.ts`, `presenca.spec.ts`, `presenca-visitante.spec.ts` e `presenca-limite.spec.ts`, ajustar a navegação (Resumo, Frequência, Encontros e links de volta) e os seletores.
   - Pronto quando: os quatro specs passam e a suíte e2e completa passa com código de saída 0 em duas execuções seguidas.
   - _Depends: 5.1, 4.1_
