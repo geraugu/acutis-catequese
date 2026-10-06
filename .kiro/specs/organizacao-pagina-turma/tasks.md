@@ -78,7 +78,7 @@
   - _Boundary: _encontros/paginas (novo e editar), _presenca/paginas, _pendentes/paginas, editar turma_
   - _Requirements: 7.1, 7.2, 7.3_
 
-- [ ] 4.2 (P) Redirecionar as ações da turma para a aba certa
+- [x] 4.2 (P) Redirecionar as ações da turma para a aba certa
   - Em `turmas/actions.ts`, inscrever e desligar passam a voltar para `/inscritos`; designar e remover catequista para `/equipe`; criar, editar e encerrar continuam na página principal.
   - Pronto quando: testes de integração das ações mostram cada destino com o aviso correspondente, e as ações continuam rejeitadas sem permissão; os testes existentes de turmas seguem verdes com os destinos atualizados.
   - _Depends: 2.4_

@@ -62,7 +62,7 @@ describe("inscreverAction (5.1, 5.3, 5.4, 5.5, 11.5, 11.6)", () => {
     const url = await capturarRedirect(
       inscreverAction(turmaId, {}, form({ catequizandoId: c, dataEntrada: "2026-03-01" })),
     );
-    expect(url).toBe(`/coordenacao/turmas/${turmaId}?aviso=inscrito`);
+    expect(url).toBe(`/coordenacao/turmas/${turmaId}/inscritos?aviso=inscrito`);
     const v = await vigentesDe(c);
     expect(v).toHaveLength(1);
     expect(v[0]!.dataEntrada).toEqual(dia("2026-03-01"));
@@ -144,7 +144,7 @@ describe("inscreverAction (5.1, 5.3, 5.4, 5.5, 11.5, 11.6)", () => {
     const url = await capturarRedirect(
       inscreverAction(destino, {}, form({ ...campos, confirmarTransferencia: "1" })),
     );
-    expect(url).toBe(`/coordenacao/turmas/${destino}?aviso=transferido`);
+    expect(url).toBe(`/coordenacao/turmas/${destino}/inscritos?aviso=transferido`);
     const antiga = await prisma.inscricao.findFirstOrThrow({
       where: { catequizandoId: c, turmaId: origem },
     });
@@ -169,7 +169,7 @@ describe("inscreverAction (5.1, 5.3, 5.4, 5.5, 11.5, 11.6)", () => {
     const url = await capturarRedirect(
       inscreverAction(turmaId, {}, form({ catequizandoId: c, confirmarLotacao: "1" })),
     );
-    expect(url).toBe(`/coordenacao/turmas/${turmaId}?aviso=inscrito`);
+    expect(url).toBe(`/coordenacao/turmas/${turmaId}/inscritos?aviso=inscrito`);
     expect(await totalDe(c)).toBe(1);
   });
 
@@ -201,7 +201,7 @@ describe("inscreverAction (5.1, 5.3, 5.4, 5.5, 11.5, 11.6)", () => {
         form({ catequizandoId: c, confirmarLotacao: "1", confirmarTransferencia: "1" }),
       ),
     );
-    expect(url).toBe(`/coordenacao/turmas/${destino}?aviso=transferido`);
+    expect(url).toBe(`/coordenacao/turmas/${destino}/inscritos?aviso=transferido`);
     expect((await vigentesDe(c))[0]!.turmaId).toBe(destino);
   });
 
@@ -226,7 +226,7 @@ describe("desligarAction (5.5, 6.1, 6.3)", () => {
     const url = await capturarRedirect(
       desligarAction(turmaId, id, {}, form({ dataSaida: "2026-03-01" })),
     );
-    expect(url).toBe(`/coordenacao/turmas/${turmaId}?aviso=desligado`);
+    expect(url).toBe(`/coordenacao/turmas/${turmaId}/inscritos?aviso=desligado`);
     const i = await prisma.inscricao.findUniqueOrThrow({ where: { id } });
     expect(i.dataSaida).toEqual(dia("2026-03-01"));
     expect(i.motivoSaida).toBe("desligamento");

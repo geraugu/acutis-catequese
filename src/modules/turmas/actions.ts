@@ -67,6 +67,11 @@ function validarTurma(dados: FormData) {
   return criarTurmaSchema({ anoAtual }).safeParse(bruto);
 }
 
+/** Página da turma (coordenação) ou de uma de suas abas (8.1, 8.2, 8.3). */
+function paginaDaTurma(turmaId: string, aba?: "inscritos" | "equipe"): string {
+  return `/coordenacao/turmas/${turmaId}${aba ? `/${aba}` : ""}`;
+}
+
 function codigoPrisma(e: unknown): string | undefined {
   if (typeof e === "object" && e !== null && "code" in e && typeof e.code === "string") {
     return e.code;
@@ -100,7 +105,7 @@ export async function criarTurmaAction(
     return { erro: MSG_ERRO_INESPERADO, valores };
   }
   // Fora do try/catch: redirect lança NEXT_REDIRECT.
-  redirect(`/coordenacao/turmas/${id}?aviso=turma-criada`);
+  redirect(`${paginaDaTurma(id)}?aviso=turma-criada`);
 }
 
 /** Edição (2.1, 2.3, 2.5, 8.3): reduzir vagas abaixo dos inscritos é permitido. */
@@ -131,7 +136,7 @@ export async function editarTurmaAction(
     });
     return { erro: MSG_ERRO_INESPERADO, valores };
   }
-  redirect(`/coordenacao/turmas/${id}?aviso=alteracoes-salvas`);
+  redirect(`${paginaDaTurma(id)}?aviso=alteracoes-salvas`);
 }
 
 /** Encerramento (8.1, 8.3, 11.7): desliga todos os inscritos vigentes com a data de hoje. */
@@ -154,7 +159,7 @@ export async function encerrarTurmaAction(
     });
     return { erro: MSG_ERRO_INESPERADO };
   }
-  redirect(`/coordenacao/turmas/${id}?aviso=turma-encerrada`);
+  redirect(`${paginaDaTurma(id)}?aviso=turma-encerrada`);
 }
 
 /** Designação (4.1, 4.3, 4.4, 8.3): só catequistas elegíveis; duplicidade concorrente vira o mesmo erro. */
@@ -184,7 +189,7 @@ export async function designarCatequistaAction(
     });
     return { erro: MSG_ERRO_INESPERADO };
   }
-  redirect(`/coordenacao/turmas/${turmaId}?aviso=catequista-designado`);
+  redirect(`${paginaDaTurma(turmaId, "equipe")}?aviso=catequista-designado`);
 }
 
 /** Remoção de designação (4.2, 8.3): encerra a designação vigente, preservando o histórico. */
@@ -208,7 +213,7 @@ export async function removerCatequistaAction(
     });
     return { erro: MSG_ERRO_INESPERADO };
   }
-  redirect(`/coordenacao/turmas/${turmaId}?aviso=catequista-removido`);
+  redirect(`${paginaDaTurma(turmaId, "equipe")}?aviso=catequista-removido`);
 }
 
 const DATA_INVALIDA = "Data inválida";
@@ -275,7 +280,7 @@ export async function inscreverAction(
     });
     return { erro: MSG_ERRO_INESPERADO, valores };
   }
-  redirect(`/coordenacao/turmas/${turmaId}?aviso=${aviso}`);
+  redirect(`${paginaDaTurma(turmaId, "inscritos")}?aviso=${aviso}`);
 }
 
 /** Desligamento (6.1, 6.3, 8.3): só a inscrição vigente desta turma; nunca exclui. */
@@ -307,5 +312,5 @@ export async function desligarAction(
     });
     return { erro: MSG_ERRO_INESPERADO, valores };
   }
-  redirect(`/coordenacao/turmas/${turmaId}?aviso=desligado`);
+  redirect(`${paginaDaTurma(turmaId, "inscritos")}?aviso=desligado`);
 }

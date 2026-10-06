@@ -56,7 +56,7 @@ describe("designarCatequistaAction (4.1, 4.3, 4.4)", () => {
     const url = await capturarRedirect(
       designarCatequistaAction(turmaId, {}, form({ userId: alvo })),
     );
-    expect(url).toBe(`/coordenacao/turmas/${turmaId}?aviso=catequista-designado`);
+    expect(url).toBe(`/coordenacao/turmas/${turmaId}/equipe?aviso=catequista-designado`);
     expect(
       await prisma.designacao.count({ where: { turmaId, userId: alvo, removidoEm: null } }),
     ).toBe(1);
@@ -112,7 +112,7 @@ describe("removerCatequistaAction (4.2)", () => {
     usarSessao(await criarCoordenacao());
 
     const url = await capturarRedirect(removerCatequistaAction(turmaId, alvo, {}));
-    expect(url).toBe(`/coordenacao/turmas/${turmaId}?aviso=catequista-removido`);
+    expect(url).toBe(`/coordenacao/turmas/${turmaId}/equipe?aviso=catequista-removido`);
     expect(await vigentes(turmaId)).toBe(0);
     expect(await prisma.designacao.count({ where: { turmaId, userId: alvo } })).toBe(1);
   });
