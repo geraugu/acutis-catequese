@@ -41,9 +41,15 @@ export type EstadoLink = { erro?: string };
 
 const MSG_SEM_LINK_ATIVO = "A turma não tem um link ativo.";
 
-function paginaDaTurma(sessao: SessaoUsuario, turmaId: string): string {
+/** Caminho da turma na área do chamador; com `aba`, o da aba (8.4, 8.5). */
+function paginaDaTurma(
+  sessao: SessaoUsuario,
+  turmaId: string,
+  aba?: "equipe" | "inscritos",
+): string {
   const area = sessao.papel === "coordenacao" ? "coordenacao" : "catequista";
-  return `/${area}/turmas/${turmaId}`;
+  const base = `/${area}/turmas/${turmaId}`;
+  return aba ? `${base}/${aba}` : base;
 }
 
 function codigoPrisma(e: unknown): string | undefined {
@@ -76,7 +82,7 @@ async function executar(
     });
     return { erro: MSG_ERRO_INESPERADO };
   }
-  const pagina = paginaDaTurma(sessao, turmaId);
+  const pagina = paginaDaTurma(sessao, turmaId, "equipe");
   revalidatePath(pagina);
   redirect(`${pagina}?aviso=${aviso}`);
 }
@@ -213,9 +219,9 @@ export async function confirmarFichaLinkAction(
     });
     return { erro: MSG_ERRO_INESPERADO };
   }
-  const pagina = paginaDaTurma(sessao, turmaId);
-  revalidatePath(pagina);
-  redirect(`${pagina}?aviso=ficha-confirmada`);
+  // Layout revalidado para atualizar a contagem de pendentes (1.6).
+  revalidatePath(paginaDaTurma(sessao, turmaId), "layout");
+  redirect(`${paginaDaTurma(sessao, turmaId, "inscritos")}?aviso=ficha-confirmada`);
 }
 
 /** Estado compatível com o `CamposFicha` (EstadoFicha de catequizandos). */
@@ -301,6 +307,6 @@ export async function descartarFichaLinkAction(
   }
   const pagina = `${paginaDaTurma(sessao, turmaId)}/pendentes`;
   revalidatePath(pagina);
-  revalidatePath(paginaDaTurma(sessao, turmaId));
+  revalidatePath(paginaDaTurma(sessao, turmaId), "layout");
   redirect(`${pagina}?aviso=ficha-descartada`);
 }

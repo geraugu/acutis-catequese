@@ -85,7 +85,7 @@
   - _Boundary: turmas/actions_
   - _Requirements: 8.1, 8.2, 8.3_
 
-- [ ] 4.3 (P) Redirecionar as ações do autocadastro para a aba certa
+- [x] 4.3 (P) Redirecionar as ações do autocadastro para a aba certa
   - Em `autocadastro/actions.ts`, `paginaDaTurma` recebe a aba: as ações do link (gerar, desativar, regenerar, alterar expiração) voltam para `/equipe`, confirmar ficha volta para `/inscritos`, e corrigir e descartar continuam voltando para a revisão e para a fila; confirmar e descartar passam a revalidar o layout da turma para atualizar a contagem de pendentes.
   - Pronto quando: testes de integração das ações mostram cada destino com o aviso, a revalidação do layout na confirmação e no descarte, e os testes existentes de autocadastro seguem verdes com os destinos atualizados.
   - _Depends: 2.4_

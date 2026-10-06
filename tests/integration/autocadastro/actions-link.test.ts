@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import {
   desativarLinkAction,
@@ -37,9 +38,11 @@ describe("gestão do link (1.1, 1.4, 1.5, 1.6, 1.7, 1.10)", () => {
   it("coordenação gera, salva expiração, regenera e desativa", async () => {
     const turmaId = await criarTurmaDireta();
     usarSessao(await criarCoordenacao());
-    const base = `/coordenacao/turmas/${turmaId}`;
+    const base = `/coordenacao/turmas/${turmaId}/equipe`;
 
     expect(await capturarRedirect(gerarLinkAction(turmaId, {}))).toBe(`${base}?aviso=link-gerado`);
+    expect(revalidatePath).toHaveBeenCalledWith(base);
+    expect(revalidatePath).not.toHaveBeenCalledWith(expect.anything(), "layout");
     const [l1] = await ativos(turmaId);
     expect(l1.token).toBeTruthy();
 
@@ -75,7 +78,7 @@ describe("gestão do link (1.1, 1.4, 1.5, 1.6, 1.7, 1.10)", () => {
     await designar(turmaId, resp.id);
     usarSessao(resp);
     expect(await capturarRedirect(gerarLinkAction(turmaId, {}))).toBe(
-      `/catequista/turmas/${turmaId}?aviso=link-gerado`,
+      `/catequista/turmas/${turmaId}/equipe?aviso=link-gerado`,
     );
 
     usarSessao(await criarCatequista());

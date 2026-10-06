@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { prisma } from "@/lib/prisma";
 import type { DataCivil } from "@/modules/compartilhado/datas";
@@ -78,8 +79,9 @@ describe("confirmarFichaLinkAction (6.4, 7.1–7.6)", () => {
     const { turmaId, id } = await cenario();
     usarSessao(await criarCoordenacao());
     expect(await capturarRedirect(confirmarFichaLinkAction(turmaId, id, {}, form({})))).toBe(
-      `/coordenacao/turmas/${turmaId}?aviso=ficha-confirmada`,
+      `/coordenacao/turmas/${turmaId}/inscritos?aviso=ficha-confirmada`,
     );
+    expect(revalidatePath).toHaveBeenCalledWith(`/coordenacao/turmas/${turmaId}`, "layout");
     const c = await estado(id);
     expect(c.estado).toBe("ativo");
     expect(c.inscricoes).toHaveLength(1);
@@ -104,7 +106,7 @@ describe("confirmarFichaLinkAction (6.4, 7.1–7.6)", () => {
       await capturarRedirect(
         confirmarFichaLinkAction(turmaId, id, {}, form({ confirmarLotacao: "1" })),
       ),
-    ).toBe(`/catequista/turmas/${turmaId}?aviso=ficha-confirmada`);
+    ).toBe(`/catequista/turmas/${turmaId}/inscritos?aviso=ficha-confirmada`);
     expect((await estado(id)).estado).toBe("ativo");
   });
 

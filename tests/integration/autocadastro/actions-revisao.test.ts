@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { prisma } from "@/lib/prisma";
 import type { DataCivil } from "@/modules/compartilhado/datas";
@@ -146,6 +147,7 @@ describe("descartarFichaLinkAction (8.1–8.4)", () => {
     expect(await capturarRedirect(descartarFichaLinkAction(turmaId, id, {}))).toBe(
       `/coordenacao/turmas/${turmaId}/pendentes?aviso=ficha-descartada`,
     );
+    expect(revalidatePath).toHaveBeenCalledWith(`/coordenacao/turmas/${turmaId}`, "layout");
     expect(await prisma.catequizando.findUnique({ where: { id } })).toBeNull();
   });
 
