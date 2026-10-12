@@ -28,12 +28,12 @@ export function EncontrosEquivalentes({
       <tbody>
         {encontros.map((e) => (
           <tr key={e.id}>
-            <td>
+            <td data-label="Turma">
               <Link href={`${baseTurma}/${e.turmaId}`}>{e.turmaNome}</Link>
             </td>
-            <td>{formatarDataComDia(e.data)}</td>
-            <td>{formatarHorario(e.horario)}</td>
-            <td>
+            <td data-label="Data">{formatarDataComDia(e.data)}</td>
+            <td data-label="Horário">{formatarHorario(e.horario)}</td>
+            <td data-label="Situação">
               <span className={`situacao situacao-${e.situacao}`}>
                 {ROTULO_SITUACAO[e.situacao]}
               </span>
