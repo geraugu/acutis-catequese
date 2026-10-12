@@ -12,7 +12,7 @@
 
 - [ ] 2. Domínio da reposição (regras puras)
 
-- [ ] 2.1 Implementar os temas a repor, as opções e o conflito de data
+- [x] 2.1 Implementar os temas a repor, as opções e o conflito de data
   - Criar `temasARepor` (pendentes que já foram trabalhados na origem, na ordem do programa), `opcoesDoTema` (candidatos do tema por data e turma, sem os encontros com presença ou reserva ativa, com a marca de conflito) e `conflitoDeData`.
   - Pronto quando: os testes unitários cobrem tema cumprido fora da lista, tema ainda não trabalhado fora da lista, ordem do programa mantida, opções por data crescente e desempate por turma, encontro com presença ou reserva ativa excluído, conflito com encontro da origem e com outra reserva na mesma data, e lista vazia sem erro.
   - _Boundary: presenca/domain/reposicao_
