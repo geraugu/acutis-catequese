@@ -78,7 +78,7 @@
   - _Boundary: components/presenca_
   - _Requirements: 2.1, 2.5, 2.6, 3.5, 3.6, 6.4, 7.1_
 
-- [ ] 5.2 (P) Criar o bloco de reservas da chamada
+- [x] 5.2 (P) Criar o bloco de reservas da chamada
   - Criar `ReservasDaChamada`, listando separadamente dos inscritos cada catequizando com reserva, com nome e turma de origem, e as ações confirmar presente (visitante existente) e marcar ausência.
   - Pronto quando: os testes de componente mostram o bloco só quando há reservas, o nome e a origem de cada uma, os dois botões, e a situação já resolvida de quem compareceu ou não compareceu.
   - _Depends: 5.1_
