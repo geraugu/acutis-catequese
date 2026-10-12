@@ -1696,3 +1696,37 @@ main {
     0 8px 24px rgb(30 42 20 / 0.08);
   border-top: 4px solid var(--cor-primaria);
 }
+
+/* Melhorias visuais: selects com a mesma aparência dos campos. */
+.campo select,
+.filtros-turmas select {
+  font: inherit;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 2.5rem 0.5rem 0.875rem;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: var(--raio-campo);
+  background-color: var(--cor-campo);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235f6b55' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1.25rem;
+  color: var(--cor-texto);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.campo select:hover,
+.filtros-turmas select:hover {
+  border-color: var(--cor-primaria);
+}
+
+.campo select:focus,
+.filtros-turmas select:focus {
+  background-color: var(--cor-superficie);
+  border-color: var(--cor-primaria);
+}
+
+.campo select[aria-invalid="true"] {
+  border-color: var(--cor-perigo);
+}
