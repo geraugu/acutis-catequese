@@ -50,7 +50,7 @@
   - _Boundary: presenca/reposicao-repositorio_
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 5.3, 6.1, 6.2, 6.3_
 
-- [ ] 3.3 Integrar a reserva ao visitante e à chamada existentes
+- [x] 3.3 Integrar a reserva ao visitante e à chamada existentes
   - Fazer `adicionarVisitante` marcar a reserva do encontro como `compareceu` na mesma transação; `removerVisitante` devolver `compareceu` para `reservada`; `salvarChamada` marcar as `reservada` do encontro como `nao_compareceu` na mesma transação.
   - Manter o comportamento atual quando o catequizando não tem reserva.
   - Pronto quando: os testes de integração mostram visitante com reserva virando `compareceu`, visitante direto sem reserva igual ao atual, remoção devolvendo a reserva, chamada salva marcando as pendentes como `nao_compareceu` sem criar presença, e a frequência da turma visitada e da origem inalterada.

@@ -189,6 +189,11 @@ export async function salvarChamada(
         update: { status },
       });
     }
+    // Reservas de reposição pendentes deste encontro (o destino) viram ausência, sem presença (5.4).
+    await tx.reservaReposicao.updateMany({
+      where: { encontroId: e.encontroId, situacao: "reservada" },
+      data: { situacao: "nao_compareceu" },
+    });
     return "ok";
   });
 }
@@ -284,6 +289,15 @@ export async function adicionarVisitante(
           turmaOrigemId: origem.turmaId,
         },
       });
+      // Visitante com reserva neste encontro: a reserva passa a compareceu (5.2).
+      await tx.reservaReposicao.updateMany({
+        where: {
+          encontroId: e.encontroId,
+          catequizandoId,
+          situacao: { in: ["reservada", "nao_compareceu"] },
+        },
+        data: { situacao: "compareceu" },
+      });
       return "ok";
     });
   } catch (erro) {
@@ -300,10 +314,19 @@ export async function removerVisitante(
   catequizandoId: string,
 ): Promise<boolean> {
   if (!UUID.test(encontroId) || !UUID.test(catequizandoId)) return false;
-  const { count } = await prisma.presenca.deleteMany({
-    where: { encontroId, catequizandoId, visitante: true },
+  return prisma.$transaction(async (tx) => {
+    const { count } = await tx.presenca.deleteMany({
+      where: { encontroId, catequizandoId, visitante: true },
+    });
+    if (count > 0) {
+      // A reserva que havia virado compareceu volta a reservada (5.5).
+      await tx.reservaReposicao.updateMany({
+        where: { encontroId, catequizandoId, situacao: "compareceu" },
+        data: { situacao: "reservada" },
+      });
+    }
+    return count > 0;
   });
-  return count > 0;
 }
 
 const porNome = (a: { nome: string }, b: { nome: string }) => a.nome.localeCompare(b.nome, "pt-BR");
