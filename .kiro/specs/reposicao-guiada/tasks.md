@@ -26,7 +26,7 @@
   - _Boundary: presenca/domain/reposicao_
   - _Requirements: 6.1, 6.2, 6.3_
 
-- [ ] 2.3 (P) Criar as mensagens da reposição
+- [x] 2.3 (P) Criar as mensagens da reposição
   - Acrescentar aos códigos de aviso `reserva-criada`, `reserva-cancelada` e `ausencia-marcada`, e as mensagens de erro de opção indisponível, conflito de data, tema já reservado e catequizando sem turma de origem.
   - Pronto quando: os testes unitários mostram o texto de cada código novo, `null` para códigos desconhecidos e as quatro mensagens de erro em pt-BR.
   - _Boundary: presenca/mensagens_

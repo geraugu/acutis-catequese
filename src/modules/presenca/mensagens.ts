@@ -4,6 +4,9 @@ export const CODIGOS_AVISO = [
   "visitante-adicionado",
   "visitante-removido",
   "limite-salvo",
+  "reserva-criada",
+  "reserva-cancelada",
+  "ausencia-marcada",
 ] as const;
 export type CodigoAviso = (typeof CODIGOS_AVISO)[number];
 
@@ -13,6 +16,9 @@ export const MENSAGEM_AVISO: Record<CodigoAviso, string> = {
   "visitante-adicionado": "Visitante adicionado.",
   "visitante-removido": "Visitante removido.",
   "limite-salvo": "Limite salvo.",
+  "reserva-criada": "Reposição reservada.",
+  "reserva-cancelada": "Reserva cancelada.",
+  "ausencia-marcada": "Ausência registrada. O tema continua a repor.",
 };
 
 export const MSG_TURMA_ENCERRADA = "Esta turma está encerrada e não pode ser alterada.";
@@ -25,6 +31,12 @@ export const MSG_VISITANTE_INDISPONIVEL =
 export const MSG_SEM_INSCRITOS = "Não há catequizandos inscritos para registrar.";
 export const MSG_FALTAM_MARCACOES = "Marque a presença de todos os catequizandos.";
 export const MSG_ERRO_INESPERADO = "Não foi possível concluir agora. Tente novamente em instantes.";
+export const MSG_OPCAO_INDISPONIVEL = "Este encontro não está mais disponível para reposição.";
+export const MSG_CONFLITO_DATA_RESERVA =
+  "O catequizando já tem reserva ou encontro da própria turma nesta data.";
+export const MSG_TEMA_JA_RESERVADO = "Este tema já tem uma reserva ativa para o catequizando.";
+export const MSG_RESERVA_SEM_TURMA_ORIGEM =
+  "O catequizando não tem turma de origem, então não há reposição a reservar.";
 
 export function isCodigoAviso(valor: unknown): valor is CodigoAviso {
   return (CODIGOS_AVISO as readonly unknown[]).includes(valor);
