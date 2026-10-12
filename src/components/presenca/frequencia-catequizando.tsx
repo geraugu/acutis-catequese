@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { plural } from "@/components/presenca/resumo-chamada";
 import { StatusPresenca as SeloStatus } from "@/components/presenca/status-presenca";
 import { formatarData, formatarDataComDia, type DataCivil } from "@/modules/compartilhado/datas";
@@ -32,6 +33,8 @@ interface FrequenciaCatequizandoProps {
   limite: number;
   presencas: PresencaDoCatequizando[];
   progresso: ProgressoCatequizando;
+  /** Página "o que falta" do catequizando (reposição guiada). */
+  hrefReposicao?: string;
 }
 
 function textoContagens(c: ContagemFrequencia): string {
@@ -68,9 +71,17 @@ export function FrequenciaCatequizando({
   limite,
   presencas,
   progresso,
+  hrefReposicao,
 }: FrequenciaCatequizandoProps) {
   return (
     <div>
+      {hrefReposicao ? (
+        <p>
+          <Link href={hrefReposicao} className="botao botao-secundario">
+            O que falta
+          </Link>
+        </p>
+      ) : null}
       <section aria-labelledby="freq-turmas">
         <h3 id="freq-turmas">Frequência por turma</h3>
         <ul className="presenca-inscritos">

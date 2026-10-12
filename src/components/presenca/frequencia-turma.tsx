@@ -17,6 +17,8 @@ export interface ItemFrequenciaTurma {
   nome: string;
   contagem: ContagemFrequencia;
   href?: string;
+  /** Página "o que falta" do catequizando (reposição guiada). */
+  hrefReposicao?: string;
 }
 
 interface FrequenciaTurmaProps {
@@ -104,6 +106,15 @@ export function FrequenciaTurma({ itens, limite, ordem, hrefOrdenar }: Frequenci
                 </span>
                 <span className="presenca-percentual">{textoPercentual(item.frequencia)}</span>
                 <span className="presenca-contagens">{textoContagens(item.contagem)}</span>
+                {item.hrefReposicao ? (
+                  <Link
+                    href={item.hrefReposicao}
+                    aria-label={`O que falta: ${item.nome}`}
+                    className="reposicao-link"
+                  >
+                    O que falta
+                  </Link>
+                ) : null}
                 {emAlerta(item.contagem, limite) ? (
                   <span className="presenca-selo-baixa">
                     <IconeAlerta />

@@ -76,7 +76,11 @@ export async function BlocoFrequenciaDaTurma({
     <section className="turma-secao" aria-labelledby="turma-frequencia">
       <h2 id="turma-frequencia">Frequência</h2>
       <FrequenciaTurma
-        itens={itens.map((i) => ({ ...i, href: `/${papel}/catequizandos/${i.catequizandoId}` }))}
+        itens={itens.map((i) => ({
+          ...i,
+          href: `/${papel}/catequizandos/${i.catequizandoId}`,
+          hrefReposicao: `/${papel}/catequizandos/${i.catequizandoId}/reposicao`,
+        }))}
         limite={limite}
         ordem={ordem}
         hrefOrdenar={hrefOrdenar}
@@ -88,8 +92,10 @@ export async function BlocoFrequenciaDaTurma({
 /** Frequência por turma, presenças e progresso na ficha do catequizando (5.5, 5.6, 8.2). */
 export async function BlocoFrequenciaDoCatequizando({
   catequizandoId,
+  papel,
 }: {
   catequizandoId: string;
+  papel: Papel;
 }) {
   const [turmas, presencas, limite, temas, cumpridos] = await Promise.all([
     frequenciaPorTurma(catequizandoId),
@@ -107,6 +113,7 @@ export async function BlocoFrequenciaDoCatequizando({
         limite={limite}
         presencas={presencas}
         progresso={calcularProgressoCatequizando(temas, cumpridos)}
+        hrefReposicao={`/${papel}/catequizandos/${catequizandoId}/reposicao`}
       />
     </section>
   );

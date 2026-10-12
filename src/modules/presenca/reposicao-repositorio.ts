@@ -447,3 +447,13 @@ export async function marcarNaoCompareceu(
     return resolvidas.some(({ r }) => r.situacao === "nao_compareceu") ? "ok" : "indisponivel";
   });
 }
+
+/** Nome do catequizando para o título da página "o que falta"; nulo se o id não existe. */
+export async function nomeDoCatequizando(catequizandoId: string): Promise<string | null> {
+  if (!UUID.test(catequizandoId)) return null;
+  const c = await prisma.catequizando.findUnique({
+    where: { id: catequizandoId },
+    select: { nome: true },
+  });
+  return c?.nome ?? null;
+}

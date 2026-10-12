@@ -12,7 +12,13 @@ function contagem(presentes: number, ausentes: number, justificados = 0): Contag
 const hrefOrdenar = (ordem: "nome" | "frequencia") => `/turma?ordem=${ordem}`;
 
 function renderizar(
-  itens: { catequizandoId: string; nome: string; contagem: ContagemFrequencia; href?: string }[],
+  itens: {
+    catequizandoId: string;
+    nome: string;
+    contagem: ContagemFrequencia;
+    href?: string;
+    hrefReposicao?: string;
+  }[],
   opcoes: { limite?: number; ordem?: "nome" | "frequencia" } = {},
 ) {
   return render(
@@ -32,6 +38,22 @@ function nomesNaOrdem(): string[] {
 }
 
 describe("FrequenciaTurma", () => {
+  it("leva à visão o que falta de cada catequizando que tem o endereço (3.6)", () => {
+    renderizar([
+      {
+        catequizandoId: "a",
+        nome: "Ana",
+        contagem: contagem(1, 0),
+        hrefReposicao: "/catequista/catequizandos/a/reposicao",
+      },
+      { catequizandoId: "b", nome: "Bia", contagem: contagem(1, 0) },
+    ]);
+    const links = screen.getAllByRole("link", { name: /O que falta/ });
+    expect(links).toHaveLength(1);
+    expect(links[0]).toHaveAttribute("href", "/catequista/catequizandos/a/reposicao");
+    expect(links[0]).toHaveAccessibleName("O que falta: Ana");
+  });
+
   it("mostra 'Sem encontros registrados' no lugar do percentual da turma e do catequizando (6.2, 5.4)", () => {
     renderizar([{ catequizandoId: "a", nome: "Ana", contagem: contagem(0, 0) }]);
     expect(screen.getAllByText("Sem encontros registrados")).toHaveLength(2);

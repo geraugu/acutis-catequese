@@ -1567,3 +1567,10 @@ main {
     flex: 0 0 auto;
   }
 }
+
+.reposicao-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-weight: 600;
+}

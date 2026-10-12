@@ -85,7 +85,7 @@
   - _Boundary: components/presenca_
   - _Requirements: 5.1, 5.2, 5.3, 7.1_
 
-- [ ] 5.3 Criar a página "o que falta" e as rotas por papel
+- [x] 5.3 Criar a página "o que falta" e as rotas por papel
   - Criar `PaginaReposicao` compartilhada e as rotas de coordenação e de catequista em `catequizandos/[id]/reposicao`, com autorização antes de qualquer leitura.
   - Acrescentar o link "O que falta" na frequência do catequizando e na tabela de frequência da turma.
   - Pronto quando: a coordenação abre a página de qualquer catequizando; o catequista abre a de catequizando da sua turma e é enviado a "acesso negado" nos demais; sem sessão vai ao login; e o link aparece nas duas telas.

@@ -32,7 +32,7 @@ export default async function CatequizandoCatequistaPage({
         <h1>{catequizando.nome}</h1>
       </div>
       <FichaCatequizando catequizando={catequizando} />
-      {await BlocoFrequenciaDoCatequizando({ catequizandoId: id })}
+      {await BlocoFrequenciaDoCatequizando({ catequizandoId: id, papel: "catequista" })}
     </>
   );
 }

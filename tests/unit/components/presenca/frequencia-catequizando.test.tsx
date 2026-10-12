@@ -35,6 +35,17 @@ const turmas: Props["turmas"] = [
 ];
 
 describe("FrequenciaCatequizando", () => {
+  it("leva à visão o que falta quando recebe o endereço (3.6)", () => {
+    renderizar({ hrefReposicao: "/coordenacao/catequizandos/c1/reposicao" });
+    const link = screen.getByRole("link", { name: "O que falta" });
+    expect(link).toHaveAttribute("href", "/coordenacao/catequizandos/c1/reposicao");
+  });
+
+  it("não mostra o link sem o endereço", () => {
+    renderizar();
+    expect(screen.queryByRole("link", { name: "O que falta" })).toBeNull();
+  });
+
   it("mostra a frequência de cada turma, com a atual em destaque (5.6)", () => {
     renderizar({ turmas });
     const itens = screen

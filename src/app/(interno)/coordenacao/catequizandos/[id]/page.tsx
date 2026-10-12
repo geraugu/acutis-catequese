@@ -51,7 +51,7 @@ export default async function CatequizandoPage({
       <Aviso mensagem={mensagemDeAviso(aviso)} />
       <FichaCatequizando catequizando={catequizando} />
       <TurmaDoCatequizando historico={historico} baseTurma="/coordenacao/turmas" />
-      {await BlocoFrequenciaDoCatequizando({ catequizandoId: id })}
+      {await BlocoFrequenciaDoCatequizando({ catequizandoId: id, papel: "coordenacao" })}
       <div className="membro-acoes">
         <Link href={`/coordenacao/catequizandos/${id}/editar`} className="botao botao-secundario">
           Editar

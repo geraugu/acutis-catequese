@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import type { SessaoUsuario } from "@/modules/auth/dal";
-import { podeVerTurma } from "@/modules/turmas/acesso";
+import { podeVerCatequizando, podeVerTurma } from "@/modules/turmas/acesso";
 import { turmasDoUsuario } from "@/modules/presenca/autorizacao";
 import { formatarDataComDia, hojeCivil } from "@/modules/compartilhado/datas";
 import { ROTULO_SITUACAO } from "@/modules/programa/domain/encontro";
@@ -14,6 +14,15 @@ import {
   obterLimite,
   presencasDoEncontro,
 } from "@/modules/presenca/repositorio";
+import {
+  cancelarReservaAction,
+  reservarReposicaoAction,
+} from "@/modules/presenca/reposicao-actions";
+import {
+  nomeDoCatequizando,
+  reservasDoCatequizando,
+  visaoOQueFalta,
+} from "@/modules/presenca/reposicao-repositorio";
 import {
   adicionarVisitanteAction,
   removerVisitanteAction,
@@ -35,7 +44,9 @@ import { AlertasFrequencia } from "@/components/presenca/alertas-frequencia";
 import { FormularioLimite } from "@/components/presenca/formulario-limite";
 import { BuscaVisitante } from "@/components/presenca/busca-visitante";
 import { ChamadaForm } from "@/components/presenca/chamada-form";
+import { HistoricoReservas } from "@/components/presenca/historico-reservas";
 import { ListaVisitantes } from "@/components/presenca/lista-visitantes";
+import { OQueFalta } from "@/components/presenca/o-que-falta";
 import { SemTemaDoEncontro } from "@/components/presenca/sem-tema-do-encontro";
 import { StatusPresenca } from "@/components/presenca/status-presenca";
 
@@ -322,6 +333,60 @@ export async function PaginaFrequencia({
       {papel === "coordenacao" ? (
         <FormularioLimite limiteAtual={limite} salvarLimiteAction={salvarLimiteAction} />
       ) : null}
+    </>
+  );
+}
+
+/**
+ * "O que falta" do catequizando: temas a repor, opções e reserva (1.1 a 1.4, 2.1, 3.6, 6.4).
+ * O acesso é conferido antes de qualquer leitura; sem acesso, /acesso-negado sem dados.
+ */
+export async function PaginaReposicao({
+  sessao,
+  papel,
+  catequizandoId,
+  aviso,
+}: {
+  sessao: SessaoUsuario;
+  papel: Papel;
+  catequizandoId: string;
+  aviso: string | string[] | undefined;
+}) {
+  if (!(await podeVerCatequizando(sessao, catequizandoId))) redirect("/acesso-negado");
+  const nome = await nomeDoCatequizando(catequizandoId);
+  if (nome === null) notFound();
+
+  const base = `/${papel}/catequizandos/${catequizandoId}`;
+  const [visao, historico] = await Promise.all([
+    visaoOQueFalta(catequizandoId, hojeCivil()),
+    reservasDoCatequizando(catequizandoId),
+  ]);
+
+  // Ação inline: a assinatura da action recebe o id do catequizando antes do da reserva.
+  async function cancelar(reservaId: string) {
+    "use server";
+    await cancelarReservaAction(catequizandoId, reservaId, base);
+  }
+
+  return (
+    <>
+      <p>
+        <Link href={base}>← Voltar para {nome}</Link>
+      </p>
+      <div className="pagina-cabecalho">
+        <h1>O que falta</h1>
+      </div>
+      <p>{nome}</p>
+      <Aviso mensagem={mensagemDeAviso(primeiro(aviso))} />
+      <OQueFalta
+        visao={visao}
+        reservar={reservarReposicaoAction.bind(null, catequizandoId, base)}
+        cancelar={cancelar}
+      />
+      <section aria-labelledby="reposicao-historico">
+        <h2 id="reposicao-historico">Histórico de reservas</h2>
+        <HistoricoReservas reservas={historico} />
+      </section>
     </>
   );
 }
