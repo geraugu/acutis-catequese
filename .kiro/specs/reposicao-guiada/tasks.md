@@ -108,7 +108,7 @@
   - _Depends: 5.3, 5.4_
   - _Requirements: 1.2, 3.6, 4.1, 4.5, 5.2, 7.1_
 
-- [ ] 6.2 Verificar a regressão do módulo de presença
+- [x] 6.2 Verificar a regressão do módulo de presença
   - Executar o typecheck, o lint, os testes unitários e de integração e o e2e existentes de presença.
   - Pronto quando: todos passam sem alterar frequência, alerta, chamada ou visitante existentes.
   - _Depends: 6.1_
