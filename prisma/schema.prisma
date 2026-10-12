@@ -145,6 +145,7 @@ model Catequizando {
   inscricoes     Inscricao[]
   autocadastro   FichaAutocadastro?
   presencas      Presenca[]
+  reservas       ReservaReposicao[]
 
   @@index([estado])
   @@map("catequizando")
@@ -201,6 +202,7 @@ model Turma {
   fichasAutocadastro FichaAutocadastro[]
   presencas          Presenca[]
   presencasOrigem    Presenca[]          @relation("PresencaOrigem")
+  reservasOrigem     ReservaReposicao[]  @relation("ReservaOrigem")
 
   @@index([ciclo])
   @@map("turma")
@@ -242,15 +244,16 @@ enum SituacaoEncontro {
 }
 
 model Tema {
-  id        String     @id @default(uuid())
+  id        String             @id @default(uuid())
   titulo    String
   chave     String // normalizarBusca(titulo)
   descricao String?
   posicao   Int
-  ativo     Boolean    @default(true)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  ativo     Boolean            @default(true)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
   encontros Encontro[]
+  reservas  ReservaReposicao[]
 
   @@unique([chave], map: "tema_chave_unica")
   @@index([posicao])
@@ -258,19 +261,20 @@ model Tema {
 }
 
 model Encontro {
-  id                 String           @id @default(uuid())
+  id                 String             @id @default(uuid())
   turmaId            String
   temaId             String?
-  data               DateTime         @db.Date
+  data               DateTime           @db.Date
   horario            String // "HH:MM"
   observacoes        String?
-  situacao           SituacaoEncontro @default(planejado)
+  situacao           SituacaoEncontro   @default(planejado)
   motivoCancelamento String?
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
-  turma              Turma            @relation(fields: [turmaId], references: [id], onDelete: Restrict)
-  tema               Tema?            @relation(fields: [temaId], references: [id], onDelete: Restrict)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  turma              Turma              @relation(fields: [turmaId], references: [id], onDelete: Restrict)
+  tema               Tema?              @relation(fields: [temaId], references: [id], onDelete: Restrict)
   presencas          Presenca[]
+  reservas           ReservaReposicao[]
 
   @@index([turmaId, data])
   @@index([temaId])
@@ -353,4 +357,36 @@ model LimiteFrequencia {
   updatedAt  DateTime @updatedAt
 
   @@map("limite_frequencia")
+}
+
+enum SituacaoReserva {
+  reservada
+  compareceu
+  nao_compareceu
+  cancelada
+
+  @@map("situacao_reserva")
+}
+
+// Reserva de reposição de um tema em encontro planejado de outra turma.
+// Índice único parcial `reserva_ativa_unica` (catequizandoId, temaId) WHERE situacao = 'reservada' na migração SQL.
+model ReservaReposicao {
+  id                 String          @id @default(uuid())
+  catequizandoId     String
+  temaId             String
+  encontroId         String
+  turmaOrigemId      String
+  criadoPorId        String
+  situacao           SituacaoReserva @default(reservada)
+  motivoCancelamento String?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  catequizando       Catequizando    @relation(fields: [catequizandoId], references: [id], onDelete: Restrict)
+  tema               Tema            @relation(fields: [temaId], references: [id], onDelete: Restrict)
+  encontro           Encontro        @relation(fields: [encontroId], references: [id], onDelete: Restrict)
+  turmaOrigem        Turma           @relation("ReservaOrigem", fields: [turmaOrigemId], references: [id], onDelete: Restrict)
+
+  @@index([catequizandoId])
+  @@index([encontroId])
+  @@map("reserva_reposicao")
 }

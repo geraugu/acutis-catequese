@@ -28,6 +28,7 @@ const TABELAS = [
   "limite_autocadastro",
   "presenca",
   "limite_frequencia",
+  "reserva_reposicao",
 ];
 
 async function main() {

@@ -2,7 +2,7 @@
 
 - [ ] 1. Base de dados
 
-- [ ] 1.1 Criar a tabela de reservas de reposição
+- [x] 1.1 Criar a tabela de reservas de reposição
   - Criar o enum `SituacaoReserva` (reservada, compareceu, nao_compareceu, cancelada), o modelo `ReservaReposicao` e os campos de relação em `Catequizando`, `Tema`, `Encontro` e `Turma` (a turma de origem como relação nomeada), com a migração `*_reposicao`.
   - Criar em SQL manual o índice único parcial `reserva_ativa_unica` em catequizando e tema, onde a situação é `reservada`, e os índices por catequizando e por encontro.
   - Incluir `reserva_reposicao` no TRUNCATE de `tests/integration/setup.ts` e `tests/e2e/preparar-banco.ts`.
