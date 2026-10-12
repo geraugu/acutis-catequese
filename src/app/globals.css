@@ -1421,3 +1421,149 @@ main {
   line-height: 1.5rem;
   text-align: center;
 }
+
+/* Reposição guiada (reposicao-guiada): o que falta, opções, reserva e bloco da chamada. */
+.reposicao-temas,
+.reposicao-opcoes,
+.reposicao-historico,
+.reposicao-chamada-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reposicao-tema {
+  padding: 1rem 1.25rem;
+  background: var(--cor-superficie);
+  border-radius: var(--raio-cartao);
+}
+
+.reposicao-tema h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1.125rem;
+  overflow-wrap: anywhere;
+}
+
+.reposicao-opcao,
+.reposicao-historico-item,
+.reposicao-chamada-item {
+  padding: 0.75rem;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-campo);
+}
+
+.reposicao-opcao-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.reposicao-opcao-dados,
+.reposicao-reserva,
+.reposicao-historico-item,
+.reposicao-chamada-dados {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.reposicao-turma {
+  font-weight: 600;
+}
+
+.reposicao-apoio {
+  color: var(--cor-texto-suave);
+  font-size: 0.875rem;
+}
+
+.reposicao-botao {
+  width: 100%;
+}
+
+.reposicao-conflito,
+.reposicao-erro {
+  color: var(--cor-perigo);
+  font-size: 0.875rem;
+}
+
+.reposicao-erro {
+  margin: 0.5rem 0 0;
+  padding: 0.5rem 0.75rem;
+  background: var(--cor-perigo-fundo);
+  border-radius: var(--raio-campo);
+}
+
+/* Reserva em destaque no lugar das opções. */
+.reposicao-reserva {
+  padding: 0.75rem;
+  background: var(--cor-primaria-suave);
+  border: 1px solid var(--cor-primaria);
+  border-radius: var(--raio-campo);
+}
+
+.reposicao-situacao {
+  align-self: flex-start;
+  padding: 0.125rem 0.625rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pilula);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.reposicao-situacao-reservada,
+.reposicao-situacao-compareceu {
+  background: var(--cor-primaria-suave);
+  border-color: var(--cor-primaria);
+  color: var(--cor-primaria-hover);
+}
+
+.reposicao-situacao-nao_compareceu,
+.reposicao-situacao-cancelada {
+  background: var(--cor-perigo-fundo);
+  border-color: var(--cor-perigo);
+  color: var(--cor-perigo);
+}
+
+.reposicao-historico-tema {
+  font-weight: 600;
+}
+
+.reposicao-motivo {
+  color: var(--cor-texto-suave);
+  font-size: 0.875rem;
+}
+
+/* Bloco "Reposições reservadas" da chamada. */
+.reposicao-chamada {
+  margin: 0 0 1.5rem;
+}
+
+.reposicao-chamada-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.reposicao-chamada-acoes .botao {
+  flex: 1 1 8rem;
+}
+
+@media (min-width: 640px) {
+  .reposicao-opcao-form {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .reposicao-botao {
+    width: auto;
+    flex: 0 0 auto;
+  }
+}

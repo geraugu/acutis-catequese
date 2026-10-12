@@ -70,7 +70,7 @@
 
 - [ ] 5. Interface
 
-- [ ] 5.1 Criar os estilos e os componentes da visão "o que falta"
+- [x] 5.1 Criar os estilos e os componentes da visão "o que falta"
   - Acrescentar a `globals.css` os estilos da lista de temas, das opções, da reserva em destaque, do histórico e do bloco de reservas da chamada, utilizáveis em tela de celular.
   - Criar `OQueFalta` (temas a repor com número e título, opções com turma, dia, data e horário, reserva em destaque, estados vazios) e `HistoricoReservas` (situação, turma, data e motivo).
   - Pronto quando: os testes de componente mostram a lista na ordem do programa, a mensagem de nenhuma pendência, a de sem turma de origem, a de tema sem encontro futuro, a reserva no lugar das opções, a opção em conflito desabilitada e o histórico com o motivo.
