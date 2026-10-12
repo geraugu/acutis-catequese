@@ -1,12 +1,12 @@
 {
   "feature_name": "reposicao-guiada",
   "created_at": "2026-10-12T20:02:35Z",
-  "updated_at": "2026-10-12T20:02:35Z",
+  "updated_at": "2026-10-12T20:05:01Z",
   "language": "pt",
-  "phase": "initialized",
+  "phase": "requirements-generated",
   "approvals": {
     "requirements": {
-      "generated": false,
+      "generated": true,
       "approved": false
     },
     "design": {
@@ -20,5 +20,3 @@
   },
   "ready_for_implementation": false
 }
-
-
