@@ -60,7 +60,7 @@
 
 - [ ] 4. Ações e autorização
 
-- [ ] 4.1 Implementar as ações de reposição
+- [x] 4.1 Implementar as ações de reposição
   - Implementar `reservarReposicaoAction`, `cancelarReservaAction` e `naoCompareceuAction`, validando UUIDs e reavaliando sessão e acesso a cada chamada (catequizando para reservar e cancelar; turma visitada para marcar ausência).
   - Retornar o estado com mensagens de erro e revalidar a página para atualizar a tela sem recarregar.
   - Pronto quando: os testes de integração mostram a coordenação reservando para qualquer catequizando, o catequista só para os das suas turmas, acesso negado sem dados para os demais, ausência sem sessão recusada, e o aviso correspondente após reservar e cancelar.
@@ -120,3 +120,4 @@
 - Helpers de teste de reposição: `tests/integration/presenca/helpers-reposicao.ts` (reexporta os de `helpers.ts`).
 - Leituras (3.1): `visaoOQueFalta` devolve `opcoes = []` quando o tema tem reserva ativa; `reservasDoEncontro` devolve todas as situações (a UI do bloco da chamada filtra `situacao === "reservada"` para ações); `reservasDoCatequizando` vem da mais recente. Inativar o catequizando fecha as inscrições por gatilho, então a reserva aparece como `saiu-da-turma` (o motivo `catequizando-inativo` é praticamente inalcançável; a UI trata ambos como "saiu da turma").
 - Escritas (3.2): `reservar` trava o catequizando com `FOR UPDATE` e NÃO verifica se o tema ainda é "a repor" (só revalida o encontro, como no design). A action (4.1) deve validar, via `visaoOQueFalta`, que `temaId`/`encontroId` constam das opções do catequizando antes de chamar `reservar`, para impedir chamada forjada de tema já cumprido. `marcarNaoCompareceu` só age em reserva persistida `reservada` e vigente; `cancelar` de reserva obsoleta grava motivo null (cancelada pelo usuário).
+- Ações (4.1): `base` das ações do catequizando é `/coordenacao/catequizandos/{id}` ou `/catequista/catequizandos/{id}`; a página é `${base}/reposicao` (qualquer outro valor cai na coordenação). `naoCompareceuAction` usa `base` do cronograma da turma visitada e volta a `${base}/{encontroId}/chamada`. `reservarReposicaoAction` valida a opção na `visaoOQueFalta`; tema com reserva ativa responde "opção indisponível" (a visão devolve `opcoes = []`). Revisão da 4.1 feita inline (o despacho do revisor foi negado pelo classificador); a rodada 1 achou interpolação de ids crus no redirect, corrigida com `z.uuid()`.
