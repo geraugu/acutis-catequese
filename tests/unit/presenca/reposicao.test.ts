@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import type { DataCivil } from "@/modules/compartilhado/datas";
 import {
+  type ContextoDaReserva,
   conflitoDeData,
   type EncontroCandidato,
   opcoesDoTema,
+  situacaoEfetiva,
   temasARepor,
 } from "@/modules/presenca/domain/reposicao";
 
@@ -115,5 +117,101 @@ describe("conflitoDeData", () => {
   it("sem coincidência não há conflito, inclusive sem dados (4.3)", () => {
     expect(conflitoDeData(d("2026-05-16"), origem, reservas)).toBe(false);
     expect(conflitoDeData(d("2026-05-16"), new Set(), [])).toBe(false);
+  });
+});
+
+describe("situacaoEfetiva", () => {
+  const vigente = (parcial: Partial<ContextoDaReserva> = {}): ContextoDaReserva => ({
+    situacao: "reservada",
+    encontroSituacao: "planejado",
+    temaDoEncontro: "t1",
+    temaDaReserva: "t1",
+    origemVigente: true,
+    catequizandoAtivo: true,
+    turmaVisitadaEncerrada: false,
+    ...parcial,
+  });
+
+  it("mantém reservada quando nada mudou (6.1–6.3)", () => {
+    expect(situacaoEfetiva(vigente())).toEqual({ situacao: "reservada" });
+  });
+
+  it("cancela com encontro-cancelado quando o encontro foi cancelado (6.1)", () => {
+    expect(situacaoEfetiva(vigente({ encontroSituacao: "cancelado" }))).toEqual({
+      situacao: "cancelada",
+      motivo: "encontro-cancelado",
+    });
+  });
+
+  it("cancela com tema-alterado quando o tema do encontro mudou ou foi retirado (6.3)", () => {
+    const esperado = { situacao: "cancelada", motivo: "tema-alterado" };
+    expect(situacaoEfetiva(vigente({ temaDoEncontro: "t2" }))).toEqual(esperado);
+    expect(situacaoEfetiva(vigente({ temaDoEncontro: null }))).toEqual(esperado);
+  });
+
+  it("cancela com saiu-da-turma quando a inscrição de origem terminou (6.2)", () => {
+    expect(situacaoEfetiva(vigente({ origemVigente: false }))).toEqual({
+      situacao: "cancelada",
+      motivo: "saiu-da-turma",
+    });
+  });
+
+  it("cancela com catequizando-inativo quando o catequizando foi inativado (6.2)", () => {
+    expect(situacaoEfetiva(vigente({ catequizandoAtivo: false }))).toEqual({
+      situacao: "cancelada",
+      motivo: "catequizando-inativo",
+    });
+  });
+
+  it("cancela com turma-encerrada quando a turma visitada foi encerrada (6.2)", () => {
+    expect(situacaoEfetiva(vigente({ turmaVisitadaEncerrada: true }))).toEqual({
+      situacao: "cancelada",
+      motivo: "turma-encerrada",
+    });
+  });
+
+  it("aplica a precedência encontro > tema > saiu > inativo > turma encerrada", () => {
+    const tudo = vigente({
+      encontroSituacao: "cancelado",
+      temaDoEncontro: null,
+      origemVigente: false,
+      catequizandoAtivo: false,
+      turmaVisitadaEncerrada: true,
+    });
+    const motivo = (c: ContextoDaReserva) => (situacaoEfetiva(c) as { motivo: string }).motivo;
+    const semEncontro = { ...tudo, encontroSituacao: "planejado" as const };
+    const semTema = { ...semEncontro, temaDoEncontro: "t1" };
+    const semSaida = { ...semTema, origemVigente: true };
+    const semInativo = { ...semSaida, catequizandoAtivo: true };
+    expect(motivo(tudo)).toBe("encontro-cancelado");
+    expect(motivo(semEncontro)).toBe("tema-alterado");
+    expect(motivo(semTema)).toBe("saiu-da-turma");
+    expect(motivo(semSaida)).toBe("catequizando-inativo");
+    expect(motivo(semInativo)).toBe("turma-encerrada");
+  });
+
+  it("mantém compareceu e nao_compareceu mesmo com contexto obsoleto", () => {
+    const obsoleto = {
+      encontroSituacao: "cancelado" as const,
+      temaDoEncontro: null,
+      origemVigente: false,
+      catequizandoAtivo: false,
+      turmaVisitadaEncerrada: true,
+    };
+    for (const situacao of ["compareceu", "nao_compareceu"] as const) {
+      expect(situacaoEfetiva(vigente({ ...obsoleto, situacao }))).toEqual({ situacao });
+    }
+  });
+
+  it("mantém cancelada persistida, com o motivo gravado ou cancelada-por-usuario", () => {
+    expect(situacaoEfetiva(vigente({ situacao: "cancelada" }))).toEqual({
+      situacao: "cancelada",
+      motivo: "cancelada-por-usuario",
+    });
+    expect(
+      situacaoEfetiva(
+        vigente({ situacao: "cancelada", motivoGravado: "tema-alterado", origemVigente: false }),
+      ),
+    ).toEqual({ situacao: "cancelada", motivo: "tema-alterado" });
   });
 });

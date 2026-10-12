@@ -18,7 +18,7 @@
   - _Boundary: presenca/domain/reposicao_
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 3.1, 3.2, 3.3, 3.4, 4.3_
 
-- [ ] 2.2 Implementar a situação efetiva da reserva
+- [x] 2.2 Implementar a situação efetiva da reserva
   - Criar `situacaoEfetiva`, que deriva `cancelada` com o motivo para reserva `reservada` quando o encontro foi cancelado, o tema do encontro mudou ou foi retirado, a inscrição de origem terminou, o catequizando foi inativado ou a turma visitada foi encerrada.
   - Manter `compareceu` e `nao_compareceu` sem alteração, e `cancelada` persistida como `cancelada-por-usuario` ou com o motivo gravado.
   - Pronto quando: os testes unitários cobrem cada motivo isoladamente, a precedência quando há mais de um, e as situações `compareceu` e `nao_compareceu` intocadas.
@@ -113,3 +113,8 @@
   - Pronto quando: todos passam sem alterar frequência, alerta, chamada ou visitante existentes.
   - _Depends: 6.1_
   - _Requirements: 4.6, 5.5, 5.6_
+
+## Implementation Notes
+- Ids no banco são TEXT (uuid string) em todas as tabelas, inclusive `reserva_reposicao`; o índice parcial `reserva_ativa_unica` é SQL manual (o Prisma pode propor removê-lo em `migrate dev`, como já ocorre com `link_ativo_unico`).
+- `situacaoEfetiva` aceita `motivoGravado?` no contexto: o repositório (3.1) deve passar `motivoCancelamento` da reserva `cancelada`. Precedência: encontro-cancelado > tema-alterado (inclui tema retirado) > saiu-da-turma > catequizando-inativo > turma-encerrada.
+- Helpers de teste de reposição: `tests/integration/presenca/helpers-reposicao.ts` (reexporta os de `helpers.ts`).

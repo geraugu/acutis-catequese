@@ -72,3 +72,43 @@ export function conflitoDeData(
 ): boolean {
   return datasDaOrigem.has(data) || reservas.some((r) => r.data === data);
 }
+
+export interface ContextoDaReserva {
+  situacao: SituacaoReserva;
+  encontroSituacao: "planejado" | "realizado" | "cancelado";
+  temaDoEncontro: string | null;
+  temaDaReserva: string;
+  origemVigente: boolean;
+  catequizandoAtivo: boolean;
+  turmaVisitadaEncerrada: boolean;
+  /** Motivo já gravado numa reserva `cancelada`; ausente ou nulo vale cancelamento pelo usuário. */
+  motivoGravado?: MotivoObsolescencia | null;
+}
+
+export type SituacaoEfetiva =
+  | { situacao: Exclude<SituacaoReserva, "cancelada"> }
+  | { situacao: "cancelada"; motivo: MotivoObsolescencia | "cancelada-por-usuario" };
+
+/**
+ * Situação efetiva da reserva (6.1–6.3). Só `reservada` vira `cancelada` por obsolescência;
+ * `compareceu`, `nao_compareceu` e `cancelada` seguem como gravadas. Quando mais de um motivo
+ * vale, a precedência segue a ordem do design: encontro cancelado, tema alterado/retirado,
+ * saída da turma de origem, catequizando inativo, turma visitada encerrada.
+ */
+export function situacaoEfetiva(contexto: ContextoDaReserva): SituacaoEfetiva {
+  if (contexto.situacao === "cancelada") {
+    return { situacao: "cancelada", motivo: contexto.motivoGravado ?? "cancelada-por-usuario" };
+  }
+  if (contexto.situacao !== "reservada") return { situacao: contexto.situacao };
+
+  const cancelada = (motivo: MotivoObsolescencia): SituacaoEfetiva => ({
+    situacao: "cancelada",
+    motivo,
+  });
+  if (contexto.encontroSituacao === "cancelado") return cancelada("encontro-cancelado");
+  if (contexto.temaDoEncontro !== contexto.temaDaReserva) return cancelada("tema-alterado");
+  if (!contexto.origemVigente) return cancelada("saiu-da-turma");
+  if (!contexto.catequizandoAtivo) return cancelada("catequizando-inativo");
+  if (contexto.turmaVisitadaEncerrada) return cancelada("turma-encerrada");
+  return { situacao: "reservada" };
+}
