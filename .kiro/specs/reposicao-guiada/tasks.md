@@ -34,7 +34,7 @@
 
 - [ ] 3. Persistência
 
-- [ ] 3.1 Implementar as leituras da reposição no repositório
+- [x] 3.1 Implementar as leituras da reposição no repositório
   - Implementar `temasTrabalhados`, `candidatosDeReposicao` (encontros planejados, futuros, de turmas abertas fora da origem, com algum dos temas), `visaoOQueFalta`, `reservasDoCatequizando` e `reservasDoEncontro`, aplicando `situacaoEfetiva` ao ler.
   - Reaproveitar `cumpridosDoCatequizando` e `temasAtivosNumerados` do repositório existente.
   - Pronto quando: os testes de integração mostram só temas trabalhados na origem, o tema cumprido por visitante fora da lista, as opções de outras turmas e do dia seguinte, encontro passado, cancelado ou de turma encerrada fora das opções, e a reserva obsoleta aparecendo como cancelada com o motivo e o histórico completo.
@@ -118,3 +118,4 @@
 - Ids no banco são TEXT (uuid string) em todas as tabelas, inclusive `reserva_reposicao`; o índice parcial `reserva_ativa_unica` é SQL manual (o Prisma pode propor removê-lo em `migrate dev`, como já ocorre com `link_ativo_unico`).
 - `situacaoEfetiva` aceita `motivoGravado?` no contexto: o repositório (3.1) deve passar `motivoCancelamento` da reserva `cancelada`. Precedência: encontro-cancelado > tema-alterado (inclui tema retirado) > saiu-da-turma > catequizando-inativo > turma-encerrada.
 - Helpers de teste de reposição: `tests/integration/presenca/helpers-reposicao.ts` (reexporta os de `helpers.ts`).
+- Leituras (3.1): `visaoOQueFalta` devolve `opcoes = []` quando o tema tem reserva ativa; `reservasDoEncontro` devolve todas as situações (a UI do bloco da chamada filtra `situacao === "reservada"` para ações); `reservasDoCatequizando` vem da mais recente. Inativar o catequizando fecha as inscrições por gatilho, então a reserva aparece como `saiu-da-turma` (o motivo `catequizando-inativo` é praticamente inalcançável; a UI trata ambos como "saiu da turma").
