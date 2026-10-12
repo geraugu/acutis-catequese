@@ -93,7 +93,7 @@
   - _Boundary: app/_presenca, app/coordenacao, app/catequista_
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 3.6_
 
-- [ ] 5.4 Integrar o bloco de reservas à página da chamada
+- [x] 5.4 Integrar o bloco de reservas à página da chamada
   - Exibir `ReservasDaChamada` na página de chamada, lendo as reservas do encontro, com os avisos de confirmação.
   - Pronto quando: a chamada de um encontro com reserva mostra o catequizando e a turma de origem, confirmar presente o move para os visitantes e marcar ausência o mantém fora da frequência; sem reserva a página fica igual à anterior.
   - _Depends: 5.2, 4.1_

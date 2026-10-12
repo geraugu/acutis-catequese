@@ -16,11 +16,13 @@ import {
 } from "@/modules/presenca/repositorio";
 import {
   cancelarReservaAction,
+  naoCompareceuAction,
   reservarReposicaoAction,
 } from "@/modules/presenca/reposicao-actions";
 import {
   nomeDoCatequizando,
   reservasDoCatequizando,
+  reservasDoEncontro,
   visaoOQueFalta,
 } from "@/modules/presenca/reposicao-repositorio";
 import {
@@ -47,6 +49,7 @@ import { ChamadaForm } from "@/components/presenca/chamada-form";
 import { HistoricoReservas } from "@/components/presenca/historico-reservas";
 import { ListaVisitantes } from "@/components/presenca/lista-visitantes";
 import { OQueFalta } from "@/components/presenca/o-que-falta";
+import { ReservasDaChamada } from "@/components/presenca/reservas-da-chamada";
 import { SemTemaDoEncontro } from "@/components/presenca/sem-tema-do-encontro";
 import { StatusPresenca } from "@/components/presenca/status-presenca";
 
@@ -84,6 +87,7 @@ export async function PaginaChamada({
   const hoje = hojeCivil();
   const disp = disponibilidadeDaChamada(encontro, { encerrada: encontro.turmaEncerrada }, hoje);
   const registros = await presencasDoEncontro(encontroId);
+  const reservas = await reservasDoEncontro(encontroId);
   const visitantes = registros
     .filter((r) => r.visitante)
     .map((r) => ({
@@ -109,6 +113,12 @@ export async function PaginaChamada({
     { encerrada: encontro.turmaEncerrada },
     hoje,
   );
+
+  // Ação inline: a action recebe turma, encontro e catequizando antes da base.
+  async function marcarAusencia(catequizandoId: string) {
+    "use server";
+    await naoCompareceuAction(turmaId, encontroId, catequizandoId, base);
+  }
 
   return (
     <>
@@ -151,6 +161,11 @@ export async function PaginaChamada({
         </div>
       </dl>
       <Aviso mensagem={mensagemDeAviso(primeiro(aviso))} />
+      <ReservasDaChamada
+        reservas={reservas}
+        confirmar={adicionarVisitanteAction.bind(null, turmaId, encontroId, base)}
+        ausente={marcarAusencia}
+      />
       {disp.disponivel ? (
         <ChamadaForm
           linhas={linhas}
