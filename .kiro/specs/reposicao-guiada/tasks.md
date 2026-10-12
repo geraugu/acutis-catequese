@@ -102,7 +102,7 @@
 
 - [ ] 6. Validação
 
-- [ ] 6.1 Cobrir o fluxo completo com testes e2e
+- [x] 6.1 Cobrir o fluxo completo com testes e2e
   - Cobrir, em viewport de celular, a coordenação reservando em outra turma, o catequista da turma visitada confirmando presente, o tema saindo da lista, o cancelamento voltando as opções e o catequista fora da turma sendo negado.
   - Pronto quando: o e2e passa de ponta a ponta e verifica ausência de rolagem horizontal nas telas novas.
   - _Depends: 5.3, 5.4_
