@@ -42,7 +42,7 @@
   - _Boundary: presenca/reposicao-repositorio_
   - _Requirements: 2.2, 2.3, 2.4, 2.5, 2.6, 3.1, 3.2, 3.3, 3.4, 5.1, 6.1, 6.2, 6.3, 6.4_
 
-- [ ] 3.2 Implementar as escritas da reserva
+- [x] 3.2 Implementar as escritas da reserva
   - Implementar `reservar` em transação: revalida o encontro, grava como cancelada as reservas obsoletas do catequizando, recusa conflito de data e insere, convertendo o erro do índice único em "já reservada".
   - Implementar `cancelar` (só `reservada`) e `marcarNaoCompareceu`, sem escrever em presença, inscrição ou encontro.
   - Pronto quando: os testes de integração mostram reserva criada, opção indisponível, conflito de data, duas reservas simultâneas do mesmo tema com uma só vencedora, reserva obsoleta não bloqueando a nova, cancelamento, ausência marcada sem criar presença, e frequência e inscrição inalteradas.
@@ -119,3 +119,4 @@
 - `situacaoEfetiva` aceita `motivoGravado?` no contexto: o repositório (3.1) deve passar `motivoCancelamento` da reserva `cancelada`. Precedência: encontro-cancelado > tema-alterado (inclui tema retirado) > saiu-da-turma > catequizando-inativo > turma-encerrada.
 - Helpers de teste de reposição: `tests/integration/presenca/helpers-reposicao.ts` (reexporta os de `helpers.ts`).
 - Leituras (3.1): `visaoOQueFalta` devolve `opcoes = []` quando o tema tem reserva ativa; `reservasDoEncontro` devolve todas as situações (a UI do bloco da chamada filtra `situacao === "reservada"` para ações); `reservasDoCatequizando` vem da mais recente. Inativar o catequizando fecha as inscrições por gatilho, então a reserva aparece como `saiu-da-turma` (o motivo `catequizando-inativo` é praticamente inalcançável; a UI trata ambos como "saiu da turma").
+- Escritas (3.2): `reservar` trava o catequizando com `FOR UPDATE` e NÃO verifica se o tema ainda é "a repor" (só revalida o encontro, como no design). A action (4.1) deve validar, via `visaoOQueFalta`, que `temaId`/`encontroId` constam das opções do catequizando antes de chamar `reservar`, para impedir chamada forjada de tema já cumprido. `marcarNaoCompareceu` só age em reserva persistida `reservada` e vigente; `cancelar` de reserva obsoleta grava motivo null (cancelada pelo usuário).

@@ -1,9 +1,11 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@/generated/prisma/client";
 import type { DataCivil } from "@/modules/compartilhado/datas";
 import type { TemaDoProgresso } from "@/modules/programa/domain/progresso";
 import { calcularProgressoCatequizando } from "./domain/progresso-catequizando";
 import {
+  conflitoDeData,
   opcoesDoTema,
   situacaoEfetiva,
   temasARepor,
@@ -159,14 +161,17 @@ const SELECAO_RESERVA = {
 } as const;
 
 /** Aplica `situacaoEfetiva` a reservas lidas, com as inscrições vigentes dos catequizandos. */
-async function resolverReservas(where: { catequizandoId: string } | { encontroId: string }) {
-  const reservas = await prisma.reservaReposicao.findMany({
+async function resolverReservas(
+  where: { catequizandoId?: string; encontroId?: string },
+  db: Prisma.TransactionClient | typeof prisma = prisma,
+) {
+  const reservas = await db.reservaReposicao.findMany({
     where,
     select: SELECAO_RESERVA,
     orderBy: [{ createdAt: "asc" }, { id: "asc" }],
   });
   if (reservas.length === 0) return [];
-  const inscricoes = await prisma.inscricao.findMany({
+  const inscricoes = await db.inscricao.findMany({
     where: {
       catequizandoId: { in: [...new Set(reservas.map((r) => r.catequizandoId))] },
       dataSaida: null,
@@ -291,4 +296,154 @@ export async function visaoOQueFalta(
       };
     }),
   };
+}
+
+export type ResultadoReserva =
+  | { ok: true; reservaId: string }
+  | { ok: false; motivo: "indisponivel" | "conflito-de-data" | "ja-reservada" | "sem-origem" };
+
+const INDISPONIVEL = { ok: false, motivo: "indisponivel" } as const;
+
+/**
+ * Reserva a reposição em transação (4.1–4.4, 6.1–6.3): revalida o encontro, grava como
+ * `cancelada` as reservas obsoletas do catequizando, recusa conflito de data e insere.
+ * Só escreve em `reserva_reposicao`.
+ */
+export async function reservar(
+  entrada: { catequizandoId: string; encontroId: string; temaId: string; criadoPorId: string },
+  hoje: DataCivil,
+): Promise<ResultadoReserva> {
+  const { catequizandoId, encontroId, temaId, criadoPorId } = entrada;
+  if (![catequizandoId, encontroId, temaId].every((id) => UUID.test(id))) return INDISPONIVEL;
+  try {
+    return await prisma.$transaction(async (tx): Promise<ResultadoReserva> => {
+      // Serializa as reservas do mesmo catequizando (temas ou datas concorrentes).
+      await tx.$queryRaw`SELECT id FROM catequizando WHERE id = ${catequizandoId} FOR UPDATE`;
+
+      const inscricoes = await tx.inscricao.findMany({
+        where: { catequizandoId, dataSaida: null, turma: { encerradaEm: null } },
+        select: { turmaId: true },
+      });
+      const origemTurmaIds = [...new Set(inscricoes.map((i) => i.turmaId))];
+      if (origemTurmaIds.length === 0) return { ok: false, motivo: "sem-origem" };
+
+      const encontro = await tx.encontro.findUnique({
+        where: { id: encontroId },
+        select: {
+          turmaId: true,
+          temaId: true,
+          situacao: true,
+          data: true,
+          turma: { select: { encerradaEm: true } },
+        },
+      });
+      if (
+        !encontro ||
+        encontro.situacao !== "planejado" ||
+        encontro.temaId !== temaId ||
+        paraCivil(encontro.data) < hoje ||
+        encontro.turma.encerradaEm !== null ||
+        origemTurmaIds.includes(encontro.turmaId)
+      ) {
+        return INDISPONIVEL;
+      }
+
+      // (2) Materializa as obsoletas: só a persistência muda, nunca presença/inscrição/encontro.
+      const resolvidas = await resolverReservas({ catequizandoId }, tx);
+      for (const { r, efetiva } of resolvidas) {
+        if (r.situacao === "reservada" && efetiva.situacao === "cancelada") {
+          await tx.reservaReposicao.updateMany({
+            where: { id: r.id, situacao: "reservada" },
+            data: { situacao: "cancelada", motivoCancelamento: efetiva.motivo },
+          });
+        }
+      }
+      const ativas = resolvidas.filter(
+        ({ r, efetiva }) => r.situacao === "reservada" && efetiva.situacao === "reservada",
+      );
+
+      if (ativas.some(({ r }) => r.encontro.id === encontroId)) return INDISPONIVEL;
+      const presenca = await tx.presenca.findFirst({
+        where: { catequizandoId, encontroId },
+        select: { id: true },
+      });
+      if (presenca) return INDISPONIVEL;
+      if (ativas.some(({ r }) => r.temaId === temaId)) return { ok: false, motivo: "ja-reservada" };
+
+      // (3) Conflito de data com a origem ou com outra reserva ativa (4.3).
+      const encontrosDaOrigem = await tx.encontro.findMany({
+        where: { turmaId: { in: origemTurmaIds }, situacao: { not: "cancelado" } },
+        select: { data: true },
+      });
+      const conflito = conflitoDeData(
+        paraCivil(encontro.data),
+        new Set(encontrosDaOrigem.map((e) => paraCivil(e.data))),
+        ativas.map(({ r }) => ({
+          encontroId: r.encontro.id,
+          temaId: r.temaId,
+          data: paraCivil(r.encontro.data),
+        })),
+      );
+      if (conflito) return { ok: false, motivo: "conflito-de-data" };
+
+      // (4) Origem que trabalhou o tema; senão, a primeira vigente.
+      const trabalhou = await tx.encontro.findFirst({
+        where: { turmaId: { in: origemTurmaIds }, situacao: "realizado", temaId },
+        select: { turmaId: true },
+        orderBy: { data: "asc" },
+      });
+      const criada = await tx.reservaReposicao.create({
+        data: {
+          catequizandoId,
+          temaId,
+          encontroId,
+          turmaOrigemId: trabalhou?.turmaId ?? origemTurmaIds[0],
+          criadoPorId,
+          situacao: "reservada",
+        },
+        select: { id: true },
+      });
+      return { ok: true, reservaId: criada.id };
+    });
+  } catch (erro) {
+    if (erro instanceof Prisma.PrismaClientKnownRequestError && erro.code === "P2002") {
+      return { ok: false, motivo: "ja-reservada" };
+    }
+    throw erro;
+  }
+}
+
+/** Cancela a reserva `reservada` do catequizando; sem motivo gravado = cancelada pelo usuário (4.5). */
+export async function cancelar(
+  reservaId: string,
+  catequizandoId: string,
+): Promise<"ok" | "indisponivel"> {
+  if (!UUID.test(reservaId) || !UUID.test(catequizandoId)) return "indisponivel";
+  const { count } = await prisma.reservaReposicao.updateMany({
+    where: { id: reservaId, catequizandoId, situacao: "reservada" },
+    data: { situacao: "cancelada", motivoCancelamento: null },
+  });
+  return count > 0 ? "ok" : "indisponivel";
+}
+
+/** `reservada` vigente → `nao_compareceu`, sem criar presença; repetir é idempotente (5.3). */
+export async function marcarNaoCompareceu(
+  encontroId: string,
+  catequizandoId: string,
+): Promise<"ok" | "indisponivel"> {
+  if (!UUID.test(encontroId) || !UUID.test(catequizandoId)) return "indisponivel";
+  return prisma.$transaction(async (tx) => {
+    const resolvidas = await resolverReservas({ encontroId, catequizandoId }, tx);
+    const vigente = resolvidas.find(
+      ({ r, efetiva }) => r.situacao === "reservada" && efetiva.situacao === "reservada",
+    );
+    if (vigente) {
+      const { count } = await tx.reservaReposicao.updateMany({
+        where: { id: vigente.r.id, situacao: "reservada" },
+        data: { situacao: "nao_compareceu" },
+      });
+      return count > 0 ? "ok" : "indisponivel";
+    }
+    return resolvidas.some(({ r }) => r.situacao === "nao_compareceu") ? "ok" : "indisponivel";
+  });
 }
